@@ -15,6 +15,7 @@
     <tr>
       <th scope="col">Name</th>
       <th scope="col">Price</th>
+      <th scope="col">Score</th>
       <th scope="col">More</th>
     </tr>
   </thead>
@@ -23,8 +24,36 @@
     @foreach(var item in Model.Games)
     {
         <tr>
-          <td>@item.Name</td>
-          <td>@item.Price </td>
+          <td>
+              <div class="table-div-float-left">
+                  <img  width="50px" height="70px"src="~/Files/User.png">
+                  
+                  <div class="name-column-2">
+                    <h5 class="game-name">@item.Name</h5>
+                    <div class="ganres">
+                        <ul>
+                            @foreach(var genre in item.Genres)
+                                    {
+                                        <li>@genre</li>
+                                    }
+                             <li>Test</li>
+                        </ul>
+
+                    </div>
+                  </div>
+                </div>
+                
+                
+              
+          </td>
+          <td>@item.Price
+          <br>
+          <p class="ganres mt-3">$</p>
+          </td>
+          <td>@item.Price
+          <br>
+          <p class="ganres mt-3">Users:7639</p>
+          </td>
           <th scope="col"><a href="/Game?title=@item.Name">More</a></th>
         </tr>
     }

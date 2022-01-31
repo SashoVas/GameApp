@@ -50,3 +50,22 @@ h2 {
 .recomended-game{
     margin:2%;
 }
+.table-div-float-left {
+    display:flex;
+}
+.name-column-2 {
+    margin-left:3%;
+}
+tr, .game-name {
+    font-size: 25px;
+}
+.ganres {
+    font-size:13px;
+}
+.ganres ul {
+    padding:0px;
+}
+
+td,th {
+    text-align: center;
+}

@@ -15,6 +15,8 @@ namespace GameApp.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<UserGame> UserGames { get; set; }
         public DbSet<ShoppingCartGame> ShoppingCartGames { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<GameGenre> GameGenres { get; set; }
         public GameAppDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -25,6 +27,10 @@ namespace GameApp.Data
             builder.Entity<UserGame>()
                 .HasKey(ug => new { ug.UserId, ug.GameId })
                 .HasName("PrimaryKey_UserGamesId");
+
+            builder.Entity<GameGenre>()
+                .HasKey(gg => new { gg.GenreId, gg.GameId })
+                .HasName("PrimaryKey_GameGenresId");
 
             builder.Entity<Game>()
                 .HasMany(g => g.Users)

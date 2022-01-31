@@ -52,12 +52,14 @@ namespace GameApp.Web.Controllers
             var model =new AllGamesViewModel { Games = gamesService.GetAll(page,gameName.ToLower()) };
             return this.View(model);
         }
+        //[Authorize(Roles ="admin")]
         [HttpGet()]
         public IActionResult Create() 
         {
             
             return View();
         }
+        //[Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateGameInputModel model)
         {

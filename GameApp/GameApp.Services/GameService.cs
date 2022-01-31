@@ -74,7 +74,9 @@ namespace GameApp.Services
                 .Select(g => new AllGamesServiceListingModel
             { 
                 Name=g.Name,
-                Price=g.Price
+                Price=g.Price,
+                Genres=g.Genres.Select(gg=>gg.Genre.Name).ToList(),
+                ImgUrl=g.ImageUrl
             }).ToList();
         }
 
@@ -103,7 +105,9 @@ namespace GameApp.Services
                 .Select(ug => new AllGamesServiceListingModel
                 {
                     Name = ug.Game.Name,
-                    Price = ug.Game.Price
+                    Price = ug.Game.Price,
+                    Genres=null,
+                    ImgUrl=ug.Game.ImageUrl
                 }).ToArrayAsync();
         }
     }
