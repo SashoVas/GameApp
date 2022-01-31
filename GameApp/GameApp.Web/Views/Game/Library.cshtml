@@ -1,0 +1,28 @@
+﻿@using GameApp.Web.Models.Game
+@{
+    ViewData["Title"] = "MyGames";
+}
+@model AllGamesViewModel
+
+
+
+<table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">More</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    @foreach(var item in Model.Games)
+    {
+        <tr>
+          <td>@item.Name</td>
+          <td>@item.Price </td>
+          <th scope="col"><a href="/Game?title=@item.Name">More</a></th>
+        </tr>
+    }
+  </tbody>
+</table>

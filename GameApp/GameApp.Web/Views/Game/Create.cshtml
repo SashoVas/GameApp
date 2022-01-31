@@ -1,0 +1,28 @@
+﻿@using GameApp.Web.Models.Game
+@{
+    ViewData["Title"] = "CreateGame";
+}
+
+@model CreateGameInputModel
+<form class="mb-4" method="post">
+    <div>
+        <label asp-for=@Model.Name></label>
+        <input asp-for=@Model.Name>
+        <span asp-validation-for=@Model.Name></span>
+    </div>
+
+    <div>
+        <label asp-for=@Model.Price></label>
+        <input asp-for=@Model.Price >
+        <span asp-validation-for=@Model.Price></span>
+    </div>
+
+    <div>
+        <label asp-for=@Model.Description></label>
+        <textarea asp-for=@Model.Description rows="4" cols="50" ></textarea>
+        <span asp-validation-for=@Model.Description ></span>
+    </div>
+    <input type="submit" asp-controller="Game" asp-action="Create">
+</form>
+
+

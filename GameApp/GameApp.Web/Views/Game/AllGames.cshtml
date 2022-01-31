@@ -1,0 +1,36 @@
+﻿@using GameApp.Web.Models.Game
+@{
+    ViewData["Title"] = "AllGames";
+}
+@model AllGamesViewModel
+
+
+<form method="get" class="form-inline my-2 my-lg-0">
+    <input name="gameName" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+
+<table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">More</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    @foreach(var item in Model.Games)
+    {
+        <tr>
+          <td>@item.Name</td>
+          <td>@item.Price </td>
+          <th scope="col"><a href="/Game?title=@item.Name">More</a></th>
+        </tr>
+    }
+  </tbody>
+</table>
+
+
+
+

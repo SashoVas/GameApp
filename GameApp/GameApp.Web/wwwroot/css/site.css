@@ -1,0 +1,52 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+ul {
+    list-style-type: none;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+.main-div {
+    float:left;
+    
+}
+.left-div {
+    width:20%;
+
+}
+.right-div {
+    width: 80%;
+
+}
+.scores {
+    display:flex;
+}
+.scores li {
+    margin:3%;
+}
+h2 {
+    margin-left:30%;
+}
+.description p {
+    margin:2%;
+}
+.recomendations {
+    display:flex;
+}
+.recomended-game{
+    margin:2%;
+}

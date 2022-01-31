@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "Home Page";
+}
+@if(!this.User.Identity.IsAuthenticated)
+{
+    <div class="text-center">
+        <ul>
+            <li><a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+            <li><a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Register</a></li>
+        </ul>
+        
+        
+    </div>
+}
+else
+{
+    <h1 class="display-4">Hello:@User.Identity.Name</h1>
+}

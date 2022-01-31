@@ -1,0 +1,15 @@
+﻿@using GameApp.Web.Areas.Profile.Models
+@model ProfileInfoViewModel
+
+<h1>@Model.UserName</h1>
+
+<img width="300px" height="300px" src="~/Files/@Model.ProfilePic">
+<a asp-area="Profile" asp-controller="MyUser" asp-action="ChangeProfilePic" >Change Profile Picture</a>
+<ul>
+@foreach (var item in Model.Games)
+    {
+        <li>
+            <a>@item</a>
+        </li>
+    }
+</ul>
