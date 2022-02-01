@@ -11,7 +11,7 @@ namespace GameApp.Services.Contracts
     {
         GameServiceListingModel GetGame(string name);
         IEnumerable<AllGamesServiceListingModel> GetAll(int page, string gameName);
-        Task<int> Create(string name,decimal price,string description);
+        Task<int> Create(string name,decimal price,string description, IEnumerable<string> newGenres);
         Task<IEnumerable<AllGamesServiceListingModel>> MyGames(string id);
         Task<bool> BuyItems(string userId);
     }

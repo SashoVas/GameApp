@@ -43,7 +43,14 @@
                 }
                 else
                 {
-                  <li class="nav-item active">
+                    @if(this.User.IsInRole("admin"))
+                        {
+                            <li class="nav-item active">
+                               <a class="nav-link" asp-controller="Game" asp-action="Create">Create Game</a>
+                            </li>
+
+                        }
+                    <li class="nav-item active">
                     <a class="nav-link">Your Role Is: @(this.User.IsInRole("admin")? "Admin":"User" )</a>
                   </li>
                   <li class="nav-item active">

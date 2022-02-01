@@ -17,15 +17,18 @@ namespace GameApp.Services
     {
         private readonly IRepository<Game> games;
         private readonly IRepository<UserGame> userGames;
+        private readonly IRepository<Genre> genres;
         private readonly ShoppingCart shoppingCart;
         private readonly UserManager<User> userManager;
 
-        public GameService(IRepository<Game> games, IRepository<UserGame> userGames, ShoppingCart shoppingCart, UserManager<User> userManager)
+        public GameService(IRepository<Game> games, IRepository<UserGame> userGames,
+            ShoppingCart shoppingCart, UserManager<User> userManager,IRepository<Genre> genres)
         {
             this.games = games;
             this.userGames = userGames;
             this.shoppingCart = shoppingCart;
             this.userManager = userManager;
+            this.genres = genres;
         }
 
         public async Task<bool> BuyItems(string userId)
@@ -50,13 +53,14 @@ namespace GameApp.Services
                 return true;
         }
 
-        public async Task<int> Create(string name, decimal price, string description)
+        public async Task<int> Create(string name, decimal price, string description, IEnumerable<string> newGenres)
         {
             var game = new Game {
                 Name = name,
                 Price = price,
                 Description = description,
-                ImageUrl = null
+                ImageUrl = null,
+                Genres= newGenres.Select(g=> new GameGenre {Genre= genres.All().SingleOrDefault(og=>og.Name==g) }).ToList()
             };
             await games.AddAsync(game);
             await games.SaveChangesAsync();

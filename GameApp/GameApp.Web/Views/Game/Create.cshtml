@@ -2,27 +2,65 @@
 @{
     ViewData["Title"] = "CreateGame";
 }
-
 @model CreateGameInputModel
-<form class="mb-4" method="post">
-    <div>
-        <label asp-for=@Model.Name></label>
-        <input asp-for=@Model.Name>
-        <span asp-validation-for=@Model.Name></span>
+<div class="form-body">
+        <div class="row">
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items">
+                        <h3>Create Game</h3>
+                        <p>Fill in the data below.</p>
+                        <form class="requires-validation" method="post" novalidate>
+                            <div id="main-form">
+                                <div class="col-md-12">
+                                   <label asp-for="Name"></label>
+                                   <input class="form-control" asp-for="Name">
+                                   <span asp-validation-for="Name"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label asp-for="Price"></label>
+                                    <input class="form-control" asp-for="Price">
+                                    <span asp-validation-for="Price"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label asp-for="Description"></label>
+                                    <textarea class="form-control" asp-for="Description" ></textarea>
+                               </div>
+                                <div class="col-md-12" id="genre-conteiner">
+                                    @await Component.InvokeAsync("SelectGenre")
+                                </div>
+
+                            </div>
+
+
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="AddGenre(event)" id="add-genre-button">Add Genre</button>
+                            </div>
+                            <div class="form-button mt-3">
+                                <button class="btn btn-primary" asp-controller="Game" asp-action="Create">Add Game</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+@section Scripts
+{
+    <script>
+        let times=1;
+        let genreConteiner=$("#genre-conteiner").html()
+        
+        
+        function AddGenre(event)
+        {
+            event.preventDefault();
+            genreConteiner=genreConteiner.replace('name="Genres['+(times-1)+']"','name="Genres['+times+']"')
+            $("#main-form").append(genreConteiner);
+            times+=1;
+        }
 
-    <div>
-        <label asp-for=@Model.Price></label>
-        <input asp-for=@Model.Price >
-        <span asp-validation-for=@Model.Price></span>
-    </div>
-
-    <div>
-        <label asp-for=@Model.Description></label>
-        <textarea asp-for=@Model.Description rows="4" cols="50" ></textarea>
-        <span asp-validation-for=@Model.Description ></span>
-    </div>
-    <input type="submit" asp-controller="Game" asp-action="Create">
-</form>
-
-
+    </script>
+}
