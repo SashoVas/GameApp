@@ -3,6 +3,8 @@ using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services.Contracts;
 using GameApp.Services.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,15 +22,17 @@ namespace GameApp.Services
         private readonly IRepository<Genre> genres;
         private readonly ShoppingCart shoppingCart;
         private readonly UserManager<User> userManager;
+        private readonly IHostingEnvironment environment;
 
         public GameService(IRepository<Game> games, IRepository<UserGame> userGames,
-            ShoppingCart shoppingCart, UserManager<User> userManager,IRepository<Genre> genres)
+            ShoppingCart shoppingCart, UserManager<User> userManager,IRepository<Genre> genres, IHostingEnvironment environment)
         {
             this.games = games;
             this.userGames = userGames;
             this.shoppingCart = shoppingCart;
             this.userManager = userManager;
             this.genres = genres;
+            this.environment = environment;
         }
 
         public async Task<bool> BuyItems(string userId)
@@ -53,15 +57,30 @@ namespace GameApp.Services
                 return true;
         }
 
-        public async Task<int> Create(string name, decimal price, string description, IEnumerable<string> newGenres)
+        public async Task<int> Create(string name, decimal price, string description, IEnumerable<string> newGenres, IFormFile image)
         {
             var game = new Game {
                 Name = name,
                 Price = price,
                 Description = description,
-                ImageUrl = null,
                 Genres= newGenres.Select(g=> new GameGenre {Genre= genres.All().SingleOrDefault(og=>og.Name==g) }).ToList()
             };
+            
+            if (image==null)
+            {
+                game.ImageUrl = "User.png";
+            }
+            else
+            {
+                var imgUrl = Guid.NewGuid().ToString();
+                using (var path = System.IO.File.OpenWrite(environment.WebRootPath+"/Files/"+imgUrl+".png"))
+                {
+                    await image.CopyToAsync(path);
+                }
+                game.ImageUrl = imgUrl + ".png";
+            }
+            
+
             await games.AddAsync(game);
             await games.SaveChangesAsync();
             return game.Id;
@@ -97,7 +116,8 @@ namespace GameApp.Services
                 Description = game.Description,
                 Name = game.Name,
                 Price = game.Price,
-                ImgUrl=game.ImageUrl
+                ImgUrl=game.ImageUrl,
+                Genres=game.Genres.Select(gg=>gg.Genre.Name)
             };
         }
 

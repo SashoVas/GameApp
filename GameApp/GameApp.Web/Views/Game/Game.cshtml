@@ -1,16 +1,20 @@
 ﻿@using GameApp.Web.Models.Game
 @{
     ViewData["Title"] = "Game";
-}
+} 
 @model GameViewModel
-<h1>This is a big name </h1>
+<h1>@Model.Name </h1>
 <div class="main-div left-div">
-    <img width="100%" height="300px"src="~/Files/User.png">
+    <img width="100%" height="300px"src="~/Files/@Model.ImageUrl">
     <a href="#">Add to favorites</a>
     <hr>
     <h4>Information</h4>
     <ul>
-        <li>Genre:</li>
+        <li>Genres:</li>
+        @foreach(var genre in Model.Genres)
+        {
+            <li>&emsp;@genre</li>
+        }
         <li>Status:</li>
         <li>Arried:</li>
         <li>Premiered:</li>

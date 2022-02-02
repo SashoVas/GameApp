@@ -39,7 +39,8 @@ namespace GameApp.Web.Controllers
                 Description=game.Description,
                 Price=game.Price,
                 Name=game.Name,
-                ImageUrl=game.ImgUrl
+                ImageUrl=game.ImgUrl,
+                Genres=game.Genres
             });
         }
         [Route("Game/AllGames/{page?}")]
@@ -67,7 +68,7 @@ namespace GameApp.Web.Controllers
             {
                 return this.View(model);
             }
-            int id=await gamesService.Create(model.Name,model.Price,model.Description,model.Genres);
+            int id=await gamesService.Create(model.Name,model.Price,model.Description,model.Genres,model.Image);
             return this.RedirectToAction(nameof(AllGames));
         }
         

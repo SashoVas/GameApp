@@ -9,6 +9,7 @@ namespace GameApp.Web.Models.Game
         public decimal Price { get; set; }
         public string Description { get; set; }
         public string  ImageUrl { get; set; }
+        public IEnumerable<string> Genres { get; set; }
         public AllGamesViewModel SimilarGames { get; set; }
     }
 }

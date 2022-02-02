@@ -10,7 +10,7 @@
                     <div class="form-items">
                         <h3>Create Game</h3>
                         <p>Fill in the data below.</p>
-                        <form class="requires-validation" method="post" novalidate>
+                        <form class="requires-validation" method="post" enctype="multipart/form-data" novalidate>
                             <div id="main-form">
                                 <div class="col-md-12">
                                    <label asp-for="Name"></label>
@@ -28,6 +28,12 @@
                                     <label asp-for="Description"></label>
                                     <textarea class="form-control" asp-for="Description" ></textarea>
                                </div>
+
+                               <div class="col-md-12">
+                                    <label asp-for="Image"></label>
+                                    <input class="form-control" asp-for="Image" >
+                               </div>
+
                                 <div class="col-md-12" id="genre-conteiner">
                                     @await Component.InvokeAsync("SelectGenre")
                                 </div>
