@@ -55,6 +55,11 @@ using (var serviceScope = app.Services.CreateScope())//app.ApplicationServices.C
             context.Roles.Add(new IdentityRole { Name = "admin", NormalizedName = "ADMIN" });
             context.Roles.Add(new IdentityRole { Name = "user", NormalizedName = "USER" });
         }
+        if (!context.Genres.Any())
+        {
+            context.Genres.Add(new Genre { Name = "Action" });
+            context.Genres.Add(new Genre { Name = "Comedy" });
+        }
         context.SaveChanges();
     }
 }

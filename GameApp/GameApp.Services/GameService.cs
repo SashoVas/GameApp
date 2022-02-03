@@ -105,11 +105,15 @@ namespace GameApp.Services
 
         public GameServiceListingModel GetGame(string name)
         {
-            var game = games.All().FirstOrDefault(g => g.Name == name);
-            if (game == null)
+            var game = games
+                .All()
+                .Include(g=>g.Genres)
+                .ThenInclude(g=>g.Genre)
+                .FirstOrDefault(g => g.Name == name);
+            if (game==null)
             {
                 return null;
-            }    
+            }
             return new GameServiceListingModel
             {
                 Id=game.Id,

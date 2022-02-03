@@ -204,3 +204,6 @@ td,th {
 .nopadding {
     padding: 0 !important;
 }
+.content {
+    margin-left:5%;
+}

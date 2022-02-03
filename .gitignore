@@ -27,6 +27,7 @@ bin/
 obj/
 TestResults/
 Files/
+Migrations/
 ###################
 # Web publish log #
 ###################
