@@ -17,6 +17,7 @@ namespace GameApp.Data
         public DbSet<ShoppingCartGame> ShoppingCartGames { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<GameGenre> GameGenres { get; set; }
+        public DbSet<Comment> Comments { get; set; }
         public GameAppDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -35,17 +36,26 @@ namespace GameApp.Data
             builder.Entity<Game>()
                 .HasMany(g => g.Users)
                 .WithOne(ug => ug.Game)
-                .HasForeignKey(ug => ug.GameId);
+                .HasForeignKey(ug => ug.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<User>()
                 .HasMany(u => u.Games)
                 .WithOne(ug => ug.User)
-                .HasForeignKey(ug => ug.UserId);
+                .HasForeignKey(ug => ug.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ShoppingCartGame>()
                 .HasOne(sc => sc.Game)
                 .WithMany(g => g.ShoppingCartGames)
-                .HasForeignKey(sc => sc.GameId);
+                .HasForeignKey(sc => sc.GameId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Comment>()
+                .HasMany(c => c.Comments)
+                .WithOne(c => c.CommentedOn)
+                .HasForeignKey(c => c.CommentedOnId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
     }
