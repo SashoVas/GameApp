@@ -53,20 +53,3 @@
             </div>
         </div>
     </div>
-@section Scripts
-{
-    <script>
-        let times=1;
-        let genreConteiner=$("#genre-conteiner").html()
-        
-        
-        function AddGenre(event)
-        {
-            event.preventDefault();
-            genreConteiner=genreConteiner.replace('name="Genres['+(times-1)+']"','name="Genres['+times+']"')
-            $("#main-form").append(genreConteiner);
-            times+=1;
-        }
-
-    </script>
-}

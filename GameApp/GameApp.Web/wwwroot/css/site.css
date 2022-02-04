@@ -207,3 +207,10 @@ td,th {
 .content {
     margin-left:5%;
 }
+.comment {
+    margin-bottom:3%;
+}
+p {
+    width: 100%;
+    word-wrap: break-word;
+}

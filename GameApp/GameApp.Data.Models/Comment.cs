@@ -8,6 +8,10 @@ namespace GameApp.Data.Models
 {
     public class Comment
     {
+        public Comment()
+        {
+            this.Comments=new HashSet<Comment>();
+        }
         public int Id { get; set; }
         public string Content { get; set; }
         public DateTime PostedOn { get; set; }
@@ -16,8 +20,8 @@ namespace GameApp.Data.Models
         public int GameId { get; set; }
         public Game Game { get; set; }
         public int? CommentedOnId { get; set; }
-        public Comment CommentedOn { get; set; }
-        public IEnumerable<Comment> Comments { get; set; }
+        public Comment? CommentedOn { get; set; }
+        public ICollection<Comment> Comments { get; set; }
 
 
 

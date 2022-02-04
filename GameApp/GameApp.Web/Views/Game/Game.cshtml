@@ -79,35 +79,36 @@
         
     </div>
     <h2>Reviews</h2>
-    <div class="comments">
+    <div class="comments" id="comments">
+
         <div class="comment">
             <div class="user-info">
                 <ul class="d-flex nopadding">
-                    <li > <img width="50px" height="50px"src="~/Files/User.png"> </li>
                     <li class="right-div" >Username</li>
-                    <li >Posted on:Jan 24, 2022</li>
                     <li >Overall Rating:10</li>
                 </ul>
             </div>
             <div >
-                <p >dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                    dfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasddfsafsadfasefsaedfdasfasd
-                </p>
-
+                <form>
+                    <input type="hidden" id="gameId" value="@Model.Id" />
+                    <textarea id="commentContents" name="" rows="4" style="width:100%" placeholder="Write your comment"></textarea>
+                    <input onclick="PostComment(event)" class="btn btn-primary btn-lg" id="postComment"  type="submit" value="Comment">
+                </form>
             </div>
         </div>
 
 
     </div>
+    <button onclick="LoadMoreComments()" class="btn btn-primary btn-lg centerbutton">Load More</button>
 </div>
 <form class="mb-4" method="post">
     <input name="id" type="hidden" value="@Model.Id">
     <input type="submit" class="btn btn-primary btn-lg" asp-controller="Cart" asp-action="AddToCart">
 </form>
+
+@section Scripts{
+    <script>
+        LoadMoreComments();
+    </script>
+
+}

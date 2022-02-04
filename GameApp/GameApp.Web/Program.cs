@@ -35,6 +35,7 @@ builder.Services.AddTransient<IGameService, GameService>();
 builder.Services.AddTransient<ICartService, CartService>();
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
+builder.Services.AddTransient<ICommentsService, CommentsService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped(sp => ShoppingCart.GetShoppingCart(sp));
 //builder.Services.AddScoped<IRepository<>,Repository<>>;
