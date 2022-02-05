@@ -11,6 +11,7 @@ namespace GameApp.Services.Models
         public string Username { get; set; }
         public string Contents { get; set; }
         public string PostedOn { get; set; }
-        public int Rateing { get; set; }
+        public int Rating { get; set; }
+        public string CommentId { get; set; }
     }
 }

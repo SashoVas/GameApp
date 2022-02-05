@@ -12,14 +12,14 @@ namespace GameApp.Data.Models
         {
             this.Comments=new HashSet<Comment>();
         }
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Content { get; set; }
         public DateTime PostedOn { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public int GameId { get; set; }
         public Game Game { get; set; }
-        public int? CommentedOnId { get; set; }
+        public string? CommentedOnId { get; set; }
         public Comment? CommentedOn { get; set; }
         public ICollection<Comment> Comments { get; set; }
 

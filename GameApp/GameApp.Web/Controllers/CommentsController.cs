@@ -37,5 +37,12 @@ namespace GameApp.Web.Controllers
             return model;
         }
 
+        [HttpPost("AddReply")]
+        public async Task<IActionResult>AddReply([FromBody] AddReplyInputModel reply)
+        {
+            await commentsServicel.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId);
+            return this.Ok();
+        }
+
     }
 }

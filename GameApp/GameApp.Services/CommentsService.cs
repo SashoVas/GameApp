@@ -26,6 +26,7 @@ namespace GameApp.Services
         public async Task<bool> Create(int gameId, string commentConntents, string userId)
         {
             var comment = new Comment {
+                Id=Guid.NewGuid().ToString(),
                 Game=await games.All().SingleOrDefaultAsync(g=>g.Id==gameId),
                 Content=commentConntents,
                 PostedOn=DateTime.UtcNow,
@@ -36,18 +37,35 @@ namespace GameApp.Services
             return true;
         }
 
+        public async Task<bool> CreateReply(int gameId, string commentConntents, string userId, string commentId)
+        {
+            var comment = new Comment
+            {
+                Id = Guid.NewGuid().ToString(),
+                Game = await games.All().SingleOrDefaultAsync(g => g.Id == gameId),
+                Content = commentConntents,
+                PostedOn = DateTime.UtcNow,
+                User = await userManager.FindByIdAsync(userId),
+                CommentedOn=await comments.All().SingleOrDefaultAsync(c=>c.Id==commentId)
+            };
+            await comments.AddAsync(comment);
+            await comments.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<CommentsServiceListingModel>> LoadComments(int pageId,int gameId)
         {
             var commentsList =await comments
                 .All()
-                .Where(c => c.GameId == gameId)
+                .Where(c => c.GameId == gameId && c.CommentedOnId==null)
                 .Skip(pageId*10)
                 .Take(10)
                 .Select(c => new CommentsServiceListingModel
                 {
                     Username=c.User.UserName,
                     Contents=c.Content,
-                    PostedOn=c.PostedOn.ToString("yyyy,MM,dd")
+                    PostedOn=c.PostedOn.ToString("yyyy,MM,dd"),
+                    CommentId=c.Id
                 }).ToListAsync();
             return commentsList;
         }
