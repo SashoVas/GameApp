@@ -214,3 +214,6 @@ p {
     width: 100%;
     word-wrap: break-word;
 }
+.littlemargin {
+    margin-left:3%;
+}

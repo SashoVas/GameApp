@@ -65,9 +65,24 @@ namespace GameApp.Services
                     Username=c.User.UserName,
                     Contents=c.Content,
                     PostedOn=c.PostedOn.ToString("yyyy,MM,dd"),
-                    CommentId=c.Id
+                    CommentId=c.Id,
+                    HasComments = c.Comments.Count > 0 ? true : false
                 }).ToListAsync();
             return commentsList;
+        }
+
+        public async Task<IEnumerable<ReplyServiceListingModel>> LoadReplies(string commentId)
+        {
+            return await comments
+                .All()
+                .Where(c => c.CommentedOnId == commentId)
+                .Select(c => new ReplyServiceListingModel
+                {
+                    Username = c.User.UserName,
+                    Content = c.Content,
+                    CommentId = c.Id,
+                    HasComments = c.Comments.Count > 0 ? true : false
+                }).ToListAsync();
         }
     }
 }

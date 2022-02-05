@@ -10,10 +10,10 @@ namespace GameApp.Web.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-        private readonly ICommentsService commentsServicel;
+        private readonly ICommentsService commentsService;
         public CommentsController(ICommentsService commentsServicel)
         {
-            this.commentsServicel = commentsServicel;
+            this.commentsService = commentsServicel;
         }
         [HttpGet("Something")]
         public ActionResult Something()
@@ -23,7 +23,7 @@ namespace GameApp.Web.Controllers
         [HttpPost("AddCommentToGame")]
         public async Task<ActionResult> AddCommentToGame([FromBody] AddCommentInputModel comment)
         {
-            await commentsServicel.Create(comment.GameId,comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await commentsService.Create(comment.GameId,comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Ok();
         }
 
@@ -32,7 +32,7 @@ namespace GameApp.Web.Controllers
         {
             var model = new LoadCommentsViewModel 
             { 
-                Comments=await commentsServicel.LoadComments(page, gameId)
+                Comments=await commentsService.LoadComments(page, gameId)
             };
             return model;
         }
@@ -40,8 +40,17 @@ namespace GameApp.Web.Controllers
         [HttpPost("AddReply")]
         public async Task<IActionResult>AddReply([FromBody] AddReplyInputModel reply)
         {
-            await commentsServicel.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId);
+            await commentsService.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId);
             return this.Ok();
+        }
+        [HttpGet("LoadReplies/{commentId}")]
+        public async Task<ActionResult<RepliesViewModel>>LoadReplies(string commentId)
+        {
+            var model = new RepliesViewModel
+            {
+                Replies =await commentsService.LoadReplies(commentId)
+            };
+            return model;
         }
 
     }

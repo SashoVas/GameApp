@@ -40,11 +40,14 @@ function escapeHtml(unsafe) {
 function AddComments(comments) {
     for (let i = 0; i < comments.comments.length; i++) {
         let currentComment = comments.comments[i];
-        console.log(currentComment.commentId)
-        console.log(String(currentComment.commentId))
 
         let start = `<div class="comment" id="` + currentComment.commentId + `"><div class="user-info"><ul class="d-flex nopadding"><li class="right-div" >` + escapeHtml(currentComment.username) + `</li>`;
-        start = start + `<li >Posted on:` + escapeHtml(currentComment.postedOn) + `</li><li >Overall Rating:10</li></ul></div><div class="comment-text"><p >` + escapeHtml(currentComment.contents) + `</p></div><a href="#" onclick="AppendInput(this)">Reply</a></div>`;
+        let loadReplies = ``;
+        if (currentComment.hasComments) {
+            loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId + `')">Load More</a>`;
+        }
+
+        start = start + `<li >Posted on:` + escapeHtml(currentComment.postedOn) + `</li><li >Overall Rating:10</li></ul></div><div class="comment-text"><p >` + escapeHtml(currentComment.contents) + `</p></div><a href="#" onclick="AppendInput(this)">Reply</a> `+loadReplies+`</div>`;
         $("#comments").append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId +`" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply('` + currentComment.commentId +`')>Reply</button>`)));
         $("#comments").append("<hr>");
     }
@@ -52,6 +55,7 @@ function AddComments(comments) {
 let showReply = false;
 function AppendInput(element) {
     event.preventDefault();
+    
     if (!showReply) {
         $(element.parentElement).children('#comment-reply').show()
     }
@@ -77,4 +81,31 @@ function Reply(id) {
     });
     $("#replytext" + id).val("")
     
+}
+
+function LoadReplies(element, id) {
+    event.preventDefault()
+    $('#load-replies' + id).hide()
+    let parrent = $(element.parentElement)
+    $.get({
+        url: 'https://localhost:44385/api/Comments/LoadReplies/' + id,
+        success: function (replies) {
+            console.log(replies)
+            for (let i = 0; i < replies.replies.length; i++)
+            {
+                let currentComment = replies.replies[i];
+                let loadReplies = ``;
+                if (currentComment.hasComments) {
+                    loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId +`')">Load More</a>`;
+                }
+                let start = `<div class="littlemargin"><a>` + escapeHtml(currentComment.username) + `:</a><a>` + escapeHtml(currentComment.content) + `</a> <a href="#" onclick="AppendInput(this)">Reply</a> ` + loadReplies+`</div>`;
+                parrent.append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId + `" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply('` + currentComment.commentId + `')>Reply</button>`)));
+                parrent.append("<hr>");
+            }
+            
+        }
+    });
+    
+    
+
 }
