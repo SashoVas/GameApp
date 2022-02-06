@@ -53,6 +53,7 @@ namespace GameApp.Services
                 }));
 
             await userGames.SaveChangesAsync();
+            await shoppingCart.Clear();
 
                 return true;
         }
@@ -103,13 +104,17 @@ namespace GameApp.Services
             }).ToList();
         }
 
-        public GameServiceListingModel GetGame(string name)
+        public async Task< GameServiceListingModel> GetGame(string name,string userId)
         {
-            var game = games
+            var game =await games
                 .All()
                 .Include(g=>g.Genres)
                 .ThenInclude(g=>g.Genre)
-                .FirstOrDefault(g => g.Name == name);
+                .SingleOrDefaultAsync(g => g.Name == name);
+            var usergame =await userGames
+                .All()
+                .SingleOrDefaultAsync(ug => ug.UserId == userId 
+                && ug.GameId == game.Id);
             if (game==null)
             {
                 return null;
@@ -121,7 +126,9 @@ namespace GameApp.Services
                 Name = game.Name,
                 Price = game.Price,
                 ImgUrl=game.ImageUrl,
-                Genres=game.Genres.Select(gg=>gg.Genre.Name)
+                Genres=game.Genres.Select(gg=>gg.Genre.Name),
+                Users=game.Users.Count(),
+                UserRating= usergame.Rating
             };
         }
 
@@ -137,6 +144,18 @@ namespace GameApp.Services
                     Genres=null,
                     ImgUrl=ug.Game.ImageUrl
                 }).ToArrayAsync();
+        }
+
+        public async Task<bool> Rate(string gameName, int points, string userId)
+        {
+            var model = await userGames
+                .All()
+                .SingleOrDefaultAsync(ug => ug.UserId == userId
+                && ug.Game.Name == gameName);
+            model.Rating = points;
+            userGames.Update(model);
+            await userGames.SaveChangesAsync();
+            return true;
         }
     }
 }

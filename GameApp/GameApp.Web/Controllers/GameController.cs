@@ -25,9 +25,10 @@ namespace GameApp.Web.Controllers
             return View(model);
         }
         [Route("Game")]
-        public IActionResult Game(string title)
+        public async Task<IActionResult> Game(string title)
         {
-            var game=gamesService.GetGame(title);
+            var game=await gamesService
+                .GetGame(title,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (game==null)
             {
                 return this.NotFound();
@@ -40,7 +41,9 @@ namespace GameApp.Web.Controllers
                 Price=game.Price,
                 Name=game.Name,
                 ImageUrl=game.ImgUrl,
-                Genres=game.Genres
+                Genres=game.Genres,
+                UserRating=game.UserRating,
+                Users=game.Users
             });
         }
         [Route("Game/AllGames/{page?}")]
@@ -81,5 +84,13 @@ namespace GameApp.Web.Controllers
 
             return this.Redirect("/");
         }
+
+        [HttpPost]
+        public async  Task<IActionResult> Rate(GameRateInputModel rate)
+        {
+            await gamesService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return this.Redirect("~/Game?title="+rate.GameName);
+        }
+
     }
 }
