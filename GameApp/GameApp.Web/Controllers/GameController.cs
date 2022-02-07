@@ -43,8 +43,13 @@ namespace GameApp.Web.Controllers
                 ImageUrl=game.ImgUrl,
                 Genres=game.Genres,
                 UserRating=game.UserRating,
-                Users=game.Users
+                Users=game.Users,
+                HaveGame=game.HaveGame,
+                Rank=game.Rank,
+                Popularity=game.Popularity,
+                ReleaseDate=game.ReleaseDate
             });
+
         }
         [Route("Game/AllGames/{page?}")]
         public IActionResult AllGames(int page,string gameName)

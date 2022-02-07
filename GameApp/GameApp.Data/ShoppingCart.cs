@@ -82,6 +82,7 @@ namespace GameApp.Data
                 .All()
                 .Where(item => item.ShoppingCartId == this.Id).ToListAsync();
             shoppingCartGames.DeleteRange(items);
+            await shoppingCartGames.SaveChangesAsync();
             return true;
         }
 

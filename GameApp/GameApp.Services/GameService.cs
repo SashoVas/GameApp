@@ -54,6 +54,7 @@ namespace GameApp.Services
 
             await userGames.SaveChangesAsync();
             await shoppingCart.Clear();
+            
 
                 return true;
         }
@@ -108,18 +109,17 @@ namespace GameApp.Services
         {
             var game =await games
                 .All()
+                .Include(g=>g.Users)
                 .Include(g=>g.Genres)
                 .ThenInclude(g=>g.Genre)
                 .SingleOrDefaultAsync(g => g.Name == name);
-            var usergame =await userGames
-                .All()
-                .SingleOrDefaultAsync(ug => ug.UserId == userId 
-                && ug.GameId == game.Id);
+            
+
             if (game==null)
             {
                 return null;
             }
-            return new GameServiceListingModel
+            var model= new GameServiceListingModel
             {
                 Id=game.Id,
                 Description = game.Description,
@@ -128,8 +128,36 @@ namespace GameApp.Services
                 ImgUrl=game.ImageUrl,
                 Genres=game.Genres.Select(gg=>gg.Genre.Name),
                 Users=game.Users.Count(),
-                UserRating= usergame.Rating
+                GameRating=game.RatingSum/((game.Users.Count()>0)?game.Users.Count():1),
+                ReleaseDate=game.ReleaseDate
+               
             };
+            model.Rank = games
+                .All()
+                .Where(g => g.RatingSum / ((g.Users.Count() > 0) ? g.Users.Count() : 1) > model.GameRating)
+                .Count()+1;
+
+            //this game rank in last 30 days
+            var dateDeadline = DateTime.UtcNow.AddDays(-30);
+            var myPopularityRating = game.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((game.Users.Count() > 0) ? game.Users.Count() : 1);
+            model.Popularity = games
+            .All()
+            .Select(g=>g.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((g.Users.Count() > 0) ? g.Users.Count() : 1))
+            .Where(s=>s> myPopularityRating)
+            .Count()+1;
+
+
+            var usergame =await userGames
+                .All()
+                .SingleOrDefaultAsync(ug => ug.UserId == userId 
+                && ug.GameId == game.Id);
+            if (usergame!=null)
+            {
+                model.UserRating = usergame.Rating;
+                model.HaveGame = true;
+            }
+
+            return model;
         }
 
         public async Task<IEnumerable<AllGamesServiceListingModel>> MyGames(string id)
@@ -150,9 +178,14 @@ namespace GameApp.Services
         {
             var model = await userGames
                 .All()
+                .Include(ug=>ug.Game)
                 .SingleOrDefaultAsync(ug => ug.UserId == userId
                 && ug.Game.Name == gameName);
+            
+            model.Game.RatingSum -= model.Rating;
+            model.Game.RatingSum += points;
             model.Rating = points;
+            model.ReviewGamePosted = DateTime.UtcNow;
             userGames.Update(model);
             await userGames.SaveChangesAsync();
             return true;
