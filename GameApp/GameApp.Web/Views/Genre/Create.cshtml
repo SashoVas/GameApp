@@ -1,0 +1,25 @@
+﻿@using GameApp.Web.Models.Genre
+@model CreateGenreInputModel
+<div class="form-body">
+        <div class="row">
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items">
+                        <h3>Create Genre</h3>
+                        <p>Fill in the data below.</p>
+                        <form class="requires-validation" method="post" novalidate>
+                            <div id="main-form">
+                                <div class="col-md-12">
+                                   <label asp-for="Name"></label>
+                                   <input class="form-control" asp-for="Name">
+                                   <span asp-validation-for="Name"></span>
+                                </div>
+                            <div class="form-button mt-3">
+                                <button class="btn btn-primary" asp-controller="Genre" asp-action="Create">Add Game</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

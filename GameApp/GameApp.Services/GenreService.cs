@@ -17,6 +17,14 @@ namespace GameApp.Services
         {
             this.genres = genres;       
         }
+
+        public async Task<bool> Create(string name)
+        {
+            await genres.AddAsync(new Genre { Name = name });
+            await genres.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<string>> GetAll()
         {
             return await genres.All().Select(g=>g.Name).ToListAsync();

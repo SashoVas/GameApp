@@ -1,0 +1,9 @@
+﻿@model IEnumerable<string>
+<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+    @foreach(var genre in Model)
+    {
+        <li><a class="dropdown-item" href="/Game/AllGames?genre=@genre">@genre</a></li>
+    }
+    
+
+</ul>

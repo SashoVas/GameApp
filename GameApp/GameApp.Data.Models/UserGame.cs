@@ -8,7 +8,7 @@ namespace GameApp.Data.Models
 {
     public class UserGame
     {
-        public int Rating { get; set; }
+        public float Rating { get; set; }
         public float PlayTime { get; set; }
         public DateTime? ReviewGamePosted { get; set; }
         public string UserId { get; set; }

@@ -16,8 +16,8 @@ namespace GameApp.Services.Models
         public int Users { get; set; }
         public int Rank { get; set; }
         public int Popularity { get; set; }
-        public float GameRating { get; set; }
-        public float UserRating { get; set; }
+        public double GameRating { get; set; }
+        public double UserRating { get; set; }
         public DateTime ReleaseDate { get; set; }
         public IEnumerable<string> Genres { get; set; }
     }

@@ -88,22 +88,38 @@ namespace GameApp.Services
             return game.Id;
         }
 
-        public IEnumerable<AllGamesServiceListingModel> GetAll(int page, string gameName)
+        public async Task<IEnumerable<AllGamesServiceListingModel>> GetAll(int page, string gameName, string genre, string username)
         {
-            return games
+            var model = games
                 .All()
-                .Take((page + 1) * 10)
-                .Where(g=>g.Name
+                .Skip(page)
+                .Take(10)
+                .OrderByDescending(g => g.RatingSum / ((g.Users.Where(ug=>ug.Rating!=0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1))
+                .Where(g => g.Name
                 .ToLower()
-                .Contains(gameName))
+                .Contains(gameName));
+
+            if (genre!=null)
+            {
+                model = model.Where(g => g.Genres.Any(ge => ge.Genre.Name == genre));
+            }
+            if (username!=null)
+            {
+                model = model.Where(g => g.Users.Any(gu => gu.User.UserName == username));
+            }
+            return await model
                 .Select(g => new AllGamesServiceListingModel
-            { 
-                Name=g.Name,
-                Price=g.Price,
-                Genres=g.Genres.Select(gg=>gg.Genre.Name).ToList(),
-                ImgUrl=g.ImageUrl
-            }).ToList();
+                {
+                    Name = g.Name,
+                    Price = g.Price,
+                    Genres = g.Genres.Select(gg => gg.Genre.Name).ToList(),
+                    ImgUrl = g.ImageUrl,
+                    Score=g.RatingSum/((g.Users.Where(ug => ug.Rating != 0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1)
+                }).ToListAsync();
+                
         }
+
+        
 
         public async Task< GameServiceListingModel> GetGame(string name,string userId)
         {
@@ -128,21 +144,21 @@ namespace GameApp.Services
                 ImgUrl=game.ImageUrl,
                 Genres=game.Genres.Select(gg=>gg.Genre.Name),
                 Users=game.Users.Count(),
-                GameRating=game.RatingSum/((game.Users.Count()>0)?game.Users.Count():1),
+                GameRating=game.RatingSum/((game.Users.Where(ug => ug.Rating != 0).Count()>0)?game.Users.Where(ug => ug.Rating != 0).Count():1),
                 ReleaseDate=game.ReleaseDate
                
             };
             model.Rank = games
                 .All()
-                .Where(g => g.RatingSum / ((g.Users.Count() > 0) ? g.Users.Count() : 1) > model.GameRating)
+                .Where(g => g.RatingSum / ((g.Users.Where(ug => ug.Rating != 0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1) > model.GameRating)
                 .Count()+1;
 
             //this game rank in last 30 days
             var dateDeadline = DateTime.UtcNow.AddDays(-30);
-            var myPopularityRating = game.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((game.Users.Count() > 0) ? game.Users.Count() : 1);
+            var myPopularityRating = game.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((game.Users.Where(ug => ug.Rating != 0).Count() > 0) ? game.Users.Where(ug => ug.Rating != 0).Count() : 1);
             model.Popularity = games
             .All()
-            .Select(g=>g.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((g.Users.Count() > 0) ? g.Users.Count() : 1))
+            .Select(g=>g.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((g.Users.Where(ug => ug.Rating != 0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1))
             .Where(s=>s> myPopularityRating)
             .Count()+1;
 
@@ -160,19 +176,7 @@ namespace GameApp.Services
             return model;
         }
 
-        public async Task<IEnumerable<AllGamesServiceListingModel>> MyGames(string id)
-        {
-            return await userGames
-                .All()
-                .Where(ug => ug.UserId == id)
-                .Select(ug => new AllGamesServiceListingModel
-                {
-                    Name = ug.Game.Name,
-                    Price = ug.Game.Price,
-                    Genres=null,
-                    ImgUrl=ug.Game.ImageUrl
-                }).ToArrayAsync();
-        }
+        
 
         public async Task<bool> Rate(string gameName, int points, string userId)
         {

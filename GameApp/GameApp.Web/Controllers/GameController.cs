@@ -16,14 +16,6 @@ namespace GameApp.Web.Controllers
             this.gamesService = gamesService;
             this.cartService = cartService;
         }
-        public async Task<IActionResult> Library() 
-        {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var model = new AllGamesViewModel {
-            Games=await gamesService.MyGames(userId)
-            };
-            return View(model);
-        }
         [Route("Game")]
         public async Task<IActionResult> Game(string title)
         {
@@ -34,31 +26,32 @@ namespace GameApp.Web.Controllers
                 return this.NotFound();
             }
 
-            return this.View(new GameViewModel 
-            { 
-                Id=game.Id,
-                Description=game.Description,
-                Price=game.Price,
-                Name=game.Name,
-                ImageUrl=game.ImgUrl,
-                Genres=game.Genres,
-                UserRating=game.UserRating,
-                Users=game.Users,
-                HaveGame=game.HaveGame,
-                Rank=game.Rank,
-                Popularity=game.Popularity,
-                ReleaseDate=game.ReleaseDate
-            });
+            return this.View(new GameViewModel
+            {
+                Id = game.Id,
+                Description = game.Description,
+                Price = game.Price,
+                Name = game.Name,
+                ImageUrl = game.ImgUrl,
+                Genres = game.Genres,
+                UserRating = game.UserRating,
+                Users = game.Users,
+                HaveGame = game.HaveGame,
+                Rank = game.Rank,
+                Popularity = game.Popularity,
+                ReleaseDate = game.ReleaseDate,
+                Score = game.GameRating
+            }); 
 
         }
         [Route("Game/AllGames/{page?}")]
-        public IActionResult AllGames(int page,string gameName)
+        public async Task<IActionResult> AllGames(int page,string gameName,string genre,string username)
         {
             if (gameName==null)
             {
                 gameName = "";
             }
-            var model =new AllGamesViewModel { Games = gamesService.GetAll(page,gameName.ToLower()) };
+            var model =new AllGamesViewModel { Games =await gamesService.GetAll(page,gameName.ToLower(),genre,username) };
             return this.View(model);
         }
         //[Authorize(Roles ="admin")]
@@ -96,6 +89,5 @@ namespace GameApp.Web.Controllers
             await gamesService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Redirect("~/Game?title="+rate.GameName);
         }
-
     }
 }

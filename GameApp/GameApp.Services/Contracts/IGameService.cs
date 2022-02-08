@@ -11,9 +11,8 @@ namespace GameApp.Services.Contracts
     public interface IGameService
     {
         Task<GameServiceListingModel> GetGame(string name, string userId);
-        IEnumerable<AllGamesServiceListingModel> GetAll(int page, string gameName);
+        Task<IEnumerable<AllGamesServiceListingModel>> GetAll(int page, string gameName, string genre, string username);
         Task<int> Create(string name,decimal price,string description, IEnumerable<string> newGenres, IFormFile image);
-        Task<IEnumerable<AllGamesServiceListingModel>> MyGames(string id);
         Task<bool> BuyItems(string userId);
         Task<bool> Rate(string gameName,int points,string userId);
     }
