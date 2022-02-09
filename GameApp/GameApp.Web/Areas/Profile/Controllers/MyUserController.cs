@@ -22,13 +22,18 @@ namespace GameApp.Web.Areas.Profile.Controllers
                 UserName=userInfo.UserName,
                 ProfilePic=userInfo.ProfilePic ?? "User.png",
                 Games=userInfo.Games,
+                Description=userInfo.Description,
+                ScoreCounts=userInfo.ScoreCount,
+                MeanScore=userInfo.MeanScore,
+                Reviews=userInfo.ReviewsCount
             };
             return this.View(model);
         }
-        public IActionResult ChangeProfilePic()
+        [HttpPost]
+        public async Task<IActionResult> ChangeDescription(string description) 
         {
-
-            return View();
+            await userService.EditDescription( description,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return this.Redirect(nameof(ProfileInfo));
         }
 
         [HttpPost]

@@ -176,38 +176,7 @@
     <input name="id" type="hidden" value="@Model.Id">
     <input type="submit" class="btn btn-primary btn-lg" asp-controller="Cart" asp-action="AddToCart">
 </form>
-<div class="modal fade text-dark" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form method="post" asp-controller="Game"asp-action="Rate" >
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">Rating:</label>
-            <input type="hidden" value="@Model.Name" name="GameName">
-            <select name="Points" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-              <option selected disabled value="">Rating</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
-              <option value="10">10</option>
-            </select>
-            <input type="submit" class="btn btn-primary" valus="Send message">
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 @section Scripts{
     <script>

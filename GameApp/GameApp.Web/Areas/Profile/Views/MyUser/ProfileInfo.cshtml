@@ -1,15 +1,95 @@
 ﻿@using GameApp.Web.Areas.Profile.Models
 @model ProfileInfoViewModel
 
-<h1>@Model.UserName</h1>
+ <h1>@Model.UserName</h1>
+<div class="profile">
+    <div class="profile-left-part">
+        <img width="200px" height="200px" src="~/Files/@Model.ProfilePic">
+        <br>
+        @if(this.User.Identity.Name==@Model.UserName)
+        {
+             <a href="#" data-bs-toggle="modal" data-bs-target="#changeImage">Change image</a>
+            <div class="modal fade text-dark" id="changeImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Change image</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <form method="post" asp-area="Profile" asp-controller="MyUser" asp-action="ChangeProfilePic" enctype="multipart/form-data" >
+                              <div class="mb-3">
+                                <input name="file" class="form-control" type="file">
+                                <input type="submit" class="btn btn-primary" valus="Change">
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+        }
+        <hr>
+        <div>
+            <a class="btn btn-primary"  href="/Game/AllGames?username=@this.User.Identity.Name">Games</a>
+            <hr>
+            <a>Reviws:@Model.Reviews</a>
+        </div>
+        
+    </div>
+   <div class="description">
+        <h3>Description</h3>
 
-<img width="300px" height="300px" src="~/Files/@Model.ProfilePic">
-<a asp-area="Profile" asp-controller="MyUser" asp-action="ChangeProfilePic" >Change Profile Picture</a>
-<ul>
-@foreach (var item in Model.Games)
-    {
-        <li>
-            <a>@item</a>
-        </li>
-    }
-</ul>
+       <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+       @if(this.User.Identity.Name==@Model.UserName)
+        {
+            <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</a>
+            <div class="modal fade text-dark" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <form method="post" asp-area="Profile" asp-controller="MyUser" asp-action="ChangeDescription" >
+                              <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Description:</label>
+                                <textarea name="description" class="form-control" rows="3"></textarea>
+                                <input type="submit" class="btn btn-primary" valus="Edit">
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+        }
+   </div>
+    <div class="gamestats">
+        <h3>Statistics</h3>
+
+        <b class="littlemargin">Time played:</b>
+        <b class="moremargin">Mean Score:@Model.MeanScore</b>
+        <br>
+        @for(int i=0;i<10;i+=2)
+        {
+            <i class="littlemargin no-blue" >@(i+1):@Model.ScoreCounts[(i+1)]</i>
+            <i class="moremargin no-blue">@(i+2):@Model.ScoreCounts[(i+2)]</i>
+            <br>
+        }
+    </div>
+    <div class="favouritegames">
+        <h3>Highest Rated Games</h3>
+        <ul>
+        @foreach (var item in Model.Games)
+            {
+                <li >
+                    <img  width="50px" height="50px" src="~/Files/@item.ImgUrl">
+                    <b>@item.Name:</b>
+                    <small>Score:@item.Score</small>
+                </li>
+            }
+        </ul>
+    </div>
+
+</div>
+

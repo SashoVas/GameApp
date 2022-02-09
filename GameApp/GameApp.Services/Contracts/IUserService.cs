@@ -12,5 +12,6 @@ namespace GameApp.Services.Contracts
     {
         Task<UserInfoServiceModel> GetUserInfo(string username);
         Task<bool> ChangeImage(IFormFile image, string userId);
+        Task<bool> EditDescription(string description, string userId);
     }
 }

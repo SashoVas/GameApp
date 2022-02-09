@@ -19,13 +19,15 @@ namespace GameApp.Services
     {
         private readonly UserManager<User> userManager;
         private readonly IRepository<UserGame> userGames;
+        private readonly IRepository<User> users;
         private readonly IHostingEnvironment environment;
 
-        public UserService(UserManager<User> userManager, IRepository<UserGame> userGames, IHostingEnvironment environment)
+        public UserService(UserManager<User> userManager, IRepository<UserGame> userGames, IHostingEnvironment environment, IRepository<User> users)
         {
             this.userManager = userManager;
             this.userGames = userGames;
             this.environment = environment;
+            this.users = users;
         }
 
         public async Task<bool> ChangeImage(IFormFile image,string userId)
@@ -44,18 +46,40 @@ namespace GameApp.Services
             return true;
         }
 
+        public async Task<bool> EditDescription(string description, string userId)
+        {
+            var user =await userManager.FindByIdAsync(userId);
+            user.Description = description;
+            await userManager.UpdateAsync(user);
+            return true;
+        }
+
         public async Task<UserInfoServiceModel> GetUserInfo(string username)
         {
-            var user= await userManager.FindByNameAsync(username);
-            return new UserInfoServiceModel {
+            var arr = new int[11];
+            var user = await users.All().Include(u => u.Games).ThenInclude(ug => ug.Game).SingleOrDefaultAsync(u => u.UserName == username);
+            user.Games.ToList().ForEach(x => arr[(int)x.Rating]++);
+            var reviews = user.Games.Where(ug => ug.Rating != 0).Count();
+            return new UserInfoServiceModel
+            {
                 UserName = user.UserName,
                 ProfilePic = user.ImgURL,
-                Games =await userGames
-                .All()
-                .Where(ug => ug.UserId == user.Id)
-                .Select(ug => ug.Game.Name)
-                .ToListAsync()
+                Description = user.Description,
+                ScoreCount = arr,
+                MeanScore = user.Games.Where(ug => ug.Rating != 0).Sum(ug => ug.Rating) / reviews,
+                ReviewsCount=reviews,
+                Games = user.Games
+                .Select(ug => new GameInfoHelperModel
+                {
+                    Score = ug.Game.RatingSum / (ug.Game.Users.Where(rev => rev.Rating != 0).Count()),
+                    ImgUrl = ug.Game.ImageUrl,
+                    Name = ug.Game.Name
+
+                })
             };
+        
+        
+            
         }
     }
 }

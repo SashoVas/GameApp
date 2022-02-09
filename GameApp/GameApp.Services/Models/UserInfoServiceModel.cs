@@ -9,7 +9,13 @@ namespace GameApp.Services.Models
     public class UserInfoServiceModel
     {
         public string UserName { get; set; }
-        public IEnumerable<string> Games { get; set; }
+        
         public string ProfilePic { get; set; }
+        public string Description { get; set; }
+        public int ReviewsCount { get; set; }
+        public double MeanScore { get; set; }
+        public int[] ScoreCount { get; set; }
+        public IEnumerable<GameInfoHelperModel> Games { get; set; }
+
     }
 }
