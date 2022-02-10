@@ -94,7 +94,7 @@ namespace GameApp.Services
                 .All()
                 .Skip(page)
                 .Take(10)
-                .OrderByDescending(g => g.RatingSum / ((g.Users.Where(ug=>ug.Rating!=0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1))
+                .OrderByDescending(g => g.Reviews.Sum(r=>r.Score) /(g.Reviews.Count()>0?g.Reviews.Count():1))
                 .Where(g => g.Name
                 .ToLower()
                 .Contains(gameName));
@@ -114,7 +114,7 @@ namespace GameApp.Services
                     Price = g.Price,
                     Genres = g.Genres.Select(gg => gg.Genre.Name).ToList(),
                     ImgUrl = g.ImageUrl,
-                    Score=g.RatingSum/((g.Users.Where(ug => ug.Rating != 0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1)
+                    Score= g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1)
                 }).ToListAsync();
                 
         }
@@ -125,6 +125,7 @@ namespace GameApp.Services
         {
             var game =await games
                 .All()
+                .Include(g=>g.Reviews)
                 .Include(g=>g.Users)
                 .Include(g=>g.Genres)
                 .ThenInclude(g=>g.Genre)
@@ -144,21 +145,21 @@ namespace GameApp.Services
                 ImgUrl=game.ImageUrl,
                 Genres=game.Genres.Select(gg=>gg.Genre.Name),
                 Users=game.Users.Count(),
-                GameRating=game.RatingSum/((game.Users.Where(ug => ug.Rating != 0).Count()>0)?game.Users.Where(ug => ug.Rating != 0).Count():1),
+                GameRating=game.Reviews.Sum(r => r.Score) / (game.Reviews.Count() > 0 ? game.Reviews.Count() : 1),
                 ReleaseDate=game.ReleaseDate
                
             };
             model.Rank = games
                 .All()
-                .Where(g => g.RatingSum / ((g.Users.Where(ug => ug.Rating != 0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1) > model.GameRating)
+                .Where(g => g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1) > model.GameRating)
                 .Count()+1;
 
             //this game rank in last 30 days
             var dateDeadline = DateTime.UtcNow.AddDays(-30);
-            var myPopularityRating = game.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((game.Users.Where(ug => ug.Rating != 0).Count() > 0) ? game.Users.Where(ug => ug.Rating != 0).Count() : 1);
+            var myPopularityRating = game.Reviews.Where(r => r.ReviewDate > dateDeadline).Sum(r => r.Score) / (game.Reviews.Where(r => r.ReviewDate > dateDeadline).Count()>0? game.Reviews.Where(r => r.ReviewDate > dateDeadline).Count():1);
             model.Popularity = games
             .All()
-            .Select(g=>g.Users.Where(ug => ug.ReviewGamePosted > dateDeadline).Sum(ug => ug.Rating) / ((g.Users.Where(ug => ug.Rating != 0).Count() > 0) ? g.Users.Where(ug => ug.Rating != 0).Count() : 1))
+            .Select(g=>g.Reviews.Where(r => r.ReviewDate > dateDeadline).Sum(r => r.Score) / (g.Reviews.Where(r => r.ReviewDate > dateDeadline).Count() > 0 ? g.Reviews.Where(r => r.ReviewDate > dateDeadline).Count() : 1))
             .Where(s=>s> myPopularityRating)
             .Count()+1;
 
@@ -169,8 +170,13 @@ namespace GameApp.Services
                 && ug.GameId == game.Id);
             if (usergame!=null)
             {
-                model.UserRating = usergame.Rating;
+                
                 model.HaveGame = true;
+                var userReview = game.Reviews.SingleOrDefault(r => r.UserId == userId);
+                if (userReview!=null)
+                {
+                    model.UserRating = userReview.Score;
+                }
             }
 
             return model;
@@ -179,8 +185,8 @@ namespace GameApp.Services
         public async Task<PopularGamesServiceListingModel[]> GetPopularGames()
         {
             return await games.All()
-                .OrderBy(g => g.Users.Where(ug => ug.ReviewGamePosted > DateTime.UtcNow.AddDays(-30)).Sum(ug => ug.Rating) 
-                / ((g.Users.Where(ug => ug.ReviewGamePosted > DateTime.UtcNow.AddDays(-30)).Count()>0)? g.Users.Where(ug => ug.ReviewGamePosted > DateTime.UtcNow.AddDays(-30)).Count():1))
+                .OrderBy(g => g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Sum(r => r.Score) 
+                / (g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Count() > 0 ? g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Count() : 1))
                 .Take(15)
                 .Select(g=>new PopularGamesServiceListingModel 
                 { 
@@ -192,7 +198,7 @@ namespace GameApp.Services
         public async Task<PopularGamesServiceListingModel[]> GetTopRankedGames()
         {
             return await games.All()
-                .OrderBy(g=>g.RatingSum/(g.Users.Where(ug=>ug.Rating!=0).Count()>0? g.Users.Where(ug => ug.Rating != 0).Count():1))
+                .OrderBy(g=> g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
                 .Take(15)
                 .Select(g=>new PopularGamesServiceListingModel 
                 { 
@@ -201,21 +207,10 @@ namespace GameApp.Services
                 }).ToArrayAsync();
         }
 
-        public async Task<bool> Rate(string gameName, int points, string userId)
+        public async Task SetGameByName(Review review, string gameName)
         {
-            var model = await userGames
-                .All()
-                .Include(ug=>ug.Game)
-                .SingleOrDefaultAsync(ug => ug.UserId == userId
-                && ug.Game.Name == gameName);
-            
-            model.Game.RatingSum -= model.Rating;
-            model.Game.RatingSum += points;
-            model.Rating = points;
-            model.ReviewGamePosted = DateTime.UtcNow;
-            userGames.Update(model);
-            await userGames.SaveChangesAsync();
-            return true;
+            review.Game =await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
         }
+
     }
 }

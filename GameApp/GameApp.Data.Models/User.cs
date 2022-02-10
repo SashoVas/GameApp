@@ -14,9 +14,11 @@ namespace GameApp.Data.Models
         {
             Games=new HashSet<UserGame>();
             Comments = new HashSet<Comment>();
+            Reviews = new HashSet<Review>();
         }
         public ICollection<UserGame> Games { get; set; }
         public ICollection<Comment> Comments { get; set; }
+        public ICollection<Review> Reviews { get; set; }
         public string? Description { get; set; }
         public string? ImgURL { get; set; }
     }

@@ -11,10 +11,12 @@ namespace GameApp.Web.Controllers
     {
         private readonly IGameService gamesService;
         private readonly ICartService cartService;
-        public GameController(IGameService gamesService, ICartService cartService)
+        private readonly IReviewService reviewService;
+        public GameController(IGameService gamesService, ICartService cartService, IReviewService reviewService)
         {
             this.gamesService = gamesService;
             this.cartService = cartService;
+            this.reviewService = reviewService;
         }
         [Route("Game")]
         public async Task<IActionResult> Game(string title)
@@ -86,7 +88,7 @@ namespace GameApp.Web.Controllers
         [HttpPost]
         public async  Task<IActionResult> Rate(GameRateInputModel rate)
         {
-            await gamesService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await reviewService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Redirect("~/Game?title="+rate.GameName);
         }
     }

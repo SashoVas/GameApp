@@ -1,4 +1,5 @@
-﻿using GameApp.Services.Models;
+﻿using GameApp.Data.Models;
+using GameApp.Services.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,6 @@ namespace GameApp.Services.Contracts
         Task<PopularGamesServiceListingModel[]> GetTopRankedGames();
         Task<int> Create(string name,decimal price,string description, IEnumerable<string> newGenres, IFormFile image);
         Task<bool> BuyItems(string userId);
-        Task<bool> Rate(string gameName,int points,string userId);
+        Task SetGameByName(Review review, string gameName);
     }
 }

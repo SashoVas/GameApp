@@ -18,6 +18,7 @@ namespace GameApp.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<GameGenre> GameGenres { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public GameAppDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -28,6 +29,10 @@ namespace GameApp.Data
             builder.Entity<UserGame>()
                 .HasKey(ug => new { ug.UserId, ug.GameId })
                 .HasName("PrimaryKey_UserGamesId");
+
+            builder.Entity<Review>()
+                .HasKey(r => new { r.UserId, r.GameId })
+                .HasName("PrimaryKey_ReviewId");
 
             builder.Entity<GameGenre>()
                 .HasKey(gg => new { gg.GenreId, gg.GameId })

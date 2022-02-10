@@ -57,26 +57,33 @@ namespace GameApp.Services
         public async Task<UserInfoServiceModel> GetUserInfo(string username)
         {
             var arr = new int[11];
-            var user = await users.All().Include(u => u.Games).ThenInclude(ug => ug.Game).SingleOrDefaultAsync(u => u.UserName == username);
-            user.Games.ToList().ForEach(x => arr[(int)x.Rating]++);
-            var reviews = user.Games.Where(ug => ug.Rating != 0).Count();
-            return new UserInfoServiceModel
+            var user = await users.All()
+                .Include(u => u.Reviews)
+                .Include(u=>u.Games)
+                .ThenInclude(ug=>ug.Game)
+                .ThenInclude(g=>g.Reviews)
+                .SingleOrDefaultAsync(u => u.UserName == username);
+            user.Reviews.ToList().ForEach(x => arr[(int)x.Score]++);
+            var reviews = user.Reviews.Count();
+            var model=new UserInfoServiceModel
             {
                 UserName = user.UserName,
                 ProfilePic = user.ImgURL,
                 Description = user.Description,
                 ScoreCount = arr,
-                MeanScore = user.Games.Where(ug => ug.Rating != 0).Sum(ug => ug.Rating) / reviews,
+                MeanScore = user.Reviews.Sum(r => r.Score) / (reviews>0?reviews:1),
                 ReviewsCount=reviews,
                 Games = user.Games
                 .Select(ug => new GameInfoHelperModel
                 {
-                    Score = ug.Game.RatingSum / (ug.Game.Users.Where(rev => rev.Rating != 0).Count()),
+                    Score = ug.Game.Reviews.Sum(r=>r.Score) / (ug.Game.Reviews.Count()>0? ug.Game.Reviews.Count():1),
                     ImgUrl = ug.Game.ImageUrl,
                     Name = ug.Game.Name
 
                 })
             };
+
+            return model;
         
         
             

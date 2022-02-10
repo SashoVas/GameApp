@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 
 namespace GameApp.Data.Models
 {
-    public class UserGame
+    public class Review
     {
-        //public float Rating { get; set; }
-        public float PlayTime { get; set; }
-        public DateTime? BoughtDate { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public int GameId { get; set; }
         public Game Game { get; set; }
+        public double Score { get; set; }
+        public DateTime? ReviewDate { get; set; }
     }
 }
