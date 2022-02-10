@@ -3,6 +3,7 @@ using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services.Contracts;
 using GameApp.Web.Models;
+using GameApp.Web.Models.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -21,8 +22,12 @@ namespace GameApp.Web.Controllers
         }
         public async Task<IActionResult> Index(int page)
         {
-
-            return View();
+            var model = new HomeIndexViewModel 
+            {
+                PopularGames = await gameService.GetPopularGames(),
+                TopRankedGames=await gameService.GetTopRankedGames()
+            };
+            return View(model);
         }
         [Authorize(Roles ="admin")]
         public IActionResult Privacy()

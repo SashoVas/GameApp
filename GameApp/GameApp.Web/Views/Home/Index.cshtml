@@ -1,19 +1,148 @@
-﻿
+﻿@using GameApp.Web.Models.Home
 @{
     ViewData["Title"] = "Home Page";
 }
-@if(!this.User.Identity.IsAuthenticated)
-{
-    <div class="text-center">
-        <ul>
-            <li><a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
-            <li><a class="nav-link text-light" asp-area="Identity" asp-page="/Account/Login">Register</a></li>
-        </ul>
-        
-        
+@model HomeIndexViewModel
+<div class="index-view">
+    <div id="carouselExampleControls" class="carousel slide carousel-span-row-1" data-bs-ride="carousel">
+        <h3>Popular Games</h3>
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+            <ul class="popular-games">
+            @for(int i=0;i<5;i++)
+                {
+
+                        <li class="popular-gams-item">
+                          <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                          <br>
+                          <a>@Model.PopularGames[i].Name</a>
+                      </li>
+                }
+           
+            </ul>
+      
+        </div>
+
+        <div class="carousel-item">
+           <ul class="popular-games">
+                @for(int i=5;i<10;i++)
+                {
+
+                        <li class="popular-gams-item">
+                          <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                          <br>
+                          <a>@Model.PopularGames[i].Name</a>
+                      </li>
+                }
+
+            </ul>
+        </div>
+
+        <div class="carousel-item">
+                 <ul class="popular-games">
+                @for(int i=10;i<15;i++)
+                {
+
+                        <li class="popular-gams-item">
+                          <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                          <br>
+                          <a>@Model.PopularGames[i].Name</a>
+                      </li>
+                }
+
+            </ul>
+        </div>
+      </div>
+
+      <button class="carousel-control-prev button-caurosel" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next button-caurosel" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
-}
-else
-{
-    <h1 class="display-4">Hello:@User.Identity.Name</h1>
-}
+
+    <div class="carousel-span-row-2">
+        <h3>Top Upcoming Games</h3>
+        <ul>
+            @for(int i=0;i<5;i++)
+            {
+                <li>
+                    <b>#@(i+1)</b>
+                    <img height="70px" width="60px" src="~/Files/User.png" />
+                    <a>ahsjkfhasjkf</a>
+                </li>
+                <hr>
+            }
+
+        </ul>
+
+    </div>
+    
+
+        <div id="carouselExampleControls1" class="carousel slide carousel-span-row-1" data-bs-ride="carousel">
+        <h3>Top Ranked Games</h3>
+      <div class="carousel-inner">
+
+        <div class="carousel-item active">
+            <ul class="popular-games">
+            @for(int i=0;i<5;i++)
+                {
+
+                        <li class="popular-gams-item">
+                          <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                          <br>
+                          <a>@Model.TopRankedGames[i].Name</a>
+                      </li>
+                }
+           
+            </ul>
+      
+        </div>
+
+        <div class="carousel-item">
+           <ul class="popular-games">
+                @for(int i=5;i<10;i++)
+                {
+
+                        <li class="popular-gams-item">
+                          <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                          <br>
+                          <a>@Model.TopRankedGames[i].Name</a>
+                      </li>
+                }
+
+            </ul>
+        </div>
+
+        <div class="carousel-item">
+                 <ul class="popular-games">
+                @for(int i=10;i<15;i++)
+                {
+
+                        <li class="popular-gams-item">
+                          <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                          <br>
+                          <a>@Model.TopRankedGames[i].Name</a>
+                      </li>
+                }
+
+            </ul>
+        </div>
+      </div>
+
+      <button class="carousel-control-prev button-caurosel" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next button-caurosel" type="button" data-bs-target="#carouselExampleControls1" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+</div>
+
+

@@ -176,7 +176,30 @@ namespace GameApp.Services
             return model;
         }
 
-        
+        public async Task<PopularGamesServiceListingModel[]> GetPopularGames()
+        {
+            return await games.All()
+                .OrderBy(g => g.Users.Where(ug => ug.ReviewGamePosted > DateTime.UtcNow.AddDays(-30)).Sum(ug => ug.Rating) 
+                / ((g.Users.Where(ug => ug.ReviewGamePosted > DateTime.UtcNow.AddDays(-30)).Count()>0)? g.Users.Where(ug => ug.ReviewGamePosted > DateTime.UtcNow.AddDays(-30)).Count():1))
+                .Take(15)
+                .Select(g=>new PopularGamesServiceListingModel 
+                { 
+                    ImgUrl=g.ImageUrl,
+                    Name=g.Name
+                }).ToArrayAsync();
+        }
+
+        public async Task<PopularGamesServiceListingModel[]> GetTopRankedGames()
+        {
+            return await games.All()
+                .OrderBy(g=>g.RatingSum/(g.Users.Where(ug=>ug.Rating!=0).Count()>0? g.Users.Where(ug => ug.Rating != 0).Count():1))
+                .Take(15)
+                .Select(g=>new PopularGamesServiceListingModel 
+                { 
+                    ImgUrl=g.ImageUrl,
+                    Name=g.Name
+                }).ToArrayAsync();
+        }
 
         public async Task<bool> Rate(string gameName, int points, string userId)
         {

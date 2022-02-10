@@ -62,6 +62,25 @@ using (var serviceScope = app.Services.CreateScope())//app.ApplicationServices.C
             context.Genres.Add(new Genre { Name = "Comedy" });
         }
         context.SaveChanges();
+        if (!context.Games.Any())
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                var game = new Game
+                {
+                    Name = "Game" + i.ToString(),
+                    Description = "Description" + i.ToString(),
+                    Price=324,
+                    ImageUrl= "User.png",
+                    
+                };
+                game.Genres.Add(new GameGenre { Genre = context.Genres.SingleOrDefault(g => g.Name == "Action") });
+                context.Games.Add(game);
+
+            }
+            
+        }
+        context.SaveChanges();
     }
 }
 
