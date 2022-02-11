@@ -18,14 +18,12 @@ namespace GameApp.Services
     public class UserService : IUserService
     {
         private readonly UserManager<User> userManager;
-        private readonly IRepository<UserGame> userGames;
         private readonly IRepository<User> users;
         private readonly IHostingEnvironment environment;
 
-        public UserService(UserManager<User> userManager, IRepository<UserGame> userGames, IHostingEnvironment environment, IRepository<User> users)
+        public UserService(UserManager<User> userManager, IHostingEnvironment environment, IRepository<User> users)
         {
             this.userManager = userManager;
-            this.userGames = userGames;
             this.environment = environment;
             this.users = users;
         }

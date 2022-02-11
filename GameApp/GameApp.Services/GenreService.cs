@@ -29,5 +29,10 @@ namespace GameApp.Services
         {
             return await genres.All().Select(g=>g.Name).ToListAsync();
         }
+
+        public async Task SetGenreToGameByName(Game game, IEnumerable<string> genreNames)
+        {
+               genreNames.ToList().ForEach(async genre => game.Genres.Add(new GameGenre {Genre=await genres.All().SingleOrDefaultAsync(g => g.Name == genre) }));
+        }
     }
 }

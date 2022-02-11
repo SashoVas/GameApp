@@ -80,7 +80,7 @@ namespace GameApp.Web.Controllers
         public async Task<IActionResult>Buy()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            await gamesService.BuyItems(userId);
+            await cartService.BuyItems(userId);
 
             return this.Redirect("/");
         }

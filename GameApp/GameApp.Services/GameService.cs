@@ -17,46 +17,21 @@ namespace GameApp.Services
 {
     public class GameService : IGameService
     {
+        private readonly IGenreService genreService;
         private readonly IRepository<Game> games;
-        private readonly IRepository<UserGame> userGames;
-        private readonly IRepository<Genre> genres;
-        private readonly ShoppingCart shoppingCart;
-        private readonly UserManager<User> userManager;
         private readonly IHostingEnvironment environment;
 
-        public GameService(IRepository<Game> games, IRepository<UserGame> userGames,
-            ShoppingCart shoppingCart, UserManager<User> userManager,IRepository<Genre> genres, IHostingEnvironment environment)
+        public GameService(IRepository<Game> games, IGenreService genreService,
+             IHostingEnvironment environment)
         {
             this.games = games;
-            this.userGames = userGames;
-            this.shoppingCart = shoppingCart;
-            this.userManager = userManager;
-            this.genres = genres;
             this.environment = environment;
+            this.genreService = genreService;
         }
 
-        public async Task<bool> BuyItems(string userId)
+        public async Task AddShoppingCartItem(ShoppingCart shoppingCart, int gameId )
         {
-            var cartItems = await shoppingCart
-                .GetCartItems()
-                .ToListAsync();
-            
-            var user=await userManager
-                .FindByIdAsync(userId);
-
-            cartItems
-                .ForEach(async item =>await userGames
-                .AddAsync(new UserGame 
-                { 
-                    Game=item,
-                    User=user
-                }));
-
-            await userGames.SaveChangesAsync();
-            await shoppingCart.Clear();
-            
-
-                return true;
+            await shoppingCart.AddToCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));
         }
 
         public async Task<int> Create(string name, decimal price, string description, IEnumerable<string> newGenres, IFormFile image)
@@ -65,8 +40,8 @@ namespace GameApp.Services
                 Name = name,
                 Price = price,
                 Description = description,
-                Genres= newGenres.Select(g=> new GameGenre {Genre= genres.All().SingleOrDefault(og=>og.Name==g) }).ToList()
             };
+            await genreService.SetGenreToGameByName(game, newGenres);
             
             if (image==null)
             {
@@ -164,10 +139,8 @@ namespace GameApp.Services
             .Count()+1;
 
 
-            var usergame =await userGames
-                .All()
-                .SingleOrDefaultAsync(ug => ug.UserId == userId 
-                && ug.GameId == game.Id);
+            
+            var usergame = game.Users.SingleOrDefault(g=>g.UserId==userId);
             if (usergame!=null)
             {
                 
@@ -205,6 +178,17 @@ namespace GameApp.Services
                     ImgUrl=g.ImageUrl,
                     Name=g.Name
                 }).ToArrayAsync();
+        }
+
+        public async Task RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId)
+        {
+            await shoppingCart.RemoveFromCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));
+
+        }
+
+        public async Task SetGameById(Comment comment,int gameId)
+        {
+            comment.Game =await games.All().SingleOrDefaultAsync(g => g.Id==gameId);
         }
 
         public async Task SetGameByName(Review review, string gameName)

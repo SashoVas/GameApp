@@ -15,23 +15,23 @@ namespace GameApp.Services
     public class CommentsService : ICommentsService
     {
         private readonly IRepository<Comment> comments;
-        private readonly IRepository<Game> games;
+        private readonly IGameService gameService;
         private readonly UserManager<User> userManager;
-        public CommentsService(IRepository<Comment> comments, IRepository<Game> games, UserManager<User> userManager)
+        public CommentsService(IRepository<Comment> comments, UserManager<User> userManager, IGameService gameService)
         {
             this.comments = comments;
-            this.games = games;
             this.userManager = userManager;
+            this.gameService = gameService;
         }
         public async Task<bool> Create(int gameId, string commentConntents, string userId)
         {
             var comment = new Comment {
                 Id=Guid.NewGuid().ToString(),
-                Game=await games.All().SingleOrDefaultAsync(g=>g.Id==gameId),
                 Content=commentConntents,
                 PostedOn=DateTime.UtcNow,
                 User=await userManager.FindByIdAsync(userId),
             };
+            await gameService.SetGameById(comment, gameId);
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
             return true;
@@ -42,12 +42,12 @@ namespace GameApp.Services
             var comment = new Comment
             {
                 Id = Guid.NewGuid().ToString(),
-                Game = await games.All().SingleOrDefaultAsync(g => g.Id == gameId),
                 Content = commentConntents,
                 PostedOn = DateTime.UtcNow,
                 User = await userManager.FindByIdAsync(userId),
                 CommentedOn=await comments.All().SingleOrDefaultAsync(c=>c.Id==commentId)
             };
+            await gameService.SetGameById(comment, gameId);
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
             return true;

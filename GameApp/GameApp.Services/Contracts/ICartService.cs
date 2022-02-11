@@ -13,5 +13,6 @@ namespace GameApp.Services.Contracts
         Task<bool> RemoveFromCart(int id);
         Task<IEnumerable<CartServiceListingModel>> GetAllItems();
         Task<bool> Clear();
+        public Task<bool> BuyItems(string userId);
     }
 }

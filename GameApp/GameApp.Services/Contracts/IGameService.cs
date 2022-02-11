@@ -1,4 +1,5 @@
-﻿using GameApp.Data.Models;
+﻿using GameApp.Data;
+using GameApp.Data.Models;
 using GameApp.Services.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -16,7 +17,9 @@ namespace GameApp.Services.Contracts
         Task<PopularGamesServiceListingModel[]> GetPopularGames();
         Task<PopularGamesServiceListingModel[]> GetTopRankedGames();
         Task<int> Create(string name,decimal price,string description, IEnumerable<string> newGenres, IFormFile image);
-        Task<bool> BuyItems(string userId);
         Task SetGameByName(Review review, string gameName);
+        Task SetGameById(Comment game, int gameId);
+        Task AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);
+        Task RemoveShoppingCartItem(ShoppingCart shoppingCart,int gameId);
     }
 }

@@ -3,6 +3,7 @@ using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services.Contracts;
 using GameApp.Services.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,20 +16,43 @@ namespace GameApp.Services
     public class CartService : ICartService
     {
         private readonly ShoppingCart shoppingCart;
-        private readonly IRepository<Game> games;
-        public CartService(ShoppingCart shoppingCart, IRepository<Game> games)
+        private readonly IGameService gameService;
+        private readonly IRepository<UserGame> userGames;
+        private readonly UserManager<User> userManager;
+        
+        public CartService(ShoppingCart shoppingCart, IRepository<UserGame> userGames, UserManager<User> userManager, IGameService gameService)
         {
             this.shoppingCart = shoppingCart;
-            this.games = games;
+            this.userManager = userManager;
+            this.userGames = userGames;
+            this.gameService = gameService;
+        }
+        public async Task<bool> BuyItems(string userId)
+        {
+            var cartItems = await shoppingCart
+                .GetCartItems()
+                .ToListAsync();
+
+            var user = await userManager
+                .FindByIdAsync(userId);
+
+            cartItems
+                .ForEach(async item => await userGames
+                .AddAsync(new UserGame
+                {
+                    Game = item,
+                    User = user
+                }));
+
+            await userGames.SaveChangesAsync();
+            await shoppingCart.Clear();
+
+
+            return true;
         }
         public async Task<bool> AddToCart(int id)
         {
-            var game = games.All().SingleOrDefault(g => g.Id == id);
-            if (game==null)
-            {
-                return false;
-            }
-            await shoppingCart.AddToCart(game);
+            await gameService.AddShoppingCartItem(shoppingCart, id);
             return true;
         }
 
@@ -51,16 +75,10 @@ namespace GameApp.Services
 
         public async Task<bool> RemoveFromCart(int id)
         {
-            var item=games.All().SingleOrDefault(game => game.Id == id);
-            if (item==null)
-            {
-                return false;
-            }
-            if (await shoppingCart.RemoveFromCart(item))
-            {
-                return true;
-            }
-            return false;
+
+            await gameService.RemoveShoppingCartItem(shoppingCart, id);
+            return true;
+           
         }
     }
 }
