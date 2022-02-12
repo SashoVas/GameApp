@@ -19,13 +19,14 @@ namespace GameApp.Services
         private readonly IGameService gameService;
         private readonly IRepository<UserGame> userGames;
         private readonly UserManager<User> userManager;
-        
-        public CartService(ShoppingCart shoppingCart, IRepository<UserGame> userGames, UserManager<User> userManager, IGameService gameService)
+        private readonly IReceiptService receiptService;
+        public CartService(ShoppingCart shoppingCart, IRepository<UserGame> userGames, UserManager<User> userManager, IGameService gameService, IReceiptService receiptService)
         {
             this.shoppingCart = shoppingCart;
             this.userManager = userManager;
             this.userGames = userGames;
             this.gameService = gameService;
+            this.receiptService = receiptService;
         }
         public async Task<bool> BuyItems(string userId)
         {
@@ -36,13 +37,21 @@ namespace GameApp.Services
             var user = await userManager
                 .FindByIdAsync(userId);
 
+            var gamesForReceipt = new List<UserGame>();
             cartItems
-                .ForEach(async item => await userGames
-                .AddAsync(new UserGame
+                .ForEach(async item =>
                 {
-                    Game = item,
-                    User = user
-                }));
+                    var ug = new UserGame
+                    {
+                        Game = item,
+                        User = user
+                    };
+                    await userGames.AddAsync(ug);
+                    gamesForReceipt.Add(ug); 
+
+                });
+            await receiptService.CreateReceipt(userId, gamesForReceipt);
+
 
             await userGames.SaveChangesAsync();
             await shoppingCart.Clear();

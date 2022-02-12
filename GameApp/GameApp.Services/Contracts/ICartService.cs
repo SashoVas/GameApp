@@ -1,4 +1,5 @@
-﻿using GameApp.Services.Models;
+﻿using GameApp.Data.Models;
+using GameApp.Services.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,6 @@ namespace GameApp.Services.Contracts
         Task<bool> RemoveFromCart(int id);
         Task<IEnumerable<CartServiceListingModel>> GetAllItems();
         Task<bool> Clear();
-        public Task<bool> BuyItems(string userId);
+        Task<bool> BuyItems(string userId);
     }
 }

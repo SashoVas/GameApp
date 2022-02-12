@@ -29,7 +29,10 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<GameAppDbContext>();
 
-builder.Services.AddControllersWithViews(configure=>configure.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+builder.Services.AddControllersWithViews(configure=>
+    {
+        configure.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+    });
 builder.Services.AddScoped(typeof(IRepository<>),typeof( Repository<>));
 builder.Services.AddTransient<IGameService, GameService>();
 builder.Services.AddTransient<ICartService, CartService>();
@@ -37,6 +40,7 @@ builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IGenreService, GenreService>();
 builder.Services.AddTransient<ICommentsService, CommentsService>();
 builder.Services.AddTransient<IReviewService, ReviewService>();
+builder.Services.AddTransient<IReceiptService, ReceiptService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped(sp => ShoppingCart.GetShoppingCart(sp));
 //builder.Services.AddScoped<IRepository<>,Repository<>>;

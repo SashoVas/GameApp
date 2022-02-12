@@ -19,6 +19,8 @@ namespace GameApp.Data
         public DbSet<GameGenre> GameGenres { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Receipt> Receipts { get; set; }
+
         public GameAppDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -60,6 +62,12 @@ namespace GameApp.Data
                 .HasMany(c => c.Comments)
                 .WithOne(c => c.CommentedOn)
                 .HasForeignKey(c => c.CommentedOnId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Receipt>()
+                .HasMany(r => r.UserGames)
+                .WithOne(ug => ug.Receipt)
+                .HasForeignKey(wg => wg.ReceiptId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
 

@@ -10,10 +10,11 @@ namespace GameApp.Data.Models
     {
         //public float Rating { get; set; }
         public float PlayTime { get; set; }
-        public DateTime? BoughtDate { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public int GameId { get; set; }
         public Game Game { get; set; }
+        public string ReceiptId { get; set; }
+        public Receipt Receipt { get; set; }
     }
 }
