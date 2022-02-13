@@ -14,11 +14,9 @@ namespace GameApp.Web.Controllers
     {
 
         private readonly IGameService gameService;
-        private readonly ShoppingCart shoppingCart;
-        public HomeController(IGameService gameService, ShoppingCart shoppingCart)
+        public HomeController(IGameService gameService)
         {
             this.gameService = gameService;
-            this.shoppingCart = shoppingCart;
         }
         public async Task<IActionResult> Index(int page)
         {

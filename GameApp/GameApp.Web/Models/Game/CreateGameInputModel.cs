@@ -11,8 +11,11 @@ namespace GameApp.Web.Models.Game
         [Range(0.99,double.MaxValue)]
         public decimal Price { get; set; }
         [MaxLength(500)]
+        [Required]
+        [MinLength(3)]
         public string Description { get; set; }
         public IFormFile? Image { get; set; }
+        [Required]
         public IEnumerable<string> Genres { get; set; }
     }
 }

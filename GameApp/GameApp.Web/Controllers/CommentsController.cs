@@ -23,6 +23,10 @@ namespace GameApp.Web.Controllers
         [HttpPost("AddCommentToGame")]
         public async Task<ActionResult> AddCommentToGame([FromBody] AddCommentInputModel comment)
         {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
             await commentsService.Create(comment.GameId,comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Ok();
         }
@@ -40,6 +44,10 @@ namespace GameApp.Web.Controllers
         [HttpPost("AddReply")]
         public async Task<IActionResult>AddReply([FromBody] AddReplyInputModel reply)
         {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
             await commentsService.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId);
             return this.Ok();
         }

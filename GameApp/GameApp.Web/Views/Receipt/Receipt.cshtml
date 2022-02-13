@@ -1,0 +1,17 @@
+﻿@using GameApp.Web.Models.Receipt
+@model ReceiptViewModel
+<h1 class="text-center">Receipt</h1>
+<hr>
+@foreach(var game in Model.Games)
+{
+    <div>
+        <h1 >Game: @game.Name</h1>
+        <a >Price: @game.Price</a>
+    </div>
+    <br>
+}
+<hr>
+<div>
+    <h1 >User: @this.User.Identity.Name</h1>
+    <a >TotalPrice: @Model.Games.Sum(g=>g.Price)</a>
+</div>

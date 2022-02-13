@@ -265,3 +265,16 @@ no-blue {
 .carousel-span-row-2 {
     grid-row: span 2;
 }
+.table-button {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 22px;
+    cursor: pointer;
+}
+.float-left {
+    margin-left: 35%;
+}

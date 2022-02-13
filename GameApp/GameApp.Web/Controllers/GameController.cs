@@ -88,6 +88,10 @@ namespace GameApp.Web.Controllers
         [HttpPost]
         public async  Task<IActionResult> Rate(GameRateInputModel rate)
         {
+            if (!ModelState.IsValid)
+            {
+                return this.Redirect("~/Game?title=" + rate.GameName);
+            }
             await reviewService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Redirect("~/Game?title="+rate.GameName);
         }
