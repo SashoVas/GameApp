@@ -21,14 +21,17 @@ namespace GameApp.Web.Controllers
             return this.Content("hi");
         }
         [HttpPost("AddCommentToGame")]
-        public async Task<ActionResult> AddCommentToGame([FromBody] AddCommentInputModel comment)
+        public async Task<ActionResult<LoadCommentsViewModel>> AddCommentToGame([FromBody] AddCommentInputModel comment)
         {
             if (!ModelState.IsValid)
             {
                 return this.BadRequest();
             }
-            await commentsService.Create(comment.GameId,comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return this.Ok();
+            var model=new LoadCommentsViewModel 
+            { 
+                Comments=await commentsService.Create(comment.GameId,comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier))
+            };
+            return model;
         }
 
         [HttpGet("LoadComments/{page?}")]
@@ -42,14 +45,17 @@ namespace GameApp.Web.Controllers
         }
 
         [HttpPost("AddReply")]
-        public async Task<IActionResult>AddReply([FromBody] AddReplyInputModel reply)
+        public async Task<ActionResult<RepliesViewModel>>AddReply([FromBody] AddReplyInputModel reply)
         {
             if (!ModelState.IsValid)
             {
                 return this.BadRequest();
             }
-            await commentsService.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId);
-            return this.Ok();
+            var model = new RepliesViewModel 
+            { 
+                Replies=await commentsService.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId)
+            };
+            return model;
         }
         [HttpGet("LoadReplies/{commentId}")]
         public async Task<ActionResult<RepliesViewModel>>LoadReplies(string commentId)

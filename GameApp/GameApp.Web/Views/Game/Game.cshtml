@@ -150,23 +150,24 @@
         
     </div>
     <h2>Reviews</h2>
+    <div class="comment">
+                <div class="user-info">
+                    <ul class="d-flex nopadding">
+                        <li class="right-div" >Username</li>
+                        <li >Overall Rating:@Model.UserRating</li>
+                    </ul>
+                </div>
+                <div >
+                    <form>
+                        <input type="hidden" id="gameId" value="@Model.Id" />
+                        <textarea id="commentContents" name="" rows="4" style="width:100%" placeholder="Write your comment"></textarea>
+                        <input onclick="PostComment(event)" class="btn btn-primary btn-lg" id="postComment"  type="submit" value="Comment">
+                    </form>
+                </div>
+            </div>
     <div class="comments" id="comments">
 
-        <div class="comment">
-            <div class="user-info">
-                <ul class="d-flex nopadding">
-                    <li class="right-div" >Username</li>
-                    <li >Overall Rating:@Model.UserRating</li>
-                </ul>
-            </div>
-            <div >
-                <form>
-                    <input type="hidden" id="gameId" value="@Model.Id" />
-                    <textarea id="commentContents" name="" rows="4" style="width:100%" placeholder="Write your comment"></textarea>
-                    <input onclick="PostComment(event)" class="btn btn-primary btn-lg" id="postComment"  type="submit" value="Comment">
-                </form>
-            </div>
-        </div>
+        
 
 
     </div>

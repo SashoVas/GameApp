@@ -23,7 +23,7 @@ namespace GameApp.Services
             this.userManager = userManager;
             this.gameService = gameService;
         }
-        public async Task<bool> Create(int gameId, string commentConntents, string userId)
+        public async Task<IEnumerable<CommentsServiceListingModel>> Create(int gameId, string commentConntents, string userId)
         {
             var comment = new Comment {
                 Id=Guid.NewGuid().ToString(),
@@ -34,10 +34,17 @@ namespace GameApp.Services
             await gameService.SetGameById(comment, gameId);
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
-            return true;
+            return new List<CommentsServiceListingModel>{ new CommentsServiceListingModel
+            {
+                Username = comment.User.UserName,
+                Contents = comment.Content,
+                PostedOn = comment.PostedOn.ToString("yyyy,MM,dd"),
+                CommentId = comment.Id,
+                HasComments = comment.Comments.Count > 0 ? true : false
+            }};
         }
 
-        public async Task<bool> CreateReply(int gameId, string commentConntents, string userId, string commentId)
+        public async Task<IEnumerable<ReplyServiceListingModel>> CreateReply(int gameId, string commentConntents, string userId, string commentId)
         {
             var comment = new Comment
             {
@@ -50,7 +57,13 @@ namespace GameApp.Services
             await gameService.SetGameById(comment, gameId);
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
-            return true;
+            return  new List<ReplyServiceListingModel> { new ReplyServiceListingModel 
+            {
+                Username = comment.User.UserName,
+                Content = comment.Content,
+                CommentId = comment.Id,
+                HasComments = comment.Comments.Count > 0 ? true : false
+            } };
         }
 
         public async Task<IEnumerable<CommentsServiceListingModel>> LoadComments(int pageId,int gameId)

@@ -18,6 +18,7 @@ function PostComment(event) {
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
+        success: AddCommentsToStart
     });
     $("#commentContents").val("");
 }
@@ -48,8 +49,24 @@ function AddComments(comments) {
         }
 
         start = start + `<li >Posted on:` + escapeHtml(currentComment.postedOn) + `</li><li >Overall Rating:10</li></ul></div><div class="comment-text"><p >` + escapeHtml(currentComment.contents) + `</p></div><a href="#" onclick="AppendInput(this)">Reply</a> `+loadReplies+`</div>`;
-        $("#comments").append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId +`" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply('` + currentComment.commentId +`')>Reply</button>`)));
+        $("#comments").append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId + `" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply(this,'` + currentComment.commentId +`')>Reply</button>`)));
         $("#comments").append("<hr>");
+    }
+}
+function AddCommentsToStart(comments) {
+    for (let i = 0; i < comments.comments.length; i++) {
+        let currentComment = comments.comments[i];
+
+        let start = `<div class="comment" id="` + currentComment.commentId + `"><div class="user-info"><ul class="d-flex nopadding"><li class="right-div" >` + escapeHtml(currentComment.username) + `</li>`;
+        let loadReplies = ``;
+        if (currentComment.hasComments) {
+            loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId + `')">Load More</a>`;
+        }
+
+        start = start + `<li >Posted on:` + escapeHtml(currentComment.postedOn) + `</li><li >Overall Rating:10</li></ul></div><div class="comment-text"><p >` + escapeHtml(currentComment.contents) + `</p></div><a href="#" onclick="AppendInput(this)">Reply</a> ` + loadReplies + `</div>`;
+        $("#comments").prepend("<hr>");
+        $("#comments").prepend($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId + `" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply(this,'` + currentComment.commentId + `')>Reply</button>`)));
+        
     }
 }
 let showReply = false;
@@ -65,11 +82,10 @@ function AppendInput(element) {
     }
     showReply=!showReply
 }
-function Reply(id) {
-    console.log("#replytext" + id)
+function Reply(element, id) {
+    console.log($("#gameId").val())
     console.log($("#replytext" + id).val())
-    console.log($("#replytext" + id))
-
+    console.log(id)
     $.post({
         url: 'https://localhost:44385/api/Comments/AddReply',
         contentType: 'application/json',
@@ -78,6 +94,12 @@ function Reply(id) {
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
+        success: function (replies) {
+            
+            //LoadReplies($(element.parentElement), id);
+            AddReply($(element.parentElement.parentElement),replies)
+
+        }
     });
     $("#replytext" + id).val("")
     
@@ -90,22 +112,21 @@ function LoadReplies(element, id) {
     $.get({
         url: 'https://localhost:44385/api/Comments/LoadReplies/' + id,
         success: function (replies) {
-            console.log(replies)
-            for (let i = 0; i < replies.replies.length; i++)
-            {
-                let currentComment = replies.replies[i];
-                let loadReplies = ``;
-                if (currentComment.hasComments) {
-                    loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId +`')">Load More</a>`;
-                }
-                let start = `<div class="littlemargin"><a>` + escapeHtml(currentComment.username) + `:</a><a>` + escapeHtml(currentComment.content) + `</a> <a href="#" onclick="AppendInput(this)">Reply</a> ` + loadReplies+`</div>`;
-                parrent.append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId + `" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply('` + currentComment.commentId + `')>Reply</button>`)));
-                parrent.append("<hr>");
-            }
-            
+            AddReply(parrent, replies);
         }
     });
-    
-    
+}
+function AddReply(parrent,replies)
+{
+    for (let i = 0; i < replies.replies.length; i++) {
+        let currentComment = replies.replies[i];
+        let loadReplies = ``;
+        if (currentComment.hasComments) {
+            loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId + `')">Load More</a>`;
+        }
+        let start = `<div class="littlemargin"><a>` + escapeHtml(currentComment.username) + `:</a><a>` + escapeHtml(currentComment.content) + `</a> <a href="#" onclick="AppendInput(this)">Reply</a> ` + loadReplies + `</div>`;
+        parrent.append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId + `" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply(this,'` + currentComment.commentId + `')>Reply</button>`)));
+        parrent.append("<hr>");
+    }
 
 }

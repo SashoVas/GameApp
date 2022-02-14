@@ -15,18 +15,19 @@
                                 <div class="col-md-12">
                                    <label asp-for="Name"></label>
                                    <input class="form-control" asp-for="Name">
-                                   <span asp-validation-for="Name"></span>
+                                   <span class="text-danger" asp-validation-for="Name"></span>
                                 </div>
 
                                 <div class="col-md-12">
                                     <label asp-for="Price"></label>
                                     <input class="form-control" asp-for="Price">
-                                    <span asp-validation-for="Price"></span>
+                                    <span class="text-danger" asp-validation-for="Price"></span>
                                 </div>
 
                                 <div class="col-md-12">
                                     <label asp-for="Description"></label>
                                     <textarea class="form-control" asp-for="Description" ></textarea>
+                                    <span class="text-danger" asp-validation-for="Description"></span>
                                </div>
 
                                <div class="col-md-12">
