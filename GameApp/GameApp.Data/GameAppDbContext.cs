@@ -20,6 +20,7 @@ namespace GameApp.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Receipt> Receipts { get; set; }
+        public DbSet<Friend> Friends { get; set; }
 
         public GameAppDbContext(DbContextOptions options) : base(options)
         {
@@ -39,6 +40,10 @@ namespace GameApp.Data
             builder.Entity<GameGenre>()
                 .HasKey(gg => new { gg.GenreId, gg.GameId })
                 .HasName("PrimaryKey_GameGenresId");
+
+            builder.Entity<Friend>()
+            .HasKey(f => new { f.MainUserId, f.FriendUserId })
+            .HasName("PrimaryKey_UserFriendId");
 
             builder.Entity<Game>()
                 .HasMany(g => g.Users)
@@ -68,6 +73,18 @@ namespace GameApp.Data
                 .HasMany(r => r.UserGames)
                 .WithOne(ug => ug.Receipt)
                 .HasForeignKey(wg => wg.ReceiptId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Friend>()
+                .HasOne(f => f.MainUser)
+                .WithMany(u => u.Friends)
+                .HasForeignKey(f => f.MainUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Friend>()
+                .HasOne(f => f.FriendUser)
+                .WithMany()
+                .HasForeignKey(f => f.FriendUserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
 
