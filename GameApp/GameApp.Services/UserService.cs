@@ -86,5 +86,12 @@ namespace GameApp.Services
         
             
         }
+
+        public async Task<bool> SetUsersToFriend(Friend friend, string userId, string friendName)
+        {
+            friend.MainUser =await userManager.FindByIdAsync(userId);
+            friend.FriendUser = await userManager.FindByNameAsync(friendName);
+            return true;
+        }
     }
 }

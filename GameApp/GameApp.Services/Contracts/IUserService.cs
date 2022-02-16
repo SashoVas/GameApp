@@ -1,4 +1,5 @@
-﻿using GameApp.Services.Models;
+﻿using GameApp.Data.Models;
+using GameApp.Services.Models;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,6 @@ namespace GameApp.Services.Contracts
         Task<UserInfoServiceModel> GetUserInfo(string username);
         Task<bool> ChangeImage(IFormFile image, string userId);
         Task<bool> EditDescription(string description, string userId);
+        Task<bool> SetUsersToFriend(Friend friend,string userId, string friendName);
     }
 }

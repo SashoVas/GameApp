@@ -281,13 +281,13 @@ no-blue {
 
 .sidenav {
     
-    
+    height:85%;
     width: 11%;
     position: absolute;
     top: 60px;
     left: 0px;
-    overflow-y: scroll;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 #sidebar {
     background: #343a40;
@@ -307,8 +307,24 @@ no-blue {
 .btn-width-100 {
     width:100%;
 }
+.btn-width-50 {
+    width: 48%;
+    padding-left:6px;
+    padding-right:6px;
+    padding-top:3px;
+    padding-bottom:3px;
+}
 .float-left {
     float:left;
     margin-left:0px;
 }
-
+.circle {
+    border-radius: 50%;
+    padding:3px;
+}
+.friend-box{
+    padding:0px;
+    padding-bottom:5px;
+    padding-top:5px;
+    border:none;
+}

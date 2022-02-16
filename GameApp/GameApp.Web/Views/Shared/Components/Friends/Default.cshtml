@@ -5,38 +5,87 @@
 <!-- Sidebar -->
 <nav id="sidebar">
     <div class="sidebar-header">
-        <h3>Friends</h3>
+        <h3>Friend List</h3>
     </div>
 
     <div id="accordion">
     <div class="card bg-dark">
     <div class="card-header" id="headingOne">
         <h5 class="mb-0">
-        <button class="btn btn-link colapse-text" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            Requests
+        <button class="btn btn-link colapse-text btn-width-100" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            Requests 
+            @if(Model.Requests.Count()>0)
+            {
+                <span class="badge bg-danger circle">@Model.Requests.Count()</span>          
+            }
+            
         </button>
         </h5>
     </div>
 
     <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body">
-            hi
+            <div class="list-group">
+                @foreach(var name in @Model.Requests)
+                {
+                    <div>
+                        <a id="request-name"  href="#" class="list-group-item list-group-item-action bg-dark text-white friend-box">@name</a>
+                          <div>
+                            <a onclick="AcceptFirendRequest(this)" class="btn btn-success btn-width-50">Success</a>
+                            <a onclick="RejectFirendRequest(this)" class="btn  btn-danger btn-width-50">Cancel</a>
+                          </div>
+                            <hr>
+                    </div>
+                                
+                }
+                
+            </div>
         </div>
     </div>
     </div>
     <div class="card bg-dark">
     <div class="card-header" id="headingTwo">
         <h5 class="mb-0">
-        <button class="btn btn-link collapsed colapse-text" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-            Friends
+        <button class="btn btn-link collapsed colapse-text btn-width-100" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Friend
         </button>
         </h5>
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
         <div class="card-body">
-        hi
+            
+            <div class="list-group">
+                @foreach(var name in Model.Friends)
+                    {
+                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white friend-box">@name</a>
+                         <hr> 
+                    }
+             
+            </div>
+        </div>
     </div>
     </div>
+
+    <div class="card bg-dark">
+        <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+            <button class="btn btn-link collapsed colapse-text btn-width-100" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
+                Add Friend
+            </button>
+            </h5>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+                
+                <form class="requires-validation" method="post">
+                    <label >Name</label>
+                    <input class="form-control" id="friend-request-name-input" type="text">
+                    <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary" value="Add Friend">
+                    
+                </form>
+
+            </div>
+        </div>
     </div>
       
 </div>

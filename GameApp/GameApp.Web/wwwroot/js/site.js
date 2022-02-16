@@ -130,3 +130,45 @@ function AddReply(parrent,replies)
     }
 
 }
+function SendFriendRequest() {
+    event.preventDefault();
+    $.post({
+        url: 'https://localhost:44385/api/Friend/SendFirendRequest',
+        contentType: 'application/json',
+        data: JSON.stringify({ username: $("#friend-request-name-input").val() }),
+        headers:
+        {
+            "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
+        },
+        
+    });
+
+}
+
+function AcceptFirendRequest(element) {
+    event.preventDefault();
+    $.post({
+        url: 'https://localhost:44385/api/Friend/AcceptFirendRequest',
+        contentType: 'application/json',
+        data: JSON.stringify({ username: $(element.parentElement.parentElement).children("#request-name").text() }),
+        headers:
+        {
+            "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
+        },
+        
+    });
+}
+
+function RejectFirendRequest(element) {
+    event.preventDefault();
+    $.post({
+        url: 'https://localhost:44385/api/Friend/RejectFirendRequest',
+        contentType: 'application/json',
+        data: JSON.stringify({ username: $(element.parentElement.parentElement).children("#request-name").text() }),
+        headers:
+        {
+            "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
+        },
+        
+    });
+}

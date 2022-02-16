@@ -67,12 +67,11 @@ namespace GameApp.Services
         {
             var model = games
                 .All()
-                .Skip(page)
-                .Take(10)
-                .OrderByDescending(g => g.Reviews.Sum(r=>r.Score) /(g.Reviews.Count()>0?g.Reviews.Count():1))
+                .OrderByDescending(g => g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
                 .Where(g => g.Name
                 .ToLower()
                 .Contains(gameName));
+                
 
             if (genre!=null)
             {
@@ -83,6 +82,8 @@ namespace GameApp.Services
                 model = model.Where(g => g.Users.Any(gu => gu.User.UserName == username));
             }
             return await model
+                .Skip(page)
+                .Take(10)
                 .Select(g => new AllGamesServiceListingModel
                 {
                     Name = g.Name,
