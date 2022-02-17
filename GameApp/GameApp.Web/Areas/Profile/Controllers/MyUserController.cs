@@ -14,9 +14,10 @@ namespace GameApp.Web.Areas.Profile.Controllers
         {
             this.userService = userService;
         }
-        public async Task<IActionResult> ProfileInfo()
+        [Route("Profile/MyUser/ProfileInfo/{name}")]
+        public async Task<IActionResult> ProfileInfo(string name)
         {
-            var userInfo =await userService.GetUserInfo(this.User.Identity.Name);
+            var userInfo =await userService.GetUserInfo(name);
             var model = new ProfileInfoViewModel 
             {
                 UserName=userInfo.UserName,

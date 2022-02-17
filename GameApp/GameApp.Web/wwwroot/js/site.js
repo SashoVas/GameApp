@@ -155,7 +155,7 @@ function AcceptFirendRequest(element) {
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
-        
+
     });
 }
 
@@ -170,5 +170,19 @@ function RejectFirendRequest(element) {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
         
+    });
+}
+
+function Unfriend(element) {
+    event.preventDefault();
+    $.post({
+        url: 'https://localhost:44385/api/Friend/Unfriend',
+        contentType: 'application/json',
+        data: JSON.stringify({ username: $(element.parentElement.parentElement).children("#friend-name").text() }),
+        headers:
+        {
+            "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
+        },
+
     });
 }

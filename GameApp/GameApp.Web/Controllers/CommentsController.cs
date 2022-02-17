@@ -1,5 +1,6 @@
 ﻿using GameApp.Services.Contracts;
 using GameApp.Web.Models.Comments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -20,6 +21,7 @@ namespace GameApp.Web.Controllers
         {
             return this.Content("hi");
         }
+        [Authorize]
         [HttpPost("AddCommentToGame")]
         public async Task<ActionResult<LoadCommentsViewModel>> AddCommentToGame([FromBody] AddCommentInputModel comment)
         {
@@ -43,7 +45,7 @@ namespace GameApp.Web.Controllers
             };
             return model;
         }
-
+        //[Authorize]
         [HttpPost("AddReply")]
         public async Task<ActionResult<RepliesViewModel>>AddReply([FromBody] AddReplyInputModel reply)
         {

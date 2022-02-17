@@ -17,14 +17,14 @@ namespace GameApp.Web.Controllers
         {
             this.friendService = friendService;
         }
-        [HttpGet("Example")]
-        public async Task<ActionResult> Example()
-        {
-            return this.Content("hi");
-        }
+
         [HttpPost("SendFirendRequest")]
         public async Task<ActionResult> SendFirendRequest([FromBody] FriendRequestInputModel friend)
         {
+            if (this.User.Identity.Name==friend.Username)
+            {
+                return this.BadRequest();
+            }
             await friendService.SendFriendRequest(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username);
             return this.Ok();
         }
@@ -33,7 +33,7 @@ namespace GameApp.Web.Controllers
         public async Task<ActionResult> AcceptFirendRequest([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Friend");
+            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Friend", "Request");
             return this.Ok();
         }
 
@@ -41,7 +41,15 @@ namespace GameApp.Web.Controllers
         public async Task<ActionResult> RejectFirendRequest([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Rejected");
+            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Rejected", "Request");
+            return this.Ok();
+        }
+
+        [HttpPost("Unfriend")]
+        public async Task<ActionResult> Unfriend([FromBody] FriendRequestInputModel friend)
+        {
+            //Security Problem
+            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Rejected", "Friend");
             return this.Ok();
         }
     }

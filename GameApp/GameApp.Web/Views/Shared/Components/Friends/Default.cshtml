@@ -57,7 +57,16 @@
             <div class="list-group">
                 @foreach(var name in Model.Friends)
                     {
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white friend-box">@name</a>
+
+                        <div class="btn-group">
+                          <a id="friend-name" href="/Profile/MyUser/ProfileInfo/@name" type="button" class="btn btn-secondary">@name</a>
+                          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only"></span>
+                          </button>
+                          <div class="dropdown-menu">
+                            <a class="dropdown-item" onclick="Unfriend(this)">Unfriend</a>
+                          </div>
+                        </div>
                          <hr> 
                     }
              

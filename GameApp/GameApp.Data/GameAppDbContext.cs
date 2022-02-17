@@ -41,10 +41,6 @@ namespace GameApp.Data
                 .HasKey(gg => new { gg.GenreId, gg.GameId })
                 .HasName("PrimaryKey_GameGenresId");
 
-            builder.Entity<Friend>()
-            .HasKey(f => new { f.MainUserId, f.FriendUserId })
-            .HasName("PrimaryKey_UserFriendId");
-
             builder.Entity<Game>()
                 .HasMany(g => g.Users)
                 .WithOne(ug => ug.Game)
