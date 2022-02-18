@@ -140,21 +140,47 @@ function SendFriendRequest() {
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
+        success: function () {
+            $("#friend-request-name-input").val("");
+        }
         
     });
 
 }
 
+function AddFriend(friend) {
+    let friendList = $("#friend-list");
+    let newFriend = `<div class="list-group">
+                        <div class="btn-group">
+                          <a id="friend-name" href="/Profile/MyUser/ProfileInfo/${friend}" type="button" class="btn btn-secondary">${friend}</a>
+                          <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only"></span>
+                          </button>
+                          <div class="dropdown-menu">
+                            <a class="dropdown-item" onclick="Unfriend(this)">Unfriend</a>
+                          </div>
+
+                        </div>
+                        <hr>
+                        </div>`;
+    friendList.append($(newFriend));
+}
+
 function AcceptFirendRequest(element) {
     event.preventDefault();
+    let username = $(element.parentElement.parentElement).children("#request-name").text();
     $.post({
         url: 'https://localhost:44385/api/Friend/AcceptFirendRequest',
         contentType: 'application/json',
-        data: JSON.stringify({ username: $(element.parentElement.parentElement).children("#request-name").text() }),
+        data: JSON.stringify({ username: username  }),
         headers:
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
+        success: function () {
+            $(element.parentElement.parentElement).remove();
+            AddFriend(username);
+        }
 
     });
 }
@@ -169,6 +195,9 @@ function RejectFirendRequest(element) {
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
+        success: function () {
+            $(element.parentElement.parentElement).remove();
+        }
         
     });
 }
@@ -183,6 +212,9 @@ function Unfriend(element) {
         {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
+        success: function () {
+            $(element.parentElement.parentElement.parentElement).remove();
+        }
 
     });
 }

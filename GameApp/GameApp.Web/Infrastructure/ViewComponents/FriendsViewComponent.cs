@@ -17,6 +17,7 @@ namespace GameApp.Web.Infrastructure.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
+            //Security Problem
             string userId = this.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var model =new FriendViewModel
             { 
