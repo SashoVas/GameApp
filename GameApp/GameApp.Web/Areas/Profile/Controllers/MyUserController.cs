@@ -34,7 +34,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
         public async Task<IActionResult> ChangeDescription(string description) 
         {
             await userService.EditDescription( description,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            return this.Redirect(nameof(ProfileInfo));
+            return this.Redirect("/Profile/MyUser/ProfileInfo/"+this.User.Identity.Name);
         }
 
         [HttpPost]
@@ -42,7 +42,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             await userService.ChangeImage(file,userId);
-            return this.Redirect(nameof(ProfileInfo));
+            return this.Redirect("/Profile/MyUser/ProfileInfo/" + this.User.Identity.Name);
         }
     }
 }

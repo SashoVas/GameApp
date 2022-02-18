@@ -2,6 +2,7 @@
 using GameApp.Data;
 using GameApp.Data.Models;
 using GameApp.Data.Repositories;
+using GameApp.Data.Seeding;
 using GameApp.Services;
 using GameApp.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
@@ -55,38 +56,8 @@ using (var serviceScope = app.Services.CreateScope())//app.ApplicationServices.C
 {
     using (var context = serviceScope.ServiceProvider.GetRequiredService<GameAppDbContext>())
     {
-        //context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
-        if (!context.Roles.Any())
-        {
-            context.Roles.Add(new IdentityRole { Name = "admin", NormalizedName = "ADMIN" });
-            context.Roles.Add(new IdentityRole { Name = "user", NormalizedName = "USER" });
-        }
-        if (!context.Genres.Any())
-        {
-            context.Genres.Add(new Genre { Name = "Action" });
-            context.Genres.Add(new Genre { Name = "Comedy" });
-        }
-        context.SaveChanges();
-        if (!context.Games.Any())
-        {
-            for (int i = 0; i < 16; i++)
-            {
-                var game = new Game
-                {
-                    Name = "Game" + i.ToString(),
-                    Description = "Description" + i.ToString(),
-                    Price=324,
-                    ImageUrl= "User.png",
-                    
-                };
-                game.Genres.Add(new GameGenre { Genre = context.Genres.SingleOrDefault(g => g.Name == "Action") });
-                context.Games.Add(game);
-
-            }
-            
-        }
-        context.SaveChanges();
+        new GameAppDbContextSeeder().Seed(context).GetAwaiter().GetResult();
     }
 }
 

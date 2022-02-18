@@ -63,7 +63,7 @@ namespace GameApp.Web.Controllers
             
             return View();
         }
-        //[Authorize(Roles = "admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateGameInputModel model)
         {
@@ -71,7 +71,7 @@ namespace GameApp.Web.Controllers
             {
                 return this.View(model);
             }
-            int id=await gamesService.Create(model.Name,model.Price,model.Description,model.Genres,model.Image);
+            int id=await gamesService.Create(model.Name,model.Price,model.Description,model.Date,model.Genres,model.Image);
             return this.RedirectToAction(nameof(AllGames));
         }
         

@@ -39,7 +39,7 @@
    <div class="description">
         <h3>Description</h3>
 
-       <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</p>
+       <p>@Model.Description</p>
        @if(this.User.Identity.Name==@Model.UserName)
         {
             <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</a>
@@ -54,8 +54,8 @@
                             <form method="post" asp-area="Profile" asp-controller="MyUser" asp-action="ChangeDescription" >
                               <div class="mb-3">
                                 <label for="recipient-name" class="col-form-label">Description:</label>
-                                <textarea name="description" class="form-control" rows="3"></textarea>
-                                <input type="submit" class="btn btn-primary" valus="Edit">
+                                <textarea name="description" class="form-control" rows="3" value="@Model.Description"></textarea>
+                                <input type="submit" class="btn btn-primary" value="Edit">
                               </div>
                             </form>
                           </div>

@@ -39,6 +39,7 @@
                         </li>
                     }
                     
+
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item active">
@@ -79,11 +80,16 @@
           </div>
         </nav>
     </header>
-    <div class="container">
-        @if(this.User.Identity.IsAuthenticated)
-        {
-            @await Component.InvokeAsync("Friends")
-        }
+    @if(this.User.Identity.IsAuthenticated)
+    {
+        @await Component.InvokeAsync("Friends")
+    }
+    else
+    {
+        <div class="float-left counteiner-width-20"></div>
+    }
+    <div class="float-left counteiner-width-60">
+        
         
         <main role="main" class="pb-3">
             @RenderBody()

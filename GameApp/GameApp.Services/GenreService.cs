@@ -32,7 +32,7 @@ namespace GameApp.Services
 
         public async Task SetGenreToGameByName(Game game, IEnumerable<string> genreNames)
         {
-               genreNames.ToList().ForEach(async genre => game.Genres.Add(new GameGenre {Genre=await genres.All().SingleOrDefaultAsync(g => g.Name == genre) }));
+               genreNames.ToList().ForEach( genre => game.Genres.Add(new GameGenre {Genre= genres.All().SingleOrDefault(g => g.Name == genre) }));
         }
     }
 }

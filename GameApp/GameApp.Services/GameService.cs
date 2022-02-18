@@ -34,12 +34,13 @@ namespace GameApp.Services
             await shoppingCart.AddToCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));
         }
 
-        public async Task<int> Create(string name, decimal price, string description, IEnumerable<string> newGenres, IFormFile image)
+        public async Task<int> Create(string name, decimal price, string description,DateTime date, IEnumerable<string> newGenres, IFormFile image)
         {
             var game = new Game {
                 Name = name,
                 Price = price,
                 Description = description,
+                ReleaseDate=date
             };
             await genreService.SetGenreToGameByName(game, newGenres);
             

@@ -14,6 +14,8 @@ namespace GameApp.Web.Models.Game
         [Required]
         [MinLength(3)]
         public string Description { get; set; }
+        [Required]
+        public DateTime Date { get; set; }
         public IFormFile? Image { get; set; }
         [Required]
         public IEnumerable<string> Genres { get; set; }
