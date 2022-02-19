@@ -114,11 +114,11 @@ namespace GameApp.Web.Areas.Identity.Pages.Account
 
                 if (_userManager.Users.Count()==1)
                 {
-                    await _userManager.AddToRoleAsync(user, "admin");
+                    await _userManager.AddToRoleAsync(user, "Admin");
                 }
                 else
                 {
-                    await _userManager.AddToRoleAsync(user, "user");
+                    await _userManager.AddToRoleAsync(user, "User");
                 }
                 if (result.Succeeded)
                 {

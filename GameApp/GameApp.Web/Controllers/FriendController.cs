@@ -1,5 +1,7 @@
-﻿using GameApp.Services.Contracts;
+﻿using GameApp.Data.Models;
+using GameApp.Services.Contracts;
 using GameApp.Web.Models.Friend;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -17,7 +19,7 @@ namespace GameApp.Web.Controllers
         {
             this.friendService = friendService;
         }
-
+        [Authorize]
         [HttpPost("SendFirendRequest")]
         public async Task<ActionResult> SendFirendRequest([FromBody] FriendRequestInputModel friend)
         {
@@ -28,28 +30,28 @@ namespace GameApp.Web.Controllers
             await friendService.SendFriendRequest(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username);
             return this.Ok();
         }
-
+        [Authorize]
         [HttpPost("AcceptFirendRequest")]
         public async Task<ActionResult> AcceptFirendRequest([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Friend", "Request");
+            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Friend, FriendStatus.Request);
             return this.Ok();
         }
-
+        [Authorize]
         [HttpPost("RejectFirendRequest")]
         public async Task<ActionResult> RejectFirendRequest([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Rejected", "Request");
+            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Request);
             return this.Ok();
         }
-
+        [Authorize]
         [HttpPost("Unfriend")]
         public async Task<ActionResult> Unfriend([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, "Rejected", "Friend");
+            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Friend);
             return this.Ok();
         }
     }

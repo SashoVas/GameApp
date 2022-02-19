@@ -1,5 +1,6 @@
 ﻿using GameApp.Services.Contracts;
 using GameApp.Web.Models.Receipt;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -14,7 +15,7 @@ namespace GameApp.Web.Controllers
         {
             this.receiptService = receiptService;
         }
-
+        [Authorize]
         [Route("Receipt/{id?}")]
         public async Task<IActionResult> Receipt([Required]string Id)
         {
@@ -26,7 +27,7 @@ namespace GameApp.Web.Controllers
             };
             return this.View(model);
         }
-
+        [Authorize]
         [Route("Receipt/All")]
         public async Task<IActionResult> All()
         {

@@ -13,7 +13,7 @@ namespace GameApp.Data.Models
         public User MainUser { get; set; }
         public string FriendUserId { get; set; }
         public User FriendUser { get; set; }
-        public string Status { get; set; }
+        public FriendStatus Status { get; set; }
 
     }
 }

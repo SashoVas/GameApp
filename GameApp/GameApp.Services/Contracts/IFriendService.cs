@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameApp.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace GameApp.Services.Contracts
         Task<IEnumerable<string>> GetFriends(string userId);
         Task<IEnumerable<string>> GetRequests(string userId);
         Task<bool> SendFriendRequest(string userId,string username);
-        Task<bool> ChangeStatus(string userId, string username, string status,string only);
+        Task<bool> ChangeStatus(string userId, string username, FriendStatus status, FriendStatus only);
 
     }
 }

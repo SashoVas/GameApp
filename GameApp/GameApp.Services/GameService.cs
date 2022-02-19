@@ -83,7 +83,7 @@ namespace GameApp.Services
                 model = model.Where(g => g.Users.Any(gu => gu.User.UserName == username));
             }
             return await model
-                .Skip(page)
+                .Skip(page*10)
                 .Take(10)
                 .Select(g => new AllGamesServiceListingModel
                 {
@@ -198,5 +198,9 @@ namespace GameApp.Services
             review.Game =await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
         }
 
+        public IEnumerable<GameRecomendationListingModel> SimilarGames(IEnumerable<string> genres)
+        {
+            return new List<GameRecomendationListingModel>();
+        }
     }
 }

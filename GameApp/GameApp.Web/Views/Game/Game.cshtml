@@ -110,34 +110,15 @@
     </div>
     <h2>Recomendations</h2>
     <div class="recomendations">
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
-        <div class="recomended-game">
-            <img width="100px" height="100px"src="~/Files/User.png">
-            <h5 >Name</h5>
-        </div>
+        @foreach(var game in Model.SimilarGames)
+        {
+            <div class="recomended-game">
+                <img width="100px" height="100px"src="~/Files/@game.ImgUrl">
+                <h5 >@game.Name</h5>
+            </div>
+        }
+        
+        
         
     </div>
     <h2>Reviews</h2>

@@ -42,21 +42,25 @@ namespace GameApp.Web.Controllers
                 Rank = game.Rank,
                 Popularity = game.Popularity,
                 ReleaseDate = game.ReleaseDate,
-                Score = game.GameRating
+                Score = game.GameRating,
+                SimilarGames=gamesService.SimilarGames(game.Genres)
             }); 
 
         }
         [Route("Game/AllGames/{page?}")]
-        public async Task<IActionResult> AllGames(int page,string gameName,string genre,string username)
+        public async Task<IActionResult> AllGames(SearchGameInfoModel info)
         {
-            if (gameName==null)
+            if (info.GameName==null)
             {
-                gameName = "";
+                info.GameName = "";
             }
-            var model =new AllGamesViewModel { Games =await gamesService.GetAll(page,gameName.ToLower(),genre,username) };
+            var model =new AllGamesViewModel {
+                Games =await gamesService.GetAll(info.Page, info.GameName.ToLower(),info.Genre,info.Username),
+                SearchInfo=info
+            };
             return this.View(model);
         }
-        //[Authorize(Roles ="admin")]
+        //[Authorize(Roles ="Admin")]
         [HttpGet()]
         public IActionResult Create() 
         {

@@ -57,7 +57,7 @@
                 }
                 else
                 {
-                    @if(this.User.IsInRole("admin"))
+                    @if(this.User.IsInRole("Admin"))
                         {
                             <li class="nav-item active">
                                <a class="nav-link" asp-area="" asp-controller="Game" asp-action="Create">Create Game</a>
@@ -65,7 +65,7 @@
 
                         }
                     <li class="nav-item active">
-                    <a class="nav-link">Your Role Is: @(this.User.IsInRole("admin")? "Admin":"User" )</a>
+                    <a class="nav-link">Your Role Is: @(this.User.IsInRole("Admin")? "Admin":"User" )</a>
                   </li>
                   <li class="nav-item active">
                     <a class="nav-link" href="/Profile/MyUser/ProfileInfo/@this.User.Identity.Name">Profile</a>
@@ -80,27 +80,29 @@
           </div>
         </nav>
     </header>
-    @if(this.User.Identity.IsAuthenticated)
-    {
-        @await Component.InvokeAsync("Friends")
-    }
-    else
-    {
-        <div class="float-left counteiner-width-20"></div>
-    }
-    <div class="float-left counteiner-width-60">
-        
-        
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
     
-    <footer class="border-top footer text-muted">
+    <div class="screen-height">
+        @if(this.User.Identity.IsAuthenticated)
+        {
+            @await Component.InvokeAsync("Friends")
+        }
+        else
+        {
+            <div style="height:800px;" class="float-left counteiner-width-20">
+                
+                </div>
+        }
+        <div class="float-left counteiner-width-60">
+            <main role="main" >
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <div class="border-top footer text-muted">
         <div class="container">
             &copy; 2022 - GameApp.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </div>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
