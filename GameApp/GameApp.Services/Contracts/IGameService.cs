@@ -21,6 +21,5 @@ namespace GameApp.Services.Contracts
         Task SetGameById(Comment game, int gameId);
         Task AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);
         Task RemoveShoppingCartItem(ShoppingCart shoppingCart,int gameId);
-        IEnumerable<GameRecomendationListingModel> SimilarGames(IEnumerable<string> genres);
     }
 }

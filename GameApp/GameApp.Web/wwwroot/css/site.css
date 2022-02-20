@@ -46,9 +46,7 @@ h2 {
 }
 .recomendations {
     display:flex;
-}
-.recomended-game{
-    margin:2%;
+    justify-content:space-between;
 }
 .table-div-float-left {
     display:flex;

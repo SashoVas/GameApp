@@ -198,9 +198,6 @@ namespace GameApp.Services
             review.Game =await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
         }
 
-        public IEnumerable<GameRecomendationListingModel> SimilarGames(IEnumerable<string> genres)
-        {
-            return new List<GameRecomendationListingModel>();
-        }
+
     }
 }

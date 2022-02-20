@@ -8,7 +8,7 @@ namespace GameApp.Services.Models
 {
     public class PopularGamesServiceListingModel
     {
-        public string ImgUrl { get; set; }
         public string Name { get; set; }
+        public string ImgUrl { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace GameApp.Web.Controllers
                 Popularity = game.Popularity,
                 ReleaseDate = game.ReleaseDate,
                 Score = game.GameRating,
-                SimilarGames=gamesService.SimilarGames(game.Genres)
+                SimilarGames=await gamesService.GetPopularGames()
             }); 
 
         }

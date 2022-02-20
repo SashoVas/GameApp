@@ -110,11 +110,11 @@
     </div>
     <h2>Recomendations</h2>
     <div class="recomendations">
-        @foreach(var game in Model.SimilarGames)
+        @for(int i=0;i<5;i++)
         {
-            <div class="recomended-game">
-                <img width="100px" height="100px"src="~/Files/@game.ImgUrl">
-                <h5 >@game.Name</h5>
+            <div >
+                <img width="100px" height="100px"src="~/Files/@Model.SimilarGames[i].ImgUrl">
+                <h5 >@Model.SimilarGames[i].Name</h5>
             </div>
         }
         

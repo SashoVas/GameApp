@@ -19,6 +19,6 @@ namespace GameApp.Web.Models.Game
         public DateTime ReleaseDate { get; set; }
         public int Popularity { get; set; }
         public IEnumerable<string> Genres { get; set; }
-        public IEnumerable<GameRecomendationListingModel> SimilarGames { get; set; }
+        public PopularGamesServiceListingModel[] SimilarGames { get; set; }
     }
 }
