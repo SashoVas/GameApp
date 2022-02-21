@@ -61,6 +61,10 @@ namespace GameApp.Services
                 .ThenInclude(ug=>ug.Game)
                 .ThenInclude(g=>g.Reviews)
                 .SingleOrDefaultAsync(u => u.UserName == username);
+            if (user==null)
+            {
+                return null;
+            }
             user.Reviews.ToList().ForEach(x => arr[(int)x.Score]++);
             var reviews = user.Reviews.Count();
             var model=new UserInfoServiceModel

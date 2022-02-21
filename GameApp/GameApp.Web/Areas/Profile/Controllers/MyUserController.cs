@@ -18,6 +18,10 @@ namespace GameApp.Web.Areas.Profile.Controllers
         public async Task<IActionResult> ProfileInfo(string name)
         {
             var userInfo =await userService.GetUserInfo(name);
+            if (userInfo==null)
+            {
+                return this.NotFound();
+            }
             var model = new ProfileInfoViewModel 
             {
                 UserName=userInfo.UserName,

@@ -82,6 +82,7 @@ namespace GameApp.Services
             {
                 model = model.Where(g => g.Users.Any(gu => gu.User.UserName == username));
             }
+            
             return await model
                 .Skip(page*10)
                 .Take(10)

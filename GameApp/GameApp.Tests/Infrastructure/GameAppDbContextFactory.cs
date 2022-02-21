@@ -16,6 +16,7 @@ namespace GameApp.Tests.Infrastructure
             var options = new DbContextOptionsBuilder<GameAppDbContext>()
                 .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
+            
             var context = new GameAppDbContext(options);
             return context;
         }
