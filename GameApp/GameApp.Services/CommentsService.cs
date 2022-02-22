@@ -68,6 +68,7 @@ namespace GameApp.Services
 
         public async Task<IEnumerable<CommentsServiceListingModel>> LoadComments(int pageId,int gameId)
         {
+            
             var commentsList =await comments
                 .All()
                 .Where(c => c.GameId == gameId && c.CommentedOnId==null)
