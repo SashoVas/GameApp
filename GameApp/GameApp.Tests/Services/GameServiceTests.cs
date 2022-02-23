@@ -2,8 +2,10 @@
 using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
+using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -127,7 +129,35 @@ namespace GameApp.Tests.Services
             var game = await gameService.GetGame(null, null);
             Assert.Null(game);
         }
+        [Fact]
+        public async Task TestCreateGame()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            
+            var genreService = new Mock<GenreService>(new Repository<Genre>(context));
+            var gameService = new GameService(games, genreService.Object, null);
+            var id=await gameService.Create("TestGame",30,"smt",DateTime.MinValue,new List<string>(),null);
+            var result = games.All().Last();
 
+            var actualGame = new Game 
+            {
+                Id=id,
+                Name="TestGame",
+                Price=30,
+                Description="smt",
+                ReleaseDate=DateTime.MinValue,
+                ImageUrl="User.png"
+            };
+
+            Assert.Equal(result.Id, actualGame.Id);
+            Assert.Equal(result.Name, actualGame.Name);
+            Assert.Equal(result.Price, actualGame.Price);
+            Assert.Equal(result.Description, actualGame.Description);
+            Assert.Equal(result.ReleaseDate, actualGame.ReleaseDate);
+            Assert.Equal(result.ImageUrl, actualGame.ImageUrl);
+
+        }
 
     }
 }

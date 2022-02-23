@@ -55,6 +55,10 @@ namespace GameApp.Services
         public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId)
         {
             var receipt =await receipts.All().Include(r=>r.UserGames).ThenInclude(ug=>ug.Game).SingleOrDefaultAsync(r => r.Id == receiptId);
+            if (receipt==null)
+            {
+                return null;
+            }
             return new AllReceiptsServiceListingModel 
             {
                 Games = receipt.UserGames

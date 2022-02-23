@@ -169,5 +169,34 @@ namespace GameApp.Tests.Services
             Assert.Equal(newComment.GameId, actualComment.GameId);
             Assert.Equal(newComment.UserId, actualComment.UserId);
         }
+        [Fact]
+        public async Task TestCreateReply()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Comment>(context);
+            var store = new Mock<IUserStore<User>>();
+            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            var user = context.Users.SingleOrDefault(u => u.Id == "1");
+            userManager.Setup(um => um.FindByIdAsync("1")).Returns(async () => user);
+            var gameServiceMock = new Mock<GameService>(new Repository<Game>(context), null, null);
+
+            var commentsService = new CommentsService(repo, userManager.Object, gameServiceMock.Object);
+
+            await commentsService.CreateReply(0,"smt","1","3");
+            var newComment = repo.All().Last();
+            var actualReply = new Comment 
+            { 
+                Content="smt",
+                GameId = 0,
+                UserId = "1",
+                CommentedOnId="3",
+            };
+
+            Assert.Equal(newComment.Content, actualReply.Content);
+            Assert.Equal(newComment.GameId, actualReply.GameId);
+            Assert.Equal(newComment.UserId, actualReply.UserId);
+            Assert.Equal(newComment.CommentedOnId, actualReply.CommentedOnId);
+        }
     }
 }

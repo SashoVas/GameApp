@@ -35,6 +35,10 @@ namespace GameApp.Web.Controllers
             {
                 Receipts =await receiptService.GetAll(this.User.FindFirstValue(ClaimTypes.NameIdentifier))
             };
+            if (model.Receipts==null)
+            {
+                this.NotFound();
+            }
             return this.View(model);
         }
     }
