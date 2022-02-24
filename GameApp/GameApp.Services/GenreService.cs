@@ -20,6 +20,10 @@ namespace GameApp.Services
 
         public async Task<bool> Create(string name)
         {
+            if (name==null)
+            {
+                throw new ArgumentNullException();
+            }
             await genres.AddAsync(new Genre { Name = name });
             await genres.SaveChangesAsync();
             return true;
