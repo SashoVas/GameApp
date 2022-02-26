@@ -72,6 +72,7 @@ namespace GameApp.Services
             var commentsList =await comments
                 .All()
                 .Where(c => c.GameId == gameId && c.CommentedOnId==null)
+                .OrderByDescending(c=>c.PostedOn)
                 .Skip(pageId*10)
                 .Take(10)
                 .Select(c => new CommentsServiceListingModel
@@ -90,6 +91,7 @@ namespace GameApp.Services
             return await comments
                 .All()
                 .Where(c => c.CommentedOnId == commentId)
+                .OrderByDescending(c=>c.PostedOn)
                 .Select(c => new ReplyServiceListingModel
                 {
                     Username = c.User.UserName,

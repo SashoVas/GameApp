@@ -3,6 +3,7 @@ using GameApp.Web.Models.Comments;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace GameApp.Web.Controllers
@@ -37,7 +38,7 @@ namespace GameApp.Web.Controllers
         }
 
         [HttpGet("LoadComments/{page?}")]
-        public async Task<ActionResult<LoadCommentsViewModel>> LoadComments(int page,int gameId)
+        public async Task<ActionResult<LoadCommentsViewModel>> LoadComments([Required] int page, [Required] int gameId)
         {
             var model = new LoadCommentsViewModel 
             { 
@@ -60,7 +61,7 @@ namespace GameApp.Web.Controllers
             return model;
         }
         [HttpGet("LoadReplies/{commentId}")]
-        public async Task<ActionResult<RepliesViewModel>>LoadReplies(string commentId)
+        public async Task<ActionResult<RepliesViewModel>>LoadReplies([Required] string commentId)
         {
             var model = new RepliesViewModel
             {

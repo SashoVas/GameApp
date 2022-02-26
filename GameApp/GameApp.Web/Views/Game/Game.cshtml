@@ -92,6 +92,14 @@
         <li>Studio:</li>
 
     </ul>
+    @if (!Model.HaveGame)
+        {
+            <form class="mb-4" method="post">
+                <input name="id" type="hidden" value="@Model.Id">
+                <input type="submit" class="btn btn-primary btn-lg bg-success" asp-controller="Cart" asp-action="AddToCart" value="AddToCart">
+            </form>
+        }
+
 </div>
 
 <div class="main-div right-div">
@@ -121,6 +129,9 @@
         
         
     </div>
+
+    
+
     <h2>Reviews</h2>
     <div class="comment">
                 <div class="user-info">
@@ -145,10 +156,8 @@
     </div>
     <button onclick="LoadMoreComments()" class="btn btn-primary btn-lg centerbutton">Load More</button>
 </div>
-<form class="mb-4" method="post">
-    <input name="id" type="hidden" value="@Model.Id">
-    <input type="submit" class="btn btn-primary btn-lg" asp-controller="Cart" asp-action="AddToCart">
-</form>
+
+
 
 
 @section Scripts{

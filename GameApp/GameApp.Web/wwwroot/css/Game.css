@@ -1,0 +1,56 @@
+﻿.main-div {
+    float: left;
+}
+
+.left-div {
+    width: 20%;
+}
+
+.right-div {
+    width: 80%;
+}
+
+.scores {
+    display: flex;
+    justify-content: space-around;
+}
+
+h2 {
+    margin-left: 30%;
+}
+
+.description p {
+    margin: 2%;
+}
+
+.recomendations {
+    display: flex;
+    justify-content: space-around;
+}
+
+.table-div-float-left {
+    display: flex;
+}
+
+.name-column-2 {
+    margin-left: 3%;
+}
+
+tr, .game-name {
+    font-size: 33px;
+}
+
+.ganres {
+    font-size: 13px;
+}
+
+.ganres ul {
+    padding: 0px;
+}
+.content {
+    margin-left: 5%;
+}
+
+.comment {
+    margin-bottom: 3%;
+}

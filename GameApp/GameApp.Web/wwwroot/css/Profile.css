@@ -1,0 +1,33 @@
+﻿.littlemargin {
+    margin-left: 3%;
+}
+
+.profile {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.description {
+    grid-column: span 2;
+}
+
+.profile-left-part {
+    grid-row: span 2;
+}
+
+no-blue {
+    float: left;
+}
+
+.moremargin {
+    margin-left: 30%;
+}
+
+.game-infor-profile {
+    float: left;
+}
+
+.favouritegames {
+    float: left;
+}

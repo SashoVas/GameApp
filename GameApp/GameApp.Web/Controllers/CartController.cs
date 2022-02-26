@@ -1,6 +1,7 @@
 ﻿using GameApp.Services.Contracts;
 using GameApp.Web.Models.Cart;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameApp.Web.Controllers
 {
@@ -20,7 +21,7 @@ namespace GameApp.Web.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task< IActionResult> AddToCart(int id)
+        public async Task< IActionResult> AddToCart([Required]int id)
         {
             bool accepted=await cartService.AddToCart(id);
 
@@ -28,7 +29,7 @@ namespace GameApp.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult>Remove(int id)
+        public async Task<IActionResult>Remove([Required] int id)
         {
             await cartService.RemoveFromCart(id);
             return this.RedirectToAction(nameof(Cart));
