@@ -12,7 +12,9 @@ namespace GameApp.Data.Seeding
         {
             var seeders = new List<ISeeder> 
             { 
-                new RoleSeeder(),new GenreSeeder(),new GameSeeder() 
+                new RoleSeeder()
+                ,new GenreSeeder()
+                ,new GameSeeder() 
             };
             foreach (var seeder in seeders)
             {

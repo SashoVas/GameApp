@@ -183,6 +183,19 @@ namespace GameApp.Services
                 }).ToArrayAsync();
         }
 
+        public async Task<PopularGamesServiceListingModel[]> GetUpcomingGames()
+        {
+            return await games
+                .All()
+                .Where(g => g.ReleaseDate > DateTime.UtcNow).Select(g=> new PopularGamesServiceListingModel
+                {
+                    ImgUrl=g.ImageUrl,
+                    Name=g.Name
+                }) 
+                .Take(5)
+                .ToArrayAsync();
+        }
+
         public async Task RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId)
         {
             await shoppingCart.RemoveFromCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));

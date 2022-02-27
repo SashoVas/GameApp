@@ -6,5 +6,6 @@ namespace GameApp.Web.Models.Home
     {
         public PopularGamesServiceListingModel[] PopularGames { get; set; }
         public PopularGamesServiceListingModel[] TopRankedGames { get; set; }
+        public PopularGamesServiceListingModel[] UpcomingGames { get; set; }
     }
 }

@@ -20,10 +20,11 @@ namespace GameApp.Web.Controllers
         }
         public async Task<IActionResult> Index(int page)
         {
-            var model = new HomeIndexViewModel 
+            var model = new HomeIndexViewModel
             {
                 PopularGames = await gameService.GetPopularGames(),
-                TopRankedGames=await gameService.GetTopRankedGames()
+                TopRankedGames = await gameService.GetTopRankedGames(),
+                UpcomingGames = await gameService.GetUpcomingGames()
             };
             return View(model);
         }

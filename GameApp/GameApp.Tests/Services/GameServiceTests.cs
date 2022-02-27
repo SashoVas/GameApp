@@ -158,6 +158,42 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.ImageUrl, actualGame.ImageUrl);
 
         }
+        [Fact]
+        public async Task TestGetUpcomingGames()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+
+            for (int i = 1; i < 9; i++)
+            {
+                var game = new Game
+                {
+                    Name = "UpcomingGame" + i.ToString(),
+                    Description = "UpcomingGame" + i.ToString(),
+                    Id = i + 60,
+                    Price = 60,
+                    ReleaseDate = DateTime.UtcNow.AddDays(50 + i)
+                };
+
+                await games.AddAsync(game);
+            }
+            await context.SaveChangesAsync();
+
+            var result =await gameService.GetUpcomingGames();
+
+            var actual =await games
+                .All()
+                .Where(g=>g.ReleaseDate>DateTime.UtcNow)
+                .ToListAsync();
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                Assert.Equal(result[i].Name,actual[i].Name);
+                Assert.Equal(result[i].ImgUrl, actual[i].ImageUrl);
+            }
+        }
 
     }
 }

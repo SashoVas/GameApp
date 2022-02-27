@@ -14,9 +14,13 @@
                 {
 
                         <li class="popular-gams-item">
-                          <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
-                          <br>
-                          <a>@Model.PopularGames[i].Name</a>
+                            <a href="/Game?title=@Model.PopularGames[i].Name">
+                                <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                            </a>
+                                <br>
+                                <a>@Model.PopularGames[i].Name</a>
+                            
+                          
                       </li>
                 }
            
@@ -30,7 +34,10 @@
                 {
 
                         <li class="popular-gams-item">
-                          <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                            <a href="/Game?title=@Model.PopularGames[i].Name">
+                                <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                            </a>
+                          
                           <br>
                           <a>@Model.PopularGames[i].Name</a>
                       </li>
@@ -45,7 +52,9 @@
                 {
 
                         <li class="popular-gams-item">
-                          <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                          <a href="/Game?title=@Model.PopularGames[i].Name">
+                                <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                            </a>
                           <br>
                           <a>@Model.PopularGames[i].Name</a>
                       </li>
@@ -72,8 +81,11 @@
             {
                 <li>
                     <b>#@(i+1)</b>
-                    <img height="70px" width="60px" src="~/Files/User.png" />
-                    <a>ahsjkfhasjkf</a>
+                    <a href="/Game?title=@Model.UpcomingGames[i].Name">
+                        <img height="70px" width="60px" src="~/Files/@Model.UpcomingGames[i].ImgUrl" />
+                    </a>
+                    
+                    <a>@Model.UpcomingGames[i].Name</a>
                 </li>
                 <hr>
             }
@@ -93,7 +105,10 @@
                 {
 
                         <li class="popular-gams-item">
-                          <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                            <a href="/Game?title=@Model.TopRankedGames[i].Name">
+                                <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                            </a>
+                         
                           <br>
                           <a>@Model.TopRankedGames[i].Name</a>
                       </li>
@@ -109,7 +124,9 @@
                 {
 
                         <li class="popular-gams-item">
-                          <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                          <a href="/Game?title=@Model.TopRankedGames[i].Name">
+                                <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                            </a>
                           <br>
                           <a>@Model.TopRankedGames[i].Name</a>
                       </li>
@@ -124,7 +141,9 @@
                 {
 
                         <li class="popular-gams-item">
-                          <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                          <a href="/Game?title=@Model.TopRankedGames[i].Name">
+                                <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                            </a>
                           <br>
                           <a>@Model.TopRankedGames[i].Name</a>
                       </li>
