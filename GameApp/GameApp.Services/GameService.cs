@@ -161,7 +161,7 @@ namespace GameApp.Services
         public async Task<PopularGamesServiceListingModel[]> GetPopularGames()
         {
             return await games.All()
-                .OrderBy(g => g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Sum(r => r.Score) 
+                .OrderByDescending(g => g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Sum(r => r.Score) 
                 / (g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Count() > 0 ? g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Count() : 1))
                 .Take(15)
                 .Select(g=>new PopularGamesServiceListingModel 
@@ -174,7 +174,7 @@ namespace GameApp.Services
         public async Task<PopularGamesServiceListingModel[]> GetTopRankedGames()
         {
             return await games.All()
-                .OrderBy(g=> g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
+                .OrderByDescending(g=> g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
                 .Take(15)
                 .Select(g=>new PopularGamesServiceListingModel 
                 { 

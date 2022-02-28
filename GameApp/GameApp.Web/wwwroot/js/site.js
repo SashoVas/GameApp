@@ -19,7 +19,7 @@ function PostComment(event) {
             "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
         },
         success: AddCommentsToStart
-    });
+    }).fail(function () { alert("Comment too short"); });
     $("#commentContents").val("");
 }
 
@@ -100,7 +100,7 @@ function Reply(element, id) {
             AddReply($(element.parentElement.parentElement),replies)
 
         }
-    });
+    }).fail(function () { alert("Reply too short"); });
     $("#replytext" + id).val("")
     
 }
@@ -142,9 +142,11 @@ function SendFriendRequest() {
         },
         success: function () {
             $("#friend-request-name-input").val("");
-        }
-        
-    });
+            $("#send-request-validation").attr("hidden", true);
+        },
+    }).fail( function () {
+        $("#send-request-validation").attr("hidden", false);
+        });
 
 }
 
@@ -180,6 +182,14 @@ function AcceptFirendRequest(element) {
         success: function () {
             $(element.parentElement.parentElement).remove();
             AddFriend(username);
+            let requestCount = $("#request-num").text() - 1;
+            console.log(requestCount);
+            if (requestCount <= 0) {
+                $("#request-num").hide();
+            }
+            else {
+                $("#request-num").text(requestCount);
+            }
         }
 
     });

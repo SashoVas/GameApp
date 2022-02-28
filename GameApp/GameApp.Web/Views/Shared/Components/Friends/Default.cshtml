@@ -16,7 +16,7 @@
             Requests 
             @if(Model.Requests.Count()>0)
             {
-                <span class="badge bg-danger circle">@Model.Requests.Count()</span>          
+                <span id="request-num" class="badge bg-danger circle">@Model.Requests.Count()</span>          
             }
             
         </button>
@@ -91,7 +91,8 @@
                     <label >Name</label>
                     <input class="form-control" id="friend-request-name-input" type="text">
                     <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary" value="Add Friend">
-                    
+                    <br>
+                    <span id="send-request-validation" hidden class="text-danger">This user does not exist.</span>
                 </form>
 
             </div>
