@@ -21,6 +21,7 @@ namespace GameApp.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<Friend> Friends { get; set; }
+        public DbSet<Card> Cards { get; set; }
 
         public GameAppDbContext(DbContextOptions options) : base(options)
         {

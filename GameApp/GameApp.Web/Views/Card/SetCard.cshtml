@@ -1,0 +1,94 @@
+﻿@using GameApp.Data.Models
+@using GameApp.Web.Models.Card
+@{
+    ViewData["Title"] = "SetCard";
+}
+@model SetCardInputModel
+<div class="form-body">
+        <div class="row">
+            <div class="form-holder">
+                <div class="form-content">
+                    <div class="form-items">
+                        <h3>Set Card</h3>
+                        <p>Fill in the data below.</p>
+                        <form class="requires-validation" method="post" novalidate>
+                            <div id="main-form">
+
+                                <div class="col-md-12">
+                                   <label asp-for="CardType"></label>
+                                   <select asp-for="CardType" asp-items="Html.GetEnumSelectList<CardType>()">
+                                        <option selected="selected" value="">Please select</option>
+                                    </select>
+                                   <span class="text-danger" asp-validation-for="CardType"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                   <label asp-for="CardNumber"></label>
+                                   <input class="form-control" asp-for="CardNumber">
+                                   <span class="text-danger" asp-validation-for="CardNumber"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                   <label asp-for="FirstName"></label>
+                                   <input class="form-control" asp-for="FirstName">
+                                   <span class="text-danger" asp-validation-for="FirstName"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                   <label asp-for="LastName"></label>
+                                   <input class="form-control" asp-for="LastName">
+                                   <span class="text-danger" asp-validation-for="LastName"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                   <label asp-for="Address"></label>
+                                   <input class="form-control" asp-for="Address">
+                                   <span class="text-danger" asp-validation-for="Address"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                   <label asp-for="Address"></label>
+                                   <input class="form-control" asp-for="Address">
+                                   <span class="text-danger" asp-validation-for="Address"></span>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label asp-for="Country"></label>
+                                    <input class="form-control" asp-for="Country" >
+                                    <span class="text-danger" asp-validation-for="Country"></span>
+                                 </div>
+
+                                 <div class="col-md-12">
+                                    <label asp-for="City"></label>
+                                    <input class="form-control" asp-for="City" >
+                                    <span class="text-danger" asp-validation-for="City"></span>
+                                 </div>
+
+                                 <div class="col-md-12">
+                                    <label asp-for="ExpirationDate"></label>
+                                    <input class="form-control" asp-for="ExpirationDate" >
+                                    <span class="text-danger" asp-validation-for="ExpirationDate"></span>
+                                 </div>
+
+                                 <div class="col-md-12">
+                                    <label asp-for="ZipCode"></label>
+                                    <input class="form-control" asp-for="ZipCode" >
+                                    <span class="text-danger" asp-validation-for="ZipCode"></span>
+                                 </div>
+
+                                 <div class="col-md-12">
+                                    <label asp-for="PhoneNumber"></label>
+                                    <input class="form-control" asp-for="PhoneNumber" >
+                                    <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+                                 </div>
+                            </div>
+
+                            <div class="form-button mt-3">
+                                <button class="btn btn-primary" asp-controller="Card" asp-action="SetCard">Set Payment Method</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
