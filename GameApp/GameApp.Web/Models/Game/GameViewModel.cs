@@ -14,6 +14,7 @@ namespace GameApp.Web.Models.Game
         public bool HaveGame { get; set; }
         public int Users { get; set; }
         public int Rating { get; set; }
+        public string Video { get; set; }
         public int Rank { get; set; }
         public double Score { get; set; }
         public DateTime ReleaseDate { get; set; }

@@ -16,7 +16,7 @@ namespace GameApp.Services.Contracts
         Task<IEnumerable<AllGamesServiceListingModel>> GetAll(int page, string gameName, string genre, string username);
         Task<PopularGamesServiceListingModel[]> GetPopularGames();
         Task<PopularGamesServiceListingModel[]> GetTopRankedGames();
-        Task<int> Create(string name,decimal price,string description, DateTime date, IEnumerable<string> newGenres, IFormFile image);
+        Task<int> Create(string name,decimal price,string description, DateTime date, IEnumerable<string> newGenres, IFormFile image, string video);
         Task SetGameByName(Review review, string gameName);
         Task SetGameById(Comment game, int gameId);
         Task AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);

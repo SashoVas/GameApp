@@ -15,6 +15,7 @@ namespace GameApp.Services.Models
         public bool HaveGame { get; set; }
         public int Users { get; set; }
         public int Rank { get; set; }
+        public string Video { get; set; }
         public int Popularity { get; set; }
         public double GameRating { get; set; }
         public double UserRating { get; set; }

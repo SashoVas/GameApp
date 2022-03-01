@@ -21,6 +21,7 @@ namespace GameApp.Data.Models
         public decimal Price { get; set; }
         public string Description { get; set; }
         public string? ImageUrl { get; set; }
+        public string? Video { get; set; }
         public DateTime ReleaseDate { get; set; }
         public ICollection<GameGenre> Genres { get; set; }
         public ICollection<UserGame> Users { get; set; }

@@ -43,7 +43,8 @@ namespace GameApp.Web.Controllers
                 Popularity = game.Popularity,
                 ReleaseDate = game.ReleaseDate,
                 Score = game.GameRating,
-                SimilarGames=await gamesService.GetPopularGames()
+                SimilarGames=await gamesService.GetPopularGames(),
+                Video=game.Video
             }); 
 
         }
@@ -75,7 +76,7 @@ namespace GameApp.Web.Controllers
             {
                 return this.View(model);
             }
-            int id=await gamesService.Create(model.Name,model.Price,model.Description,model.Date,model.Genres,model.Image);
+            int id=await gamesService.Create(model.Name,model.Price,model.Description,model.Date,model.Genres,model.Image,model.VideoUrl);
             return this.RedirectToAction(nameof(AllGames));
         }
         

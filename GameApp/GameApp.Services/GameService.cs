@@ -34,7 +34,7 @@ namespace GameApp.Services
             await shoppingCart.AddToCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));
         }
 
-        public async Task<int> Create(string name, decimal price, string description,DateTime date, IEnumerable<string> newGenres, IFormFile image)
+        public async Task<int> Create(string name, decimal price, string description,DateTime date, IEnumerable<string> newGenres, IFormFile image,string video)
         {
             var game = new Game {
                 Name = name,
@@ -42,6 +42,11 @@ namespace GameApp.Services
                 Description = description,
                 ReleaseDate=date
             };
+            if (video!=null)
+            {
+                game.Video = video.Split("?v=")[1];
+            }
+
             await genreService.SetGenreToGameByName(game, newGenres);
             
             if (image==null)
@@ -124,7 +129,8 @@ namespace GameApp.Services
                 Genres=game.Genres.Select(gg=>gg.Genre.Name),
                 Users=game.Users.Count(),
                 GameRating=game.Reviews.Sum(r => r.Score) / (game.Reviews.Count() > 0 ? game.Reviews.Count() : 1),
-                ReleaseDate=game.ReleaseDate
+                ReleaseDate=game.ReleaseDate,
+                Video=game.Video
                
             };
             model.Rank = games
