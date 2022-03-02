@@ -91,6 +91,12 @@ namespace GameApp.Services
             
         }
 
+        public async Task<bool> SetUsersToCard(Card card, string userId)
+        {
+            card.User =await userManager.FindByIdAsync(userId);
+            return true;
+        }
+
         public async Task<bool> SetUsersToFriend(Friend friend, string userId, string friendName)
         {
             friend.MainUser =await userManager.FindByIdAsync(userId);

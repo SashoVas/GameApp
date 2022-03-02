@@ -137,7 +137,7 @@ namespace GameApp.Tests.Services
             
             var genreService = new Mock<GenreService>(new Repository<Genre>(context));
             var gameService = new GameService(games, genreService.Object, null);
-            var id=await gameService.Create("TestGame",30,"smt",DateTime.MinValue,new List<string>(),null);
+            var id=await gameService.Create("TestGame",30,"smt",DateTime.MinValue,new List<string>(),null,null);
             var result = games.All().Last();
 
             var actualGame = new Game 

@@ -12,11 +12,13 @@ namespace GameApp.Web.Controllers
         private readonly IGameService gamesService;
         private readonly ICartService cartService;
         private readonly IReviewService reviewService;
-        public GameController(IGameService gamesService, ICartService cartService, IReviewService reviewService)
+        private readonly ICardService cardService;
+        public GameController(IGameService gamesService, ICartService cartService, IReviewService reviewService, ICardService cardService)
         {
             this.gamesService = gamesService;
             this.cartService = cartService;
             this.reviewService = reviewService;
+            this.cardService = cardService;
         }
         [Route("Game")]
         public async Task<IActionResult> Game(string title)
@@ -85,6 +87,10 @@ namespace GameApp.Web.Controllers
         public async Task<IActionResult>Buy()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!(await cardService.HaveCard(userId)))
+            {
+                return this.Redirect("~/Card/SetCard");
+            }
             await cartService.BuyItems(userId);
             HttpContext.Items["userId"] = userId;
             return this.Redirect("/");
