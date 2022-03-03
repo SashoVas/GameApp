@@ -1,0 +1,28 @@
+﻿@using GameApp.Web.Models.Card
+@model AllCardsViewModel
+<table class="table table-striped table-dark">
+  <thead>
+    <tr>
+      <th scope="col">CardType </th>
+      <th scope="col">FirstName</th>
+      <th scope="col">LastName</th>
+      <th scope="col">Change</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    @foreach(var item in Model.Cards)
+    {
+        <tr>
+           <td class="nopadding">@item.CardType
+          </td>
+          <td class="nopadding">@item.FirstName
+          </td>
+          <td class="nopadding">@item.LastName
+          </td>
+          <th scope="col"><a class="btn btn-primary" href="/Card/SetCard?cardId=@item.Id">Change</a></th>
+        </tr>
+    }
+  </tbody>
+</table>
+<a class="btn btn-primary" asp-controller="Card" asp-action="CreateCard">Create Card</a>

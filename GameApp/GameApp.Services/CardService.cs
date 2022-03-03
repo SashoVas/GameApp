@@ -43,9 +43,9 @@ namespace GameApp.Services
             return true;
         }
 
-        public async Task<CardServiceModel> GetCard(string userId)
+        public async Task<CardServiceModel> GetCard(string userId,string cardId)
         {
-            var card = await cards.All().FirstOrDefaultAsync(c => c.UserId == userId);
+            var card = await cards.All().FirstOrDefaultAsync(c => c.UserId == userId&& c.Id== cardId);
             if (card==null)
             {
                 return null;
@@ -63,6 +63,20 @@ namespace GameApp.Services
                 LastName=card.LastName,
                 PhoneNumber=card.PhoneNumber
             } ;
+        }
+
+        public async Task<IEnumerable< AllCardsServiceListingModel>> GetCards(string userId)
+        {
+            return await cards
+                .All()
+                .Where(c => c.UserId == userId)
+                .Select(c=>new AllCardsServiceListingModel 
+                { 
+                    Id=c.Id,
+                    CardType=c.CardType,
+                    FirstName=c.FirstName,
+                    LastName=c.LastName
+                }).ToListAsync();
         }
 
         public async Task<bool> HaveCard(string userId)

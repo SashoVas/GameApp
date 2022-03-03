@@ -22,7 +22,8 @@ namespace GameApp.Services.Contracts
             string phoneNumber,
             string userId
             );
-        Task<CardServiceModel> GetCard(string userId);
+        Task<CardServiceModel> GetCard(string userId, string cardId);
         Task<bool> HaveCard(string userId);
+        Task<IEnumerable<AllCardsServiceListingModel>> GetCards(string userId);
     }
 }
