@@ -2,6 +2,7 @@
 using GameApp.Web.Models.Card;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace GameApp.Web.Controllers
@@ -60,7 +61,8 @@ namespace GameApp.Web.Controllers
                 ZipCode = card.ZipCode,
                 ExpirationDate = card.ExpirationDate,
                 LastName = card.LastName,
-                PhoneNumber = card.PhoneNumber
+                PhoneNumber = card.PhoneNumber,
+                CardId=cardId
             });
         }
         [Authorize]
@@ -68,11 +70,11 @@ namespace GameApp.Web.Controllers
         public async Task<IActionResult> SetCard(SetCardInputModel model)
         {
             //TODO:Set New Values
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || model.CardId==null)
             {
                 return View(model);
             }
-            await cardService.Create(model.CardType,
+            await cardService.SetCard(model.CardType,
                 model.CardNumber,
                 model.FirstName,
                 model.LastName,
@@ -82,11 +84,22 @@ namespace GameApp.Web.Controllers
                 model.City,
                 model.ZipCode,
                 model.PhoneNumber,
-                this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                this.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                ,model.CardId);
 
             return this.Redirect("/");
         }
-
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult>Remove([Required]string cardId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
+            await cardService.Remove(cardId);
+            return this.Redirect(nameof(ChooseCard));
+        }
         public async Task <IActionResult> ChooseCard()
         {
             var cards = new AllCardsViewModel

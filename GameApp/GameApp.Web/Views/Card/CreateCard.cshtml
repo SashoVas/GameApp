@@ -47,12 +47,6 @@
                                 </div>
 
                                 <div class="col-md-12">
-                                   <label asp-for="Address"></label>
-                                   <input class="form-control" asp-for="Address">
-                                   <span class="text-danger" asp-validation-for="Address"></span>
-                                </div>
-
-                                <div class="col-md-12">
                                     <label asp-for="Country"></label>
                                     <input class="form-control" asp-for="Country" >
                                     <span class="text-danger" asp-validation-for="Country"></span>
@@ -84,7 +78,7 @@
                             </div>
 
                             <div class="form-button mt-3">
-                                <button class="btn btn-primary" asp-controller="Card" asp-action="SetCard">Set Payment Method</button>
+                                <button class="btn btn-primary" asp-controller="Card" asp-action="CreateCard">Create</button>
                             </div>
                         </form>
                     </div>

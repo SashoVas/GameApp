@@ -85,5 +85,31 @@ namespace GameApp.Services
                 .All()
                 .AnyAsync(c=>c.UserId==userId);
         }
+
+        public async Task<bool> Remove(string cardId)
+        {
+            cards.Delete(await cards.All().FirstOrDefaultAsync(c=>c.Id==cardId));
+            await cards.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> SetCard(CardType cardType, string cardNumber, string firstName, string lastName, string address, string country, DateTime date, string city, string zipCode, string phoneNumber, string userId,string cardId)
+        {
+            var card =await cards.All().FirstOrDefaultAsync(c=>c.UserId==userId&&c.Id==cardId);
+            card.FirstName = firstName;
+            card.LastName = lastName;
+            card.CardNumber = cardNumber;
+            card.Address = address;
+            card.Country = country;
+            card.ExpirationDate = date;
+            card.City = city;
+            card.ZipCode = zipCode;
+            card.PhoneNumber = phoneNumber;
+            card.CardType = cardType;
+            cards.Update(card);
+            await cards.SaveChangesAsync();
+            return true;
+
+        }
     }
 }
