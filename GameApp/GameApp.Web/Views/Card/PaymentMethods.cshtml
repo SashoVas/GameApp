@@ -6,7 +6,8 @@
       <th scope="col">CardType </th>
       <th scope="col">FirstName</th>
       <th scope="col">LastName</th>
-      <th scope="col">Use</th>
+      <th scope="col">Change</th>
+      <th scope="col">Remove</th>
     </tr>
   </thead>
   <tbody>
@@ -20,10 +21,11 @@
           </td>
           <td class="nopadding">@item.LastName
           </td>
-          <form method="post" asp-controller="Game" asp-action="Buy" >
+          <td scope="nopadding"><a class="btn btn-primary" href="/Card/SetCard?cardId=@item.Id">Change</a></td>
+          <form method="post" asp-controller="Card" asp-action="Remove" >
             <td scope="nopadding"  >
                 <input type="hidden" name="cardId" value="@item.Id">
-                <input type="submit" class="btn btn-primary" value="Use">
+                <input type="submit" class="btn btn-primary" value="Remove">
             </td>
           </form>
           

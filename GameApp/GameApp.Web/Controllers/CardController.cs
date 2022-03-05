@@ -40,7 +40,7 @@ namespace GameApp.Web.Controllers
                 model.PhoneNumber,
                 this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return this.Redirect("~/Card/ChooseCard");
+            return this.Redirect(nameof(PaymentMethods));
         }
         [Authorize]
         public async Task<IActionResult> SetCard(string cardId)
@@ -98,14 +98,26 @@ namespace GameApp.Web.Controllers
                 return this.BadRequest();
             }
             await cardService.Remove(cardId);
-            return this.Redirect(nameof(ChooseCard));
+            return this.Redirect(nameof(PaymentMethods));
         }
-        public async Task <IActionResult> ChooseCard()
+        public async Task <IActionResult> PaymentMethods()
         {
             var cards = new AllCardsViewModel
             {
                 Cards = await cardService.GetCards(this.User.FindFirstValue(ClaimTypes.NameIdentifier))
             };
+            return this.View(cards);
+        }
+        public async Task<IActionResult> ChooseCard()
+        {
+            var cards = new AllCardsViewModel
+            {
+                Cards = await cardService.GetCards(this.User.FindFirstValue(ClaimTypes.NameIdentifier))
+            };
+            if (cards.Cards.Count()==0)
+            {
+                return this.Redirect(nameof(CreateCard));
+            }
             return this.View(cards);
         }
     }

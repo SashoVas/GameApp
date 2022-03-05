@@ -16,6 +16,8 @@ namespace GameApp.Data.Models
         public string UserId { get; set; }
         public User User { get; set; }
         public ICollection<UserGame> UserGames { get; set; }
+        public string CardId { get; set; }
+        public Card Card { get; set; }
         public DateTime ReceiptDate { get; set; }
 
     }

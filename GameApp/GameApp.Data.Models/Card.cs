@@ -8,6 +8,10 @@ namespace GameApp.Data.Models
 {
     public class Card
     {
+        public Card()
+        {
+            this.Receipts = new HashSet<Receipt>();
+        }
         public string Id { get; set; }
         public CardType CardType { get; set; }
         public string CardNumber { get; set; }
@@ -21,6 +25,7 @@ namespace GameApp.Data.Models
         public string PhoneNumber { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
+        public ICollection<Receipt> Receipts { get; set; }
 
     }
 }

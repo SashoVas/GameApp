@@ -90,7 +90,6 @@ namespace GameApp.Services
         
             
         }
-
         public async Task<bool> SetUsersToCard(Card card, string userId)
         {
             card.User =await userManager.FindByIdAsync(userId);

@@ -84,13 +84,10 @@ namespace GameApp.Web.Controllers
         
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult>Buy()
+        public async Task<IActionResult>Buy(string cardId)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!(await cardService.HaveCard(userId)))
-            {
-                return this.Redirect("~/Card/SetCard");
-            }
+
             await cartService.BuyItems(userId);
             HttpContext.Items["userId"] = userId;
             return this.Redirect("/");
@@ -106,5 +103,7 @@ namespace GameApp.Web.Controllers
             await reviewService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Redirect("~/Game?title="+rate.GameName);
         }
+
+
     }
 }

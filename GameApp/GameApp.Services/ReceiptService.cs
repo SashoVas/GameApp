@@ -23,6 +23,7 @@ namespace GameApp.Services
         }
         public async Task<bool> CreateReceipt(string userId, List<UserGame> userGames)
         {
+            //TODO:SetCard
             var receipt = new Receipt
             {
                 Id=Guid.NewGuid().ToString(),
