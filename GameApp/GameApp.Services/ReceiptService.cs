@@ -16,20 +16,22 @@ namespace GameApp.Services
     {
         private readonly UserManager<User> userManager;
         private readonly IRepository<Receipt> receipts;
-        public ReceiptService(UserManager<User> userManager, IRepository<Receipt> receipts)
+        private readonly ICardService cardService;
+        public ReceiptService(UserManager<User> userManager, IRepository<Receipt> receipts, ICardService cardService)
         {
             this.userManager = userManager;
             this.receipts = receipts;
+            this.cardService = cardService;
         }
-        public async Task<bool> CreateReceipt(string userId, List<UserGame> userGames)
+        public async Task<bool> CreateReceipt(string userId, List<UserGame> userGames,string cardId)
         {
-            //TODO:SetCard
             var receipt = new Receipt
             {
                 Id=Guid.NewGuid().ToString(),
                 User = await userManager.FindByIdAsync(userId),
                 ReceiptDate = DateTime.UtcNow
             };
+            await cardService.SetCardToReceipt(receipt,cardId);
             receipt.UserGames = userGames;
             await receipts.AddAsync(receipt);
             return true;
@@ -55,7 +57,12 @@ namespace GameApp.Services
 
         public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId)
         {
-            var receipt =await receipts.All().Include(r=>r.UserGames).ThenInclude(ug=>ug.Game).SingleOrDefaultAsync(r => r.Id == receiptId);
+            var receipt =await receipts
+                .All()
+                .Include(r=>r.Card)
+                .Include(r=>r.UserGames)
+                .ThenInclude(ug=>ug.Game)
+                .SingleOrDefaultAsync(r => r.Id == receiptId);
             if (receipt==null)
             {
                 return null;
@@ -69,8 +76,11 @@ namespace GameApp.Services
                        Price = ug.Game.Price
                    }),
                 Date = receipt.ReceiptDate.ToString("yyyy,MM,dd"),
-                Id = receipt.Id
-
+                Id = receipt.Id,
+                CardFirstName=receipt.Card.FirstName,
+                CardLastName=receipt.Card.LastName,
+                CardNumber=receipt.Card.CardNumber,
+                CardType=receipt.Card.CardType,
             };
         }
     }

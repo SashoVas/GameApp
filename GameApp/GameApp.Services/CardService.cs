@@ -111,5 +111,13 @@ namespace GameApp.Services
             return true;
 
         }
+
+        public async Task<bool> SetCardToReceipt(Receipt receipt, string cardId)
+        {
+            receipt.Card =await cards
+                .All()
+                .FirstOrDefaultAsync(c=>c.Id==cardId);
+            return true;
+        }
     }
 }

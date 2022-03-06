@@ -88,7 +88,7 @@ namespace GameApp.Web.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await cartService.BuyItems(userId);
+            await cartService.BuyItems(userId, cardId);
             HttpContext.Items["userId"] = userId;
             return this.Redirect("/");
         }

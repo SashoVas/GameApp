@@ -83,6 +83,12 @@ namespace GameApp.Data
                 .WithMany()
                 .HasForeignKey(f => f.FriendUserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Card>()
+                .HasMany(c => c.Receipts)
+                .WithOne(r => r.Card)
+                .HasForeignKey(r => r.CardId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
     }

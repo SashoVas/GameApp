@@ -23,7 +23,11 @@ namespace GameApp.Web.Controllers
             var model = new ReceiptViewModel 
             { 
                 Games=receipt.Games,
-                Date=receipt.Date
+                Date=receipt.Date,
+                CardFirstName=receipt.CardFirstName,
+                CardLastName=receipt.CardLastName,
+                CardNumber=receipt.CardNumber,
+                CardType=receipt.CardType
             };
             return this.View(model);
         }

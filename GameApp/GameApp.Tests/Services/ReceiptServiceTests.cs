@@ -56,7 +56,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
 
-            var receiptService = new ReceiptService(null,receipts);
+            var receiptService = new ReceiptService(null,receipts,null);
             var result = (await receiptService.GetAll(userId)).ToList();
 
             var actualData = receipts.All().Where(r => r.UserId == userId).ToList();
@@ -75,7 +75,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
 
-            var receiptService = new ReceiptService(null, receipts);
+            var receiptService = new ReceiptService(null, receipts, null);
             var result = (await receiptService.GetAll(userId)).ToList();
             Assert.Equal(result.Count(),0);
         }
@@ -88,7 +88,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var receiptService = new ReceiptService(null, receipts);
+            var receiptService = new ReceiptService(null, receipts, null);
 
             var result = await receiptService.GetReceipt(receiptId);
 
@@ -105,7 +105,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var receiptService = new ReceiptService(null, receipts);
+            var receiptService = new ReceiptService(null, receipts, null);
 
             var result = await receiptService.GetReceipt(receiptId);
 
@@ -123,8 +123,8 @@ namespace GameApp.Tests.Services
             var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             var user = context.Users.SingleOrDefault(u => u.Id == userId);
             userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async() => user);
-            var receiptService = new ReceiptService(userManager.Object, receipts);
-
+            var receiptService = new ReceiptService(userManager.Object, receipts, null);
+            //TODO:Fix this
             await receiptService.CreateReceipt(userId,new List<UserGame>());
             await context.SaveChangesAsync();
 

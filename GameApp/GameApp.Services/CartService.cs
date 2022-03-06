@@ -28,7 +28,7 @@ namespace GameApp.Services
             this.gameService = gameService;
             this.receiptService = receiptService;
         }
-        public async Task<bool> BuyItems(string userId)
+        public async Task<bool> BuyItems(string userId,string cardId)
         {
             var cartItems = await shoppingCart
                 .GetCartItems()
@@ -50,7 +50,7 @@ namespace GameApp.Services
                     gamesForReceipt.Add(ug); 
 
                 });
-            await receiptService.CreateReceipt(userId, gamesForReceipt);
+            await receiptService.CreateReceipt(userId, gamesForReceipt, cardId);
 
 
             await userGames.SaveChangesAsync();
