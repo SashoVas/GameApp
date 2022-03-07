@@ -2,6 +2,7 @@
 using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
+using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -34,8 +35,23 @@ namespace GameApp.Tests.Services
             {
                 var receipt = new Receipt
                 {
-                    Id=i.ToString(),
-                    User = i % 2 == 0 ? user1 : user2
+                    Id = i.ToString(),
+                    User = i % 2 == 0 ? user1 : user2,
+                    Card = new Card
+                    {
+                        Id = "Card" + i.ToString(),
+                        Address = "Card" + i.ToString(),
+                        CardNumber = "Card" + i.ToString(),
+                        CardType = CardType.MasterCard,
+                        City = "Card" + i.ToString(),
+                        Country = "Card" + i.ToString(),
+                        ExpirationDate = DateTime.UtcNow,
+                        FirstName="Card"+i.ToString(),
+                        LastName="Card"+i.ToString(),
+                        PhoneNumber="Card"+i.ToString(),
+                        ZipCode="Card"+i.ToString(),
+                        User = i % 2 == 0 ? user1 : user2,
+                    }
                 };
                 receipts.Add(receipt);
             }
@@ -88,7 +104,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var receiptService = new ReceiptService(null, receipts, null);
+            var receiptService = new ReceiptService(null, receipts,null);
 
             var result = await receiptService.GetReceipt(receiptId);
 
@@ -123,9 +139,11 @@ namespace GameApp.Tests.Services
             var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             var user = context.Users.SingleOrDefault(u => u.Id == userId);
             userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async() => user);
-            var receiptService = new ReceiptService(userManager.Object, receipts, null);
+
+            var cardServiceMock = new CardService(new Repository<Card>(context),null);
+            var receiptService = new ReceiptService(userManager.Object, receipts, cardServiceMock);
             //TODO:Fix this
-            await receiptService.CreateReceipt(userId,new List<UserGame>());
+            await receiptService.CreateReceipt(userId,new List<UserGame>(),"Card1");
             await context.SaveChangesAsync();
 
             var result = receipts.All().Last();

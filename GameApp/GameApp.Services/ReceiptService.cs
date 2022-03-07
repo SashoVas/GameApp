@@ -57,6 +57,7 @@ namespace GameApp.Services
 
         public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId)
         {
+
             var receipt =await receipts
                 .All()
                 .Include(r=>r.Card)
