@@ -183,7 +183,7 @@ function AcceptFirendRequest(element) {
             $(element.parentElement.parentElement).remove();
             AddFriend(username);
             let requestCount = $("#request-num").text() - 1;
-            console.log(requestCount);
+            $("#no-friends").hide();
             if (requestCount <= 0) {
                 $("#request-num").hide();
             }

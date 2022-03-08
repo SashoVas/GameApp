@@ -26,6 +26,10 @@
     <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
         <div class="card-body">
             <div class="list-group">
+                @if(Model.Requests.Count()==0)
+                {
+                    <a>No Requests</a>
+                }
                 @foreach(var name in @Model.Requests)
                 {
                     <div>
@@ -55,7 +59,11 @@
         <div class="card-body">
             
             <div class="list-group" id="friend-list">
-                @foreach(var name in Model.Friends)
+                @if(Model.Friends.Count()==0)
+                {
+                    <a id="no-friends">No Friends</a>      
+                }
+                    @foreach(var name in Model.Friends)
                     {
                         <div class="list-group">
                         <div class="btn-group">
