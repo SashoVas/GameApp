@@ -95,14 +95,14 @@
         <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
             <div class="card-body">
                 
-                <form class="requires-validation" method="post">
+                <form asp-area="Profile" asp-controller="MyUser" asp-action="SearchUser" class="requires-validation" method="get">
                     <label >Name</label>
-                    <input class="form-control" id="friend-request-name-input" type="text">
-                    <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary" value="Add Friend">
+                    <input class="form-control" name="username" id="friend-request-name-input" type="text">
+                    <input type="submit" class="btn btn-primary" value="Search">
                     <br>
-                    <span id="send-request-validation" hidden class="text-danger">This user does not exist.</span>
                 </form>
-
+                <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary" value="Add Friend">
+                <span id="send-request-validation" hidden class="text-danger">This user does not exist.</span>
             </div>
         </div>
     </div>

@@ -48,5 +48,11 @@ namespace GameApp.Web.Areas.Profile.Controllers
             await userService.ChangeImage(file,userId);
             return this.Redirect("/Profile/MyUser/ProfileInfo/" + this.User.Identity.Name);
         }
+
+        public IActionResult SearchUser([Required]string username)
+        {
+            //TODO:Create UI
+            return this.Content(username);
+        }
     }
 }

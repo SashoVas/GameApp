@@ -42,7 +42,7 @@ function AddComments(comments) {
     for (let i = 0; i < comments.comments.length; i++) {
         let currentComment = comments.comments[i];
 
-        let start = `<div class="comment" id="` + currentComment.commentId + `"><div class="user-info"><ul class="d-flex nopadding"><li class="right-div" >` + escapeHtml(currentComment.username) + `</li>`;
+        let start = `<div class="comment" id="` + currentComment.commentId + `"><div class="user-info"><ul class="d-flex nopadding"><li class="right-div" ><a href="/Profile/MyUser/ProfileInfo/${escapeHtml(currentComment.username)}">` + escapeHtml(currentComment.username) + `</a></li>`;
         let loadReplies = ``;
         if (currentComment.hasComments) {
             loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId + `')">Load More</a>`;
@@ -124,7 +124,7 @@ function AddReply(parrent,replies)
         if (currentComment.hasComments) {
             loadReplies = `<a href="#" id='load-replies` + currentComment.commentId + `' onclick="LoadReplies(this,'` + currentComment.commentId + `')">Load More</a>`;
         }
-        let start = `<div class="littlemargin"><a>` + escapeHtml(currentComment.username) + `:</a><a>` + escapeHtml(currentComment.content) + `</a> <a href="#" onclick="AppendInput(this)">Reply</a> ` + loadReplies + `</div>`;
+        let start = `<div class="littlemargin"><a href="/Profile/MyUser/ProfileInfo/${escapeHtml(currentComment.username)}">` + escapeHtml(currentComment.username) + `:</a><a>` + escapeHtml(currentComment.content) + `</a> <a href="#" onclick="AppendInput(this)">Reply</a> ` + loadReplies + `</div>`;
         parrent.append($(start).append($("<div id='comment-reply'></div>").hide().append(`<textarea id="replytext` + currentComment.commentId + `" rows="2" style="width:100%" placeholder="Write your reply"></textarea>`).append(`<button class="btn btn-primary btn-lg" onclick=Reply(this,'` + currentComment.commentId + `')>Reply</button>`)));
         parrent.append("<hr>");
     }
