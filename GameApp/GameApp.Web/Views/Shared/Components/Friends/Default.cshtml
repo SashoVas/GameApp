@@ -98,10 +98,10 @@
                 <form asp-area="Profile" asp-controller="MyUser" asp-action="SearchUser" class="requires-validation" method="get">
                     <label >Name</label>
                     <input class="form-control" name="username" id="friend-request-name-input" type="text">
-                    <input type="submit" class="btn btn-primary" value="Search">
+                    <input type="submit" class="btn btn-primary mt-2" value="Search">
                     <br>
                 </form>
-                <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary" value="Add Friend">
+                <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary mt-2" value="Add Friend">
                 <span id="send-request-validation" hidden class="text-danger">This user does not exist.</span>
             </div>
         </div>

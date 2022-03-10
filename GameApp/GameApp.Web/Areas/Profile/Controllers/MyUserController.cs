@@ -49,10 +49,17 @@ namespace GameApp.Web.Areas.Profile.Controllers
             return this.Redirect("/Profile/MyUser/ProfileInfo/" + this.User.Identity.Name);
         }
 
-        public IActionResult SearchUser([Required]string username)
+        public async Task<IActionResult> SearchUser([Required]string username)
         {
-            //TODO:Create UI
-            return this.Content(username);
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
+            var model = new UsersViewModel
+            {
+                Users =await userService.GetUsersByName(username)
+            };
+            return this.View(model);
         }
     }
 }

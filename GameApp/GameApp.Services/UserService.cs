@@ -90,6 +90,21 @@ namespace GameApp.Services
         
             
         }
+
+        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username)
+        {
+            return await this.users
+                .All()
+                .Where(u => u.UserName.ToLower().Contains(username.ToLower()))
+                .Select(u=> new UsersListingModel
+                {
+                    ImgUrl=u.ImgURL,
+                    Games=u.Games.Count(),
+                    Username=u.UserName,
+                    Description=u.Description
+                }).ToListAsync();
+        }
+
         public async Task<bool> SetUsersToCard(Card card, string userId)
         {
             card.User =await userManager.FindByIdAsync(userId);

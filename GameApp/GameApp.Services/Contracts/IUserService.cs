@@ -16,5 +16,6 @@ namespace GameApp.Services.Contracts
         Task<bool> EditDescription(string description, string userId);
         Task<bool> SetUsersToFriend(Friend friend,string userId, string friendName);
         Task<bool> SetUsersToCard(Card card, string userId);
+        Task<IEnumerable<UsersListingModel>> GetUsersByName(string username);
     }
 }

@@ -1,0 +1,30 @@
+﻿@using GameApp.Web.Areas.Profile.Models
+@model UsersViewModel
+<div>
+    @foreach(var user in Model.Users)
+    {
+
+        <div class="card text-white bg-dark text-center mt-2">
+            <div class="card-header">
+                @user.Username
+            </div>
+            <div class="card-body d-flex">
+            <div>
+                <img width="200px" height="200px" src="~/Files/@user.ImgUrl">
+            </div>
+            <div  class="mx-auto">
+                <h4 class="card-title">Description</h4>
+                <p class="card-text">@user.Description</p>
+                <a href="/Profile/MyUser/ProfileInfo/@user.Username" class="btn btn-primary">Show</a>
+                <a href="#" class="btn btn-primary">Add</a>
+            </div>
+            
+            </div>
+            <div class="card-footer text-muted">
+            Games:@user.Games
+            </div>
+        </div>
+
+    }
+    
+</div>
