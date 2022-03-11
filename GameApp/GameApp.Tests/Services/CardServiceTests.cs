@@ -79,6 +79,17 @@ namespace GameApp.Tests.Services
             }
         }
         [Fact]
+        public async Task TestGetAllCardsWithImproperDataShouldReturnEmpty()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Card>(context);
+            var cardService = new CardService(repo, null);
+
+            var result = (await cardService.GetCards("not a value")).ToList();
+            Assert.Empty(result);
+        }
+        [Fact]
         public async Task TestGetCardShoutReturnCard()
         {
             var context = GameAppDbContextFactory.InitializeContext();
@@ -100,6 +111,23 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.ExpirationDate, acctual.ExpirationDate);
             Assert.Equal(result.ZipCode, acctual.ZipCode);
         }
+        [Fact]
+        public async Task TestGetCardWithImproperDataShoutNull()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Card>(context);
+            var cardService = new CardService(repo, null);
+
+            var result = await cardService.GetCard("not a value", "not a value");
+
+            Assert.Null(result);
+
+            result = await cardService.GetCard(null, null);
+
+            Assert.Null(result);
+        }
+
         [Fact]
         public async Task TestCreateCardShouldCreateCard()
         {

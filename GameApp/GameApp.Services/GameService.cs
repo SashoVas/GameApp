@@ -215,6 +215,7 @@ namespace GameApp.Services
 
         public async Task SetGameByName(Review review, string gameName)
         {
+            //TODO:Fix this
             review.Game =await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
         }
 

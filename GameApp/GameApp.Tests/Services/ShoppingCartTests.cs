@@ -107,6 +107,21 @@ namespace GameApp.Tests.Services
 
         }
         [Fact]
+        public async Task TestGetCartItemsWithImproperDataShouldReturnEmpty()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+
+            var repo = new Repository<ShoppingCartGame>(context);
+            var shoppingCart = new ShoppingCart(repo);
+            shoppingCart.Id = null;
+
+            var result = shoppingCart.GetCartItems().ToList();
+
+            Assert.Empty(result);
+
+        }
+            [Fact]
         public async Task TestAddToCartShouldAddItem()
         {
             var context = GameAppDbContextFactory.InitializeContext();

@@ -85,5 +85,35 @@ namespace GameApp.Tests.Services
             var changedDescription = actualData.SingleOrDefault(u => u.Id == userId);
             Assert.Equal(changedDescription.Description,"smt");
         }
+        [Fact]
+        public async Task TestGetUsersShouldReturnMatchingUsers()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<User>(context);
+            var userService = new UserService(null, null,repo );
+
+            var result = (await userService.GetUsersByName("1")).ToList();
+
+            var actual = repo.All().Where(u => u.UserName.ToLower().Contains("1")).ToList() ;
+
+            for (int i = 0; i < result.Count; i++)
+            {
+                Assert.Equal(result[i].Username, actual[i].UserName);
+                Assert.Equal(result[i].Description, actual[i].Description);
+                Assert.Equal(result[i].ImgUrl, actual[i].ImgURL);
+            }
+        }
+        [Fact]
+        public async Task TestGetUsersWithImproperDataShouldReturnEmptyArray()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<User>(context);
+            var userService = new UserService(null, null, repo);
+
+            var result = (await userService.GetUsersByName("not a name")).ToList();
+            Assert.Empty(result);
+        }
     }
 }
