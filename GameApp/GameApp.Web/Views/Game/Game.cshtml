@@ -5,7 +5,7 @@
 @model GameViewModel
 <h1>@Model.Name </h1>
 <div class="main-div left-div">
-    <img width="100%" height="300px"src="~/Files/@Model.ImageUrl">
+    <img class="img-fluid" width="100%" height="300px"src="~/Files/@Model.ImageUrl">
     @if(Model.HaveGame)
     {
        @if(@Model.UserRating==0)
@@ -126,7 +126,7 @@
         @for(int i=0;i<5;i++)
         {
             <div >
-                <img width="100px" height="100px"src="~/Files/@Model.SimilarGames[i].ImgUrl">
+                <img class="img-fluid" width="100px" height="100px"src="~/Files/@Model.SimilarGames[i].ImgUrl">
                 <h5 >@Model.SimilarGames[i].Name</h5>
             </div>
         }

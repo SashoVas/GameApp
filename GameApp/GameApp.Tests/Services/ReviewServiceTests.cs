@@ -94,6 +94,29 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.Game.Description, actual.Game.Description);
 
         }
+        public async Task TestRateWithImproperDataShouldReturnFalse()
+        {
+            //TODO:Fix this
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Review>(context);
+
+            var store = new Mock<IUserStore<User>>();
+            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            var user = context.Users.SingleOrDefault(u => u.Id == "1");
+            userManager.Setup(um => um.FindByIdAsync("1")).Returns(async () => user);
+
+            var gameServiceMock = new Mock<GameService>(new Repository<Game>(context), null, null);
+
+            var reviewService = new ReviewService(repo, gameServiceMock.Object, userManager.Object);
+
+            Assert.False(await reviewService.Rate(null, 5, "1"));
+
+            var game = context.Games.SingleOrDefault(g => g.Name == "Game1");
+            var result = repo
+                .All()
+                .Last();
+        }
 
     }
 }

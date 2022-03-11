@@ -9,13 +9,13 @@
       <div class="carousel-inner">
 
         <div class="carousel-item active">
-            <ul class="popular-games">
+            <ul class="d-flex justify-content-center">
             @for(int i=0;i<5;i++)
                 {
 
-                        <li class="popular-gams-item">
-                            <a href="/Game?title=@Model.PopularGames[i].Name">
-                                <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                        <li >
+                            <a  href="/Game?title=@Model.PopularGames[i].Name">
+                                <img class="img-fluid" height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
                             </a>
                             <br>
                             <a>@Model.PopularGames[i].Name</a>
@@ -29,13 +29,13 @@
         </div>
 
         <div class="carousel-item">
-           <ul class="popular-games">
+           <ul class="d-flex justify-content-center">
                 @for(int i=5;i<10;i++)
                 {
 
-                        <li class="popular-gams-item">
+                        <li >
                             <a href="/Game?title=@Model.PopularGames[i].Name">
-                                <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                                <img class="img-fluid" height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
                             </a>
                           
                           <br>
@@ -47,13 +47,13 @@
         </div>
 
         <div class="carousel-item">
-                 <ul class="popular-games">
+                 <ul class="d-flex justify-content-center">
                 @for(int i=10;i<15;i++)
                 {
 
-                        <li class="popular-gams-item">
+                        <li >
                           <a href="/Game?title=@Model.PopularGames[i].Name">
-                                <img height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
+                                <img class="img-fluid" height="200px" width="180px" src="~/Files/@Model.PopularGames[i].ImgUrl" />
                             </a>
                           <br>
                           <a>@Model.PopularGames[i].Name</a>
@@ -82,7 +82,7 @@
                 <li>
                     <b>#@(i+1)</b>
                     <a href="/Game?title=@Model.UpcomingGames[i].Name">
-                        <img height="70px" width="60px" src="~/Files/@Model.UpcomingGames[i].ImgUrl" />
+                        <img class="img-fluid" height="70px" width="60px" src="~/Files/@Model.UpcomingGames[i].ImgUrl" />
                     </a>
                     
                     <a>@Model.UpcomingGames[i].Name</a>
@@ -100,13 +100,13 @@
       <div class="carousel-inner">
 
         <div class="carousel-item active">
-            <ul class="popular-games">
+            <ul class="d-flex justify-content-center">
             @for(int i=0;i<5;i++)
                 {
 
-                        <li class="popular-gams-item">
+                        <li >
                             <a href="/Game?title=@Model.TopRankedGames[i].Name">
-                                <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                                <img class="img-fluid" height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
                             </a>
                          
                           <br>
@@ -119,13 +119,13 @@
         </div>
 
         <div class="carousel-item">
-           <ul class="popular-games">
+           <ul class="d-flex justify-content-center">
                 @for(int i=5;i<10;i++)
                 {
 
-                        <li class="popular-gams-item">
+                        <li >
                           <a href="/Game?title=@Model.TopRankedGames[i].Name">
-                                <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                                <img class="img-fluid" height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
                             </a>
                           <br>
                           <a>@Model.TopRankedGames[i].Name</a>
@@ -136,13 +136,13 @@
         </div>
 
         <div class="carousel-item">
-                 <ul class="popular-games">
+                 <ul class="d-flex justify-content-center">
                 @for(int i=10;i<15;i++)
                 {
 
-                        <li class="popular-gams-item">
+                        <li>
                           <a href="/Game?title=@Model.TopRankedGames[i].Name">
-                                <img height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
+                                <img class="img-fluid" height="200px" width="180px" src="~/Files/@Model.TopRankedGames[i].ImgUrl" />
                             </a>
                           <br>
                           <a>@Model.TopRankedGames[i].Name</a>
