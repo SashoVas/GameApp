@@ -107,15 +107,38 @@ namespace GameApp.Services
 
         public async Task<bool> SetUsersToCard(Card card, string userId)
         {
-            card.User =await userManager.FindByIdAsync(userId);
+            var user=await userManager.FindByIdAsync(userId);
+            if (user==null)
+            {
+                return false;
+            }
+            card.User = user;
             return true;
         }
 
         public async Task<bool> SetUsersToFriend(Friend friend, string userId, string friendName)
         {
-            friend.MainUser =await userManager.FindByIdAsync(userId);
-            friend.FriendUser = await userManager.FindByNameAsync(friendName);
+            var main=await userManager.FindByIdAsync(userId);
+            var newFriend= await userManager.FindByNameAsync(friendName);
+            if (main==null||newFriend==null)
+            {
+                return false;
+            }
+            friend.MainUser = main;
+            friend.FriendUser = newFriend;
             return true;
+        }
+
+        public async Task<bool> SetUsersToReview(Review review, string userId)
+        {
+            var user= await userManager.FindByIdAsync(userId);
+            if (user==null)
+            {
+                return false;
+            }
+            review.User = user;
+            return true;
+
         }
     }
 }

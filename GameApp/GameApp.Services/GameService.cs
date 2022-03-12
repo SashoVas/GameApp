@@ -208,15 +208,26 @@ namespace GameApp.Services
 
         }
 
-        public async Task SetGameById(Comment comment,int gameId)
+        public async Task<bool> SetGameById(Comment comment,int gameId)
         {
-            comment.Game =await games.All().SingleOrDefaultAsync(g => g.Id==gameId);
+            var game=await games.All().SingleOrDefaultAsync(g => g.Id==gameId);
+            if (game==null)
+            {
+                return false;
+            }
+            comment.Game = game;
+            return true;
         }
 
-        public async Task SetGameByName(Review review, string gameName)
+        public async Task<bool> SetGameByName(Review review, string gameName)
         {
-            //TODO:Fix this
-            review.Game =await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
+            var game=await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
+            if (game==null)
+            {
+                return false;
+            }
+            review.Game = game;
+            return true;
         }
 
 

@@ -31,7 +31,12 @@ namespace GameApp.Services
                 PostedOn=DateTime.UtcNow,
                 User=await userManager.FindByIdAsync(userId),
             };
-            await gameService.SetGameById(comment, gameId);
+            var hasGame=await gameService.SetGameById(comment, gameId);
+            
+            if (!hasGame)
+            {
+                throw new ArgumentException();
+            }
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
             return new List<CommentsServiceListingModel>{ new CommentsServiceListingModel
@@ -54,7 +59,11 @@ namespace GameApp.Services
                 User = await userManager.FindByIdAsync(userId),
                 CommentedOn=await comments.All().SingleOrDefaultAsync(c=>c.Id==commentId)
             };
-            await gameService.SetGameById(comment, gameId);
+            var hasGame=await gameService.SetGameById(comment, gameId);
+            if (!hasGame)
+            {
+                throw new ArgumentException();
+            }
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
             return  new List<ReplyServiceListingModel> { new ReplyServiceListingModel 

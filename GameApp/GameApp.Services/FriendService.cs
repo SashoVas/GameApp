@@ -57,7 +57,11 @@ namespace GameApp.Services
             if (friend==null)
             {
                 friend = new Friend {Status= FriendStatus.Request };
-                await userService.SetUsersToFriend(friend,userId,username);
+                var hasFriend=await userService.SetUsersToFriend(friend,userId,username);
+                if (!hasFriend)
+                {
+                    return false;
+                }
                 await friends.AddAsync(friend);
             }
             else

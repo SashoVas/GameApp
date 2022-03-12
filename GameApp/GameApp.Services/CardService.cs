@@ -37,7 +37,11 @@ namespace GameApp.Services
                 CardType=cardType,
                 Id=Guid.NewGuid().ToString(),
             };
-            await userService.SetUsersToCard(card,userId);
+            var hasUser=await userService.SetUsersToCard(card,userId);
+            if (!hasUser)
+            {
+                return false;
+            }
             await cards.AddAsync(card);
             await cards.SaveChangesAsync();
             return true;
