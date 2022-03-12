@@ -171,5 +171,40 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.PhoneNumber, card.PhoneNumber);
             Assert.Equal(result.ZipCode, card.ZipCode);
         }
+        [Theory]
+        [InlineData("NotUser")]
+        [InlineData(null)]
+        public async Task TestCreateCardWithImproperDataShouldReturnFalse(string userId)
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Card>(context);
+            var store = new Mock<IUserStore<User>>();
+            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            userManagerMock.Setup(um => um.FindByIdAsync(userId)).Returns(async () => user);
+            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
+            var cardService = new CardService(repo, userService);
+
+            var card = new Card
+            {
+
+                Id = "NewCard",
+                Address = "NewCardAdders",
+                CardNumber = "NewCardCardNumber",
+                CardType = CardType.MasterCard,
+                City = "NewCardCity",
+                Country = "NewCardCountry",
+                ExpirationDate = DateTime.UtcNow,
+                FirstName = "NewCardFirstName",
+                LastName = "NewCardLastName",
+                PhoneNumber = "NewCardPhoneNumber",
+                ZipCode = "NewCardZipCode",
+                User = user
+            };
+            
+            Assert.False(await cardService.Create(card.CardType, card.CardNumber, card.FirstName, card.LastName, card.Address, card.Country, card.ExpirationDate, card.City, card.ZipCode, card.PhoneNumber, userId));
+        }
+
     }
 }

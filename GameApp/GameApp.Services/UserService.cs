@@ -116,6 +116,17 @@ namespace GameApp.Services
             return true;
         }
 
+        public async Task<bool> SetUsersToComment(Comment comment, string userId)
+        {
+            var user= await userManager.FindByIdAsync(userId);
+            if (user==null)
+            {
+                return false;
+            }
+            comment.User = user;
+            return true;
+        }
+
         public async Task<bool> SetUsersToFriend(Friend friend, string userId, string friendName)
         {
             var main=await userManager.FindByIdAsync(userId);

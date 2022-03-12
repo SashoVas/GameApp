@@ -31,7 +31,11 @@ namespace GameApp.Services
                 User = await userManager.FindByIdAsync(userId),
                 ReceiptDate = DateTime.UtcNow
             };
-            await cardService.SetCardToReceipt(receipt,cardId);
+            var hasCard=await cardService.SetCardToReceipt(receipt,cardId);
+            if (!hasCard)
+            {
+                return false;
+            }
             receipt.UserGames = userGames;
             await receipts.AddAsync(receipt);
             return true;
