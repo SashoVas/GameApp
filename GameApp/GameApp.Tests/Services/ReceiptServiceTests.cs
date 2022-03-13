@@ -85,7 +85,7 @@ namespace GameApp.Tests.Services
         [Theory]
         [InlineData("-1")]
         [InlineData(null)]
-        public async Task TestGetAllReceiptsWithInProperData(string userId)
+        public async Task TestGetAllReceiptsWithImproperData(string userId)
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
@@ -141,19 +141,39 @@ namespace GameApp.Tests.Services
             userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async() => user);
 
             var cardServiceMock = new CardService(new Repository<Card>(context),null);
-            var receiptService = new ReceiptService(userManager.Object, receipts, cardServiceMock);
-            //TODO:Fix this
-            await receiptService.CreateReceipt(userId,new List<UserGame>(),"Card1");
+            var userService = new UserService(userManager.Object,null,null);
+            var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
+            Assert.True(await receiptService.CreateReceipt(userId,new List<UserGame>(),"Card1"));
             await context.SaveChangesAsync();
 
             var result = receipts.All().Last();
 
             var actual =new Receipt
-                {
-                    UserId=userId,
-                };
+            {
+                UserId=userId,
+            };
 
             Assert.Equal(result.UserId, actual.UserId);
+
+        }
+        [Theory]
+        [InlineData(null,"Card1")]
+        [InlineData("1",null)]
+        public async Task TestCreateReceiptWithImproperDataShouldReturnNull(string userId,string cardId)
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var receipts = new Repository<Receipt>(context);
+            var userManagerMock = new Mock<UserManager<User>>();
+            var store = new Mock<IUserStore<User>>();
+            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            var user = context.Users.SingleOrDefault(u => u.Id == userId);
+            userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async () => user);
+
+            var cardServiceMock = new CardService(new Repository<Card>(context), null);
+            var userService = new UserService(userManager.Object,null,null);
+            var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
+            Assert.False(await receiptService.CreateReceipt(userId, new List<UserGame>(), cardId));
 
         }
     }

@@ -14,12 +14,12 @@ namespace GameApp.Services
 {
     public class ReceiptService : IReceiptService
     {
-        private readonly UserManager<User> userManager;
+        private readonly IUserService userService;
         private readonly IRepository<Receipt> receipts;
         private readonly ICardService cardService;
-        public ReceiptService(UserManager<User> userManager, IRepository<Receipt> receipts, ICardService cardService)
+        public ReceiptService(IUserService userService, IRepository<Receipt> receipts, ICardService cardService)
         {
-            this.userManager = userManager;
+            this.userService = userService;
             this.receipts = receipts;
             this.cardService = cardService;
         }
@@ -28,9 +28,13 @@ namespace GameApp.Services
             var receipt = new Receipt
             {
                 Id=Guid.NewGuid().ToString(),
-                User = await userManager.FindByIdAsync(userId),
                 ReceiptDate = DateTime.UtcNow
             };
+            var hasUser=await userService.SetUsersToReceipt(receipt,userId);
+            if (!hasUser)
+            {
+                return false;
+            }
             var hasCard=await cardService.SetCardToReceipt(receipt,cardId);
             if (!hasCard)
             {

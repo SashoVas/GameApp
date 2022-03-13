@@ -147,6 +147,46 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.MainUser.UserName, actualData.MainUser.UserName);
 
         }
+        [Theory]
+        [InlineData("NewUser1", null)]
+        [InlineData("NewUser1", "NoUser")]
+        [InlineData(null, "NewUser2")]
+        [InlineData("NoUser", "NewUser2")]
+        public async Task TestSendFriendRequestWithImproperDataShouldReturnFalse(string userId,string username)
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Friend>(context);
+
+            var newUser1 = new User
+            {
+                Id = "NewUser1",
+                UserName = "NewUser1"
+            };
+
+            var newUser2 = new User
+            {
+                Id = "NewUser2",
+                UserName = "NewUser2"
+            };
+
+            await context.Users.AddAsync(newUser1);
+            await context.Users.AddAsync(newUser2);
+            await context.SaveChangesAsync();
+
+            var store = new Mock<IUserStore<User>>();
+            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            userManager.Setup(um => um.FindByIdAsync("NewUser1")).Returns(async () => newUser1);
+            userManager.Setup(um => um.FindByNameAsync("NewUser2")).Returns(async () => newUser2);
+
+            var userService = new UserService(userManager.Object, null, null);
+
+
+            var friendService = new FriendService(repo, userService);
+
+            Assert.False(await friendService.SendFriendRequest(userId, username));
+        }
+
         [Fact]
         public async Task TestSendFriendRequestShouldChangeOldOne()
         {
@@ -200,6 +240,23 @@ namespace GameApp.Tests.Services
 
             Assert.Equal(result.Status,FriendStatus.Rejected);
         }
+
+        [Theory]
+        [InlineData(null, "FriendUser2", FriendStatus.Rejected, FriendStatus.Friend)]
+        [InlineData("MainUser2", null, FriendStatus.Rejected, FriendStatus.Friend)]
+        [InlineData("MainUser2", "FriendUser2", FriendStatus.Friend, FriendStatus.Rejected)]
+        [InlineData("MainUser2", "FriendUser2", FriendStatus.Rejected, FriendStatus.Rejected)]
+        [InlineData("MainUser2", "FriendUser2", FriendStatus.Request, FriendStatus.Request)]
+        public async Task TestChangeStatusWithImproperDataShouldReturnFalse(string userId, string username,FriendStatus friendStatus1,FriendStatus friendStatus2)
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Friend>(context);
+            var friendService = new FriendService(repo, null);
+
+            Assert.False(await friendService.ChangeStatus(userId, username, friendStatus1, friendStatus2));
+        }
+
 
     }
 }

@@ -26,7 +26,7 @@ namespace GameApp.Services
                 .All()
                 .SingleOrDefaultAsync(f=>f.MainUserId==userId
                 &&f.FriendUser.UserName==username||f.FriendUserId==userId && f.MainUser.UserName==username);
-            if (friend.Status!=only)
+            if (friend==null||friend.Status!=only)
             {
                 return false;
             }

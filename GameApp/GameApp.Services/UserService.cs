@@ -140,6 +140,17 @@ namespace GameApp.Services
             return true;
         }
 
+        public async Task<bool> SetUsersToReceipt(Receipt receipt, string userId)
+        {
+            var user=await userManager.FindByIdAsync(userId);
+            if (user==null)
+            {
+                return false;
+            }
+            receipt.User= user;
+            return true;
+        }
+
         public async Task<bool> SetUsersToReview(Review review, string userId)
         {
             var user= await userManager.FindByIdAsync(userId);
