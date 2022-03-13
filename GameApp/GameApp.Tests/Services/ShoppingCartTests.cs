@@ -79,14 +79,15 @@ namespace GameApp.Tests.Services
             var repo = new Repository<ShoppingCartGame>(context);
             var shoppingCart = new ShoppingCart(repo);
             shoppingCart.Id = "1";
-
+            Assert.NotEmpty(repo
+                .All()
+                .Where(c => c.ShoppingCartId == "1"));
             await shoppingCart.Clear();
 
             var result = repo
                 .All().
-                Where(c => c.ShoppingCartId == "1")
-                .Count();
-            Assert.Equal(result, 0);
+                Where(c => c.ShoppingCartId == "1");
+            Assert.Empty(result);
         }
 
         [Fact]
@@ -106,6 +107,23 @@ namespace GameApp.Tests.Services
             Assert.Null(result);
 
         }
+        [Theory]
+        [InlineData("1",-2)]
+        [InlineData("NotUser",2)]
+        public async Task TestRemoveFromCartWithImproperDataShouldReturnNull(string shoppingCartId,int gameId)
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+
+            var repo = new Repository<ShoppingCartGame>(context);
+            var shoppingCart = new ShoppingCart(repo);
+            shoppingCart.Id = shoppingCartId;
+
+            var game = context.Games.SingleOrDefault(g => g.Id == gameId);
+
+            Assert.False(await shoppingCart.RemoveFromCart(game));
+        }
+
         [Fact]
         public async Task TestGetCartItemsWithImproperDataShouldReturnEmpty()
         {
@@ -121,7 +139,7 @@ namespace GameApp.Tests.Services
             Assert.Empty(result);
 
         }
-            [Fact]
+        [Fact]
         public async Task TestAddToCartShouldAddItem()
         {
             var context = GameAppDbContextFactory.InitializeContext();

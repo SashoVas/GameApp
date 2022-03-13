@@ -47,6 +47,10 @@ namespace GameApp.Services
         public async Task<bool> EditDescription(string description, string userId)
         {
             var user =await userManager.FindByIdAsync(userId);
+            if (user==null)
+            {
+                return false;
+            }
             user.Description = description;
             await userManager.UpdateAsync(user);
             return true;

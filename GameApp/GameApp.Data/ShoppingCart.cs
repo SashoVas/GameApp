@@ -55,6 +55,10 @@ namespace GameApp.Data
         }
         public async Task<bool> RemoveFromCart(Game game)
         {
+            if (game==null)
+            {
+                return false;
+            }
             var item = shoppingCartGames
                 .All()
                 .SingleOrDefault(item => item.ShoppingCartId == this.Id

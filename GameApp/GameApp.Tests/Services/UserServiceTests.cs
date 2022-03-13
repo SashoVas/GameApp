@@ -85,6 +85,22 @@ namespace GameApp.Tests.Services
             var changedDescription = actualData.SingleOrDefault(u => u.Id == userId);
             Assert.Equal(changedDescription.Description,"smt");
         }
+        [Theory]
+        [InlineData("NotUser")]
+        public async Task TestEditDescriptionWithImproperDataReturnFalse(string userId)
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var store = new Mock<IUserStore<User>>();
+
+            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            var actualData = GetDummyData();
+            userManagerMock.Setup(u => u.FindByIdAsync(userId))
+                .Returns(async () => actualData.SingleOrDefault(u => u.Id == userId));
+            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
+            Assert.False(await userService.EditDescription("smt", userId));
+        }
+
         [Fact]
         public async Task TestGetUsersShouldReturnMatchingUsers()
         {
