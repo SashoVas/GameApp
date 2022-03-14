@@ -1,16 +1,19 @@
 ﻿@using GameApp.Web.Areas.Profile.Models
 @model UsersViewModel
+@{
+    ViewData["Title"] = "Search User";
+}
 <div>
     @foreach(var user in Model.Users)
     {
 
         <div class="card text-white bg-dark text-center mt-2">
             <div class="card-header">
-                @user.Username
+               <h5>@user.Username</h5> 
             </div>
             <div class="card-body d-flex">
             <div>
-                <img width="200px" height="200px" src="~/Files/@user.ImgUrl">
+                <img class="img-fluid" width="200px" height="200px" src="~/Files/@user.ImgUrl">
             </div>
             <div  class="mx-auto">
                 <h4 class="card-title">Description</h4>

@@ -1,7 +1,7 @@
 ﻿@using GameApp.Data.Models
 @using GameApp.Web.Models.Card
 @{
-    ViewData["Title"] = "SetCard";
+    ViewData["Title"] = "Create Card";
 }
 @model SetCardInputModel
 <div class="form-body">
@@ -13,7 +13,7 @@
                         <p>Fill in the data below.</p>
                         <form class="requires-validation" method="post" novalidate>
                             <div id="main-form">
-
+                                <input type="hidden" asp-for="RetrunUrl" >
                                 <div class="col-md-12">
                                    <label asp-for="CardType"></label>
                                    <select asp-for="CardType" asp-items="Html.GetEnumSelectList<CardType>()">

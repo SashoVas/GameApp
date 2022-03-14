@@ -100,12 +100,13 @@ namespace GameApp.Services
             return await this.users
                 .All()
                 .Where(u => u.UserName.ToLower().Contains(username.ToLower()))
+                .Take(10)
                 .Select(u=> new UsersListingModel
                 {
-                    ImgUrl=u.ImgURL,
+                    ImgUrl=u.ImgURL ?? "User.png",
                     Games=u.Games.Count(),
                     Username=u.UserName,
-                    Description=u.Description
+                    Description=u.Description,
                 }).ToListAsync();
         }
 

@@ -15,9 +15,16 @@ namespace GameApp.Web.Controllers
             this.cardService = cardService;
         }
         [Authorize]
-        public async Task<IActionResult>CreateCard()
+        public async Task<IActionResult>CreateCard(string returnUrl)
         {
-
+            if (returnUrl!=null)
+            {
+                var model = new SetCardInputModel 
+                { 
+                    RetrunUrl=returnUrl
+                };
+                return this.View(model);
+            }
             return this.View();
         }
         [Authorize]
@@ -40,7 +47,7 @@ namespace GameApp.Web.Controllers
                 model.PhoneNumber,
                 this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return this.Redirect(nameof(PaymentMethods));
+            return this.Redirect(model.RetrunUrl ?? nameof(PaymentMethods));
         }
         [Authorize]
         public async Task<IActionResult> SetCard(string cardId)
@@ -116,7 +123,7 @@ namespace GameApp.Web.Controllers
             };
             if (cards.Cards.Count()==0)
             {
-                return this.Redirect(nameof(CreateCard));
+                return this.Redirect(nameof(CreateCard)+"?returnUrl=/Cart");
             }
             return this.View(cards);
         }

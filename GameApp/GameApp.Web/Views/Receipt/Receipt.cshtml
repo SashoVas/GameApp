@@ -1,5 +1,8 @@
 ﻿@using GameApp.Web.Models.Receipt
 @model ReceiptViewModel
+@{
+    ViewData["Title"] = "Receipt";
+}
 <h1 class="text-center">Receipt</h1>
 <hr>
 @foreach(var game in Model.Games)

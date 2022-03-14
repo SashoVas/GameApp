@@ -11,6 +11,7 @@ namespace GameApp.Services.Models
         public string ImgUrl { get; set; }
         public string Username { get; set; }
         public string Description { get; set; }
+        public bool IsFriend { get; set; }
         public int Games { get; set; }
     }
 }

@@ -30,5 +30,6 @@ namespace GameApp.Web.Models.Card
         public string PhoneNumber { get; set; }
 
         public string? CardId { get; set; }
+        public string? RetrunUrl { get; set; }
     }
 }

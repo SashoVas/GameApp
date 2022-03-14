@@ -1,10 +1,12 @@
 ﻿@using GameApp.Web.Areas.Profile.Models
 @model ProfileInfoViewModel
-
+@{
+    ViewData["Title"] = "Profile Info";
+}
  <h1>@Model.UserName</h1>
 <div class="profile">
     <div class="profile-left-part">
-        <img width="200px" height="200px" src="~/Files/@Model.ProfilePic">
+        <img class="img-fluid" width="200px" height="200px" src="~/Files/@Model.ProfilePic">
         <br>
         @if(this.User.Identity.Name==@Model.UserName)
         {
@@ -83,7 +85,7 @@
         @foreach (var item in Model.Games)
             {
                 <li >
-                    <img  width="50px" height="50px" src="~/Files/@item.ImgUrl">
+                    <img class="img-fluid" width="50px" height="50px" src="~/Files/@item.ImgUrl">
                     <b>@item.Name:</b>
                     <small>Score:@item.Score</small>
                 </li>

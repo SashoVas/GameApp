@@ -110,6 +110,8 @@ namespace GameApp.Web.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+                user.Description = "No Description";
+                user.ImgURL = "User.png";
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (_userManager.Users.Count()==1)
