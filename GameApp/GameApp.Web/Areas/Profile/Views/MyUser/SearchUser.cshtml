@@ -19,7 +19,14 @@
                 <h4 class="card-title">Description</h4>
                 <p class="card-text">@user.Description</p>
                 <a href="/Profile/MyUser/ProfileInfo/@user.Username" class="btn btn-primary">Show</a>
-                <a href="#" class="btn btn-primary">Add</a>
+                @if(!user.IsFriend)
+                {
+                    <form>
+                        <a id="add-user-by-name-@user.Username" href="#" class="btn btn-primary mt-2 bg-success" onclick="SendFriendRequestFromUsers('@user.Username')">Add</a>   
+                    </form>
+                     
+                }
+                
             </div>
             
             </div>

@@ -35,7 +35,7 @@
                     <div>
                         <a id="request-name"  href="#" class="list-group-item list-group-item-action bg-dark text-white friend-box">@name</a>
                           <div>
-                            <a onclick="AcceptFirendRequest(this)" class="btn btn-success btn-width-50">Success</a>
+                            <a onclick="AcceptFirendRequest(this)" class="btn btn-success btn-width-50">Accept</a>
                             <a onclick="RejectFirendRequest(this)" class="btn  btn-danger btn-width-50">Cancel</a>
                           </div>
                             <hr>
@@ -99,9 +99,13 @@
                     <label >Name</label>
                     <input class="form-control" name="username" id="friend-request-name-input" type="text">
                     <input type="submit" class="btn btn-primary mt-2" value="Search">
+                    
                     <br>
                 </form>
-                <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary mt-2" value="Add Friend">
+                <form method="post">
+                    <input type="submit" onclick="SendFriendRequest()" class="btn btn-primary mt-2 bg-success" value="Add Friend">
+                </form>
+                
                 <span id="send-request-validation" hidden class="text-danger">This user does not exist.</span>
             </div>
         </div>

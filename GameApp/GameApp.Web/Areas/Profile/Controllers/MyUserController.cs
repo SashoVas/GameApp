@@ -57,7 +57,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
             }
             var model = new UsersViewModel
             {
-                Users =await userService.GetUsersByName(username)
+                Users =await userService.GetUsersByName(username, this.User.FindFirstValue(ClaimTypes.NameIdentifier))
             };
             return this.View(model);
         }

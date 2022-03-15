@@ -27,7 +27,11 @@ namespace GameApp.Web.Controllers
             {
                 return this.BadRequest();
             }
-            await friendService.SendFriendRequest(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username);
+            var hasFriend=await friendService.SendFriendRequest(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username);
+            if (!hasFriend)
+            {
+                return this.BadRequest();
+            }
             return this.Ok();
         }
         [Authorize]

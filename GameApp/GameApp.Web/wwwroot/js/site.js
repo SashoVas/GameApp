@@ -150,6 +150,24 @@ function SendFriendRequest() {
 
 }
 
+function SendFriendRequestFromUsers(username) {
+    event.preventDefault();
+    $.post({
+        url: 'https://localhost:44385/api/Friend/SendFirendRequest',
+        contentType: 'application/json',
+        data: JSON.stringify({ username: username }),
+        headers:
+        {
+            "RequestVerificationToken": $("input[name='__RequestVerificationToken']").val()
+        },
+        success: function () {
+            $("#add-user-by-name-" + username).attr("hidden", true);
+        },
+    }).fail(function () {
+    });
+
+}
+
 function AddFriend(friend) {
     let friendList = $("#friend-list");
     let newFriend = `<div class="list-group">

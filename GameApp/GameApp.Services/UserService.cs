@@ -95,10 +95,11 @@ namespace GameApp.Services
             
         }
 
-        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username)
+        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId)
         {
             return await this.users
                 .All()
+                .Include(u=>u.Friends)
                 .Where(u => u.UserName.ToLower().Contains(username.ToLower()))
                 .Take(10)
                 .Select(u=> new UsersListingModel
@@ -107,6 +108,7 @@ namespace GameApp.Services
                     Games=u.Games.Count(),
                     Username=u.UserName,
                     Description=u.Description,
+                    IsFriend=u.Friends.Any(f=>f.FriendUserId==userId ||f.MainUserId==userId)
                 }).ToListAsync();
         }
 

@@ -30,7 +30,7 @@ builder.Services.AddDefaultIdentity<User>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<GameAppDbContext>();
 
-builder.Services.AddControllersWithViews(configure=>
+builder.Services.AddControllersWithViews(configure =>
     {
         configure.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
     });
