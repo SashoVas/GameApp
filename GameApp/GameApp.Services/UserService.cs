@@ -95,13 +95,14 @@ namespace GameApp.Services
             
         }
 
-        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId)
+        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId,int page)
         {
             return await this.users
                 .All()
                 .Include(u=>u.Friends)
                 .Where(u => u.UserName.ToLower().Contains(username.ToLower()))
-                .Take(10)
+                .Skip(page*5)
+                .Take(5)
                 .Select(u=> new UsersListingModel
                 {
                     ImgUrl=u.ImgURL ?? "User.png",

@@ -19,6 +19,6 @@ namespace GameApp.Services.Contracts
         Task<bool> SetUsersToReceipt(Receipt receipt, string userId);
         Task<bool> SetUsersToComment(Comment comment, string userId);
         Task<bool> SetUsersToReview(Review review, string userId);
-        Task<IEnumerable<UsersListingModel>> GetUsersByName(string username, string userId);
+        Task<IEnumerable<UsersListingModel>> GetUsersByName(string username, string userId,int page);
     }
 }

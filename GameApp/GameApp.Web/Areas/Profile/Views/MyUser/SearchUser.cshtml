@@ -36,5 +36,27 @@
         </div>
 
     }
+ <div class="bg-dark text-white">
+  <ul class="pagination bg-dark">
+    <li class="page-item bg-dark @(Model.Page>0?"text-white":"disabled")">
+      <a class="page-link bg-dark @(Model.Page>0?"text-white":"")" href="/Profile/MyUser/SearchUser?page=@(Model.Page-1)&username=@(Model.Username)" class="page-link">Previous</a>
+    </li>
+    @if(@Model.Page>0)
+    {
+        <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page-1)&username=@(Model.Username)">@(Model.Page-1)</a></li>
+    }
+        
+    <li class="page-item active bg-dark">
+      <span class="page-link">
+        @Model.Page
+      </span>
+    </li>
+    <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page+1)&username=@(Model.Username)">@(Model.Page+1)</a></li>
+    <li class="page-item bg-dark">
+      <a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page+1)&username=@(Model.Username)">Next</a>
+    </li>
+    </ul>
+ </div>
+
     
 </div>

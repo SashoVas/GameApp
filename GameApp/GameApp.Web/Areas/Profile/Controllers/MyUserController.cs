@@ -48,8 +48,8 @@ namespace GameApp.Web.Areas.Profile.Controllers
             await userService.ChangeImage(file,userId);
             return this.Redirect("/Profile/MyUser/ProfileInfo/" + this.User.Identity.Name);
         }
-
-        public async Task<IActionResult> SearchUser([Required]string username)
+       
+        public async Task<IActionResult> SearchUser([Required]string username,int page)
         {
             if (!ModelState.IsValid)
             {
@@ -57,7 +57,10 @@ namespace GameApp.Web.Areas.Profile.Controllers
             }
             var model = new UsersViewModel
             {
-                Users =await userService.GetUsersByName(username, this.User.FindFirstValue(ClaimTypes.NameIdentifier))
+                Users =await userService.GetUsersByName(username, this.User.FindFirstValue(ClaimTypes.NameIdentifier),page),
+                Page=page,
+                Username=username
+
             };
             return this.View(model);
         }
