@@ -88,7 +88,11 @@ namespace GameApp.Web.Controllers
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            await cartService.BuyItems(userId, cardId);
+            var success=await cartService.BuyItems(userId, cardId);
+            if (!success)
+            {
+                this.BadRequest();
+            }
             HttpContext.Items["userId"] = userId;
             return this.Redirect("/");
         }
@@ -100,7 +104,11 @@ namespace GameApp.Web.Controllers
             {
                 return this.Redirect("~/Game?title=" + rate.GameName);
             }
-            await reviewService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var success=await reviewService.Rate(rate.GameName,rate.Points,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (!success)
+            {
+                return this.BadRequest();
+            }
             return this.Redirect("~/Game?title="+rate.GameName);
         }
 

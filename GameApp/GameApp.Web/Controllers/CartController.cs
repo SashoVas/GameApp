@@ -24,7 +24,10 @@ namespace GameApp.Web.Controllers
         public async Task< IActionResult> AddToCart([Required]int id)
         {
             bool accepted=await cartService.AddToCart(id);
-
+            if (!accepted)
+            {
+                return this.BadRequest();
+            }
             return this.RedirectToAction(nameof(Cart));
         }
 

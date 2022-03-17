@@ -92,7 +92,12 @@ namespace GameApp.Services
 
         public async Task<bool> Remove(string cardId)
         {
-            cards.Delete(await cards.All().FirstOrDefaultAsync(c=>c.Id==cardId));
+            var card = await cards.All().FirstOrDefaultAsync(c => c.Id == cardId);
+            if (card==null)
+            {
+                return false;
+            }
+            cards.Delete(card);
             await cards.SaveChangesAsync();
             return true;
         }

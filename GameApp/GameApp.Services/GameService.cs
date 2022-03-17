@@ -29,9 +29,15 @@ namespace GameApp.Services
             this.genreService = genreService;
         }
 
-        public async Task AddShoppingCartItem(ShoppingCart shoppingCart, int gameId )
+        public async Task<bool> AddShoppingCartItem(ShoppingCart shoppingCart, int gameId )
         {
-            await shoppingCart.AddToCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));
+            var game = await games.All().SingleOrDefaultAsync(g => g.Id == gameId);
+            if (game==null)
+            {
+                return false;
+            }
+            await shoppingCart.AddToCart(game);
+            return true;
         }
 
         public async Task<int> Create(string name, decimal price, string description,DateTime date, IEnumerable<string> newGenres, IFormFile image,string video)
@@ -202,10 +208,15 @@ namespace GameApp.Services
                 .ToArrayAsync();
         }
 
-        public async Task RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId)
+        public async Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId)
         {
-            await shoppingCart.RemoveFromCart(await games.All().SingleOrDefaultAsync(g => g.Id == gameId));
-
+            var game = await games.All().SingleOrDefaultAsync(g => g.Id == gameId);
+            if (game==null)
+            {
+                return false;
+            }
+            await shoppingCart.RemoveFromCart(game);
+            return true;
         }
 
         public async Task<bool> SetGameById(Comment comment,int gameId)

@@ -19,8 +19,8 @@ namespace GameApp.Services.Contracts
         Task<int> Create(string name,decimal price,string description, DateTime date, IEnumerable<string> newGenres, IFormFile image, string video);
         Task<bool> SetGameByName(Review review, string gameName);
         Task<bool> SetGameById(Comment game, int gameId);
-        Task AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);
-        Task RemoveShoppingCartItem(ShoppingCart shoppingCart,int gameId);
+        Task<bool> AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);
+        Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart,int gameId);
         Task<PopularGamesServiceListingModel[]> GetUpcomingGames();
     }
 }

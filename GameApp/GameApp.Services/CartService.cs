@@ -61,8 +61,8 @@ namespace GameApp.Services
         }
         public async Task<bool> AddToCart(int id)
         {
-            await gameService.AddShoppingCartItem(shoppingCart, id);
-            return true;
+            var success=await gameService.AddShoppingCartItem(shoppingCart, id);
+            return success;
         }
 
         public async Task<bool> Clear()
@@ -85,8 +85,8 @@ namespace GameApp.Services
         public async Task<bool> RemoveFromCart(int id)
         {
 
-            await gameService.RemoveShoppingCartItem(shoppingCart, id);
-            return true;
+            var success=await gameService.RemoveShoppingCartItem(shoppingCart, id);
+            return success;
            
         }
     }

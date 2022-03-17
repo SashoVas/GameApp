@@ -39,7 +39,11 @@ namespace GameApp.Web.Controllers
         public async Task<ActionResult> AcceptFirendRequest([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Friend, FriendStatus.Request);
+            var success=await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Friend, FriendStatus.Request);
+            if (!success)
+            {
+                return this.BadRequest();
+            }
             return this.Ok();
         }
         [Authorize]
@@ -47,7 +51,11 @@ namespace GameApp.Web.Controllers
         public async Task<ActionResult> RejectFirendRequest([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Request);
+            var success=await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Request);
+            if (!success)
+            {
+                return this.BadRequest();
+            }
             return this.Ok();
         }
         [Authorize]
@@ -55,7 +63,11 @@ namespace GameApp.Web.Controllers
         public async Task<ActionResult> Unfriend([FromBody] FriendRequestInputModel friend)
         {
             //Security Problem
-            await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Friend);
+            var success=await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Friend);
+            if (!success)
+            {
+                return this.BadRequest();
+            }
             return this.Ok();
         }
     }

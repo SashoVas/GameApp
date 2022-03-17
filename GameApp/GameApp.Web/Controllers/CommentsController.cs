@@ -17,11 +17,7 @@ namespace GameApp.Web.Controllers
         {
             this.commentsService = commentsServicel;
         }
-        [HttpGet("Something")]
-        public ActionResult Something()
-        {
-            return this.Content("hi");
-        }
+
         [Authorize]
         [HttpPost("AddCommentToGame")]
         public async Task<ActionResult<LoadCommentsViewModel>> AddCommentToGame([FromBody] AddCommentInputModel comment)

@@ -2,6 +2,7 @@
 using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Tests.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,7 +157,7 @@ namespace GameApp.Tests.Services
                 Name="newGame",
                 Price=555
             };
-            await shoppingCart.AddToCart(game);
+            Assert.True(await shoppingCart.AddToCart(game));
             var result = repo
                 .All()
                 .Last();
@@ -166,5 +167,20 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.Game.Price, game.Price);
 
         }
+        [Fact]
+        public async Task TestAddToCartWithImproperDataShouldReturnFalse()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+
+            var repo = new Repository<ShoppingCartGame>(context);
+            var shoppingCart = new ShoppingCart(repo);
+            shoppingCart.Id = "1";
+
+            var game =await context.Games.FirstAsync();
+            Assert.True(await shoppingCart.AddToCart(game));
+            Assert.False(await shoppingCart.AddToCart(game));
+        }
+
     }
 }

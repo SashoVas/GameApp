@@ -35,7 +35,7 @@ namespace GameApp.Web.Controllers
             {
                 return View(model);
             }
-            await cardService.Create(model.CardType,
+            var success=await cardService.Create(model.CardType,
                 model.CardNumber,
                 model.FirstName,
                 model.LastName,
@@ -46,7 +46,10 @@ namespace GameApp.Web.Controllers
                 model.ZipCode,
                 model.PhoneNumber,
                 this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-
+            if (!success)
+            {
+                return this.View(model);
+            }
             return this.Redirect(model.RetrunUrl ?? nameof(PaymentMethods));
         }
         [Authorize]
@@ -81,7 +84,7 @@ namespace GameApp.Web.Controllers
             {
                 return View(model);
             }
-            await cardService.SetCard(model.CardType,
+            var succeded=await cardService.SetCard(model.CardType,
                 model.CardNumber,
                 model.FirstName,
                 model.LastName,
@@ -93,7 +96,10 @@ namespace GameApp.Web.Controllers
                 model.PhoneNumber,
                 this.User.FindFirstValue(ClaimTypes.NameIdentifier)
                 ,model.CardId);
-
+            if (!succeded)
+            {
+                return this.View(model);
+            }
             return this.Redirect("/");
         }
         [Authorize]
@@ -104,7 +110,11 @@ namespace GameApp.Web.Controllers
             {
                 return this.BadRequest();
             }
-            await cardService.Remove(cardId);
+            var success=await cardService.Remove(cardId);
+            if (!success)
+            {
+                return this.BadRequest();
+            }
             return this.Redirect(nameof(PaymentMethods));
         }
         public async Task <IActionResult> PaymentMethods()

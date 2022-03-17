@@ -205,6 +205,26 @@ namespace GameApp.Tests.Services
             
             Assert.False(await cardService.Create(card.CardType, card.CardNumber, card.FirstName, card.LastName, card.Address, card.Country, card.ExpirationDate, card.City, card.ZipCode, card.PhoneNumber, userId));
         }
+        [Fact]
+        public async Task TestRemoveCardShouldRemoveCard()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Card>(context);
+            var cardService = new CardService(repo, null);
+            Assert.True(await cardService.Remove("Card1"));
+
+            Assert.Null(await repo.All().FirstOrDefaultAsync(c => c.Id == "Card1"));
+        }
+        [Fact]
+        public async Task TestRemoveCardWithImproperDataShouldReturnFalse()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Card>(context);
+            var cardService = new CardService(repo, null);
+            Assert.False(await cardService.Remove("Not a card"));
+        }
 
     }
 }

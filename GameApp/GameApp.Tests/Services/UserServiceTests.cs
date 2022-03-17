@@ -25,7 +25,8 @@ namespace GameApp.Tests.Services
                 { 
                     UserName="UserName"+i.ToString(),
                     Id=i.ToString(),
-                    Description="nt"
+                    Description="nt",
+                    ImgURL="User.png"
                 });
             }
             return users;
@@ -109,7 +110,7 @@ namespace GameApp.Tests.Services
             var repo = new Repository<User>(context);
             var userService = new UserService(null, null,repo );
 
-            var result = (await userService.GetUsersByName("1")).ToList();
+            var result = (await userService.GetUsersByName("1",null,0)).ToList();
 
             var actual = repo.All().Where(u => u.UserName.ToLower().Contains("1")).ToList() ;
 
@@ -128,7 +129,7 @@ namespace GameApp.Tests.Services
             var repo = new Repository<User>(context);
             var userService = new UserService(null, null, repo);
 
-            var result = (await userService.GetUsersByName("not a name")).ToList();
+            var result = (await userService.GetUsersByName("not a name",null,0)).ToList();
             Assert.Empty(result);
         }
     }
