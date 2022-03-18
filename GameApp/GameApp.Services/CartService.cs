@@ -36,7 +36,10 @@ namespace GameApp.Services
 
             var user = await userManager
                 .FindByIdAsync(userId);
-
+            if (user==null)
+            {
+                return false;
+            }
             var gamesForReceipt = new List<UserGame>();
             cartItems
                 .ForEach(async item =>
@@ -50,8 +53,11 @@ namespace GameApp.Services
                     gamesForReceipt.Add(ug); 
 
                 });
-            await receiptService.CreateReceipt(userId, gamesForReceipt, cardId);
-
+            var success=await receiptService.CreateReceipt(userId, gamesForReceipt, cardId);
+            if (!success)
+            {
+                return false;
+            }
 
             await userGames.SaveChangesAsync();
             await shoppingCart.Clear();

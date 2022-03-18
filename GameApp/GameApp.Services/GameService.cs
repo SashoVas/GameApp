@@ -36,8 +36,8 @@ namespace GameApp.Services
             {
                 return false;
             }
-            await shoppingCart.AddToCart(game);
-            return true;
+            var success=await shoppingCart.AddToCart(game);
+            return success;
         }
 
         public async Task<int> Create(string name, decimal price, string description,DateTime date, IEnumerable<string> newGenres, IFormFile image,string video)
@@ -215,8 +215,8 @@ namespace GameApp.Services
             {
                 return false;
             }
-            await shoppingCart.RemoveFromCart(game);
-            return true;
+            var success=await shoppingCart.RemoveFromCart(game);
+            return success;
         }
 
         public async Task<bool> SetGameById(Comment comment,int gameId)

@@ -34,7 +34,11 @@ namespace GameApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult>Remove([Required] int id)
         {
-            await cartService.RemoveFromCart(id);
+            var success=await cartService.RemoveFromCart(id);
+            if (!success)
+            {
+                return this.BadRequest();
+            }
             return this.RedirectToAction(nameof(Cart));
         }
 
