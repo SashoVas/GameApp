@@ -1,11 +1,22 @@
 ﻿
 let times = 1;
-let genreConteiner = $("#genre-conteiner").html()
+let genreConteiner = $("#genre-conteiner-0").html()
 function AddGenre(event) {
     event.preventDefault();
     genreConteiner = genreConteiner.replace('name="Genres[' + (times - 1) + ']"', 'name="Genres[' + times + ']"')
+    genreConteiner = genreConteiner.replace('id="select-genre-' + (times - 1) + '"', 'id="select-genre-' + times + '"')
+
     $("#main-form").append(genreConteiner);
     times += 1;
+}
+function RemoveGenre(event) {
+    event.preventDefault();
+    if (times <= 1) {
+        return;
+    }
+
+    times -= 1;
+    $("#main-form").children().last().remove();
 }
 let commentsPage = 0;
 function PostComment(event) {

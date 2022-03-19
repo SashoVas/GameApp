@@ -1,11 +1,9 @@
 ﻿@model IEnumerable<string>
 
-<select name="Genres[0]" class="form-select mt-3" required>
+<select id="select-genre-0" name="Genres[0]" class="form-select mt-3" required>
         <option selected disabled value="">Genre</option>
         @foreach(var genre in Model)
         {
             <option value="@genre">@genre</option>
         }
 </select>
-<div class="valid-feedback">You selected a genre!</div>
-<div class="invalid-feedback">Please select a genre!</div>
