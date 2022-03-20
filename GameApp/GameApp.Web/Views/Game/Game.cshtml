@@ -113,7 +113,7 @@
     </div>
 
     <div class="ratio ratio-21x9">
-        <iframe src="https://www.youtube.com/embed/@(Model.Video)" title="YouTube video" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/@(Model.Video)"  frameborder="0"  title="YouTube video" allowfullscreen></iframe>
 
     </div>
     
@@ -127,7 +127,7 @@
         {
             <div >
                 <img class="img-fluid" width="100px" height="100px"src="~/Files/@Model.SimilarGames[i].ImgUrl">
-                <h5 >@Model.SimilarGames[i].Name</h5>
+                <h5 class="text-overflow" >@Model.SimilarGames[i].Name</h5>
             </div>
         }
         

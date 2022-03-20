@@ -2,6 +2,7 @@
 using GameApp.Data.Repositories;
 using GameApp.Services.Contracts;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,12 +26,17 @@ namespace GameApp.Services
 
         public async Task<bool> Rate(string gameName, int points, string userId)
         {
+            var oldReview = await reviews.All().FirstOrDefaultAsync(r => r.UserId == userId && r.Game.Name == gameName);
+            if (oldReview != null)
+            {
+                return await ChangeRaing(oldReview,points);
+            }
             var review = new Review
             {
                 Score = points,
                 ReviewDate = DateTime.UtcNow,
             };
-            var hasUser = await userService.SetUsersToReview(review,userId);
+           var hasUser = await userService.SetUsersToReview(review,userId);
             if (!hasUser)
             {
                 return false;
@@ -41,6 +47,13 @@ namespace GameApp.Services
                 return false;
             }
             await reviews.AddAsync(review);
+            await reviews.SaveChangesAsync();
+            return true;
+        }
+        private async Task<bool>ChangeRaing(Review review,int points)
+        {
+            review.Score = points;
+            reviews.Update(review);
             await reviews.SaveChangesAsync();
             return true;
         }

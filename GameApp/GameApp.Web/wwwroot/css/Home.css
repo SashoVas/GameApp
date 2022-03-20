@@ -1,4 +1,9 @@
-﻿
+﻿.text-overflow {
+    white-space: nowrap;
+    width: 125px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .index-view {
     display: grid;
     gap: 0.5rem;

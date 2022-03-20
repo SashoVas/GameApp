@@ -63,14 +63,14 @@ namespace GameApp.Web.Controllers
             };
             return this.View(model);
         }
-        //[Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Admin")]
         [HttpGet()]
         public IActionResult Create() 
         {
             
             return View();
         }
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateGameInputModel model)
         {
