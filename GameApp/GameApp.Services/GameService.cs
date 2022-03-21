@@ -208,6 +208,15 @@ namespace GameApp.Services
                 .ToArrayAsync();
         }
 
+        public async Task<bool> IsUpcoming(int gameId)
+        {
+            var game= await games
+                .All()
+                .FirstOrDefaultAsync(g => g.Id == gameId);
+            
+            return game.ReleaseDate > DateTime.Now;
+        }
+
         public async Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId)
         {
             var game = await games.All().SingleOrDefaultAsync(g => g.Id == gameId);

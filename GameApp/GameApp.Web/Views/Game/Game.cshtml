@@ -92,13 +92,17 @@
         <li>Studio:</li>
 
     </ul>
-    @if (!Model.HaveGame)
+    @if (!Model.HaveGame && Model.ReleaseDate<DateTime.Now)
         {
             <form class="mb-4" method="post">
-                <input name="id" type="hidden" value="@Model.Id">
+                <input name="gameid" type="hidden" value="@Model.Id">
                 <input type="submit" class="btn btn-primary btn-lg bg-success" asp-controller="Cart" asp-action="AddToCart" value="AddToCart">
             </form>
         }
+    @if(Model.ReleaseDate>DateTime.Now)
+    {
+        <input class="btn btn-primary" disabled value="Comming Soon">
+    }
 
 </div>
 

@@ -8,9 +8,11 @@ namespace GameApp.Web.Controllers
     public class CartController : Controller
     {
         private readonly ICartService cartService;
-        public CartController(ICartService cartService)
+        private readonly IGameService gameService;
+        public CartController(ICartService cartService, IGameService gameService)
         {
             this.cartService = cartService;
+            this.gameService = gameService;
         }
         [Route("/Cart")]
         public async Task<IActionResult> Cart()
@@ -21,9 +23,14 @@ namespace GameApp.Web.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task< IActionResult> AddToCart([Required]int id)
+        public async Task< IActionResult> AddToCart([Required]int gameId)
         {
-            bool accepted=await cartService.AddToCart(id);
+            var isUpcoming=await gameService.IsUpcoming(gameId);
+            if (isUpcoming)
+            {
+                return this.BadRequest();
+            }
+            bool accepted=await cartService.AddToCart(gameId);
             if (!accepted)
             {
                 return this.BadRequest();

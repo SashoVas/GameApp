@@ -196,6 +196,38 @@ namespace GameApp.Tests.Services
                 Assert.Equal(result[i].ImgUrl, actual[i].ImageUrl);
             }
         }
+        [Fact]
+        public async Task TestIsUpcomingShouldReturnTrue()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+
+            var game = new Game
+            {
+                Name = "UpcomingGame" ,
+                Description = "UpcomingGame" ,
+                Id =  60,
+                Price = 60,
+                ReleaseDate = DateTime.UtcNow.AddDays(50 )
+            };
+
+            await games.AddAsync(game);
+            await context.SaveChangesAsync();
+
+            Assert.True(await gameService.IsUpcoming(60));
+        }
+        [Fact]
+        public async Task TestIsIsUpcomingWithImproperDataShouldReturnFalse()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+
+            Assert.False(await gameService.IsUpcoming(5));
+        }
 
     }
 }

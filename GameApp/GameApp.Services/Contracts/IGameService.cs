@@ -22,5 +22,6 @@ namespace GameApp.Services.Contracts
         Task<bool> AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);
         Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart,int gameId);
         Task<PopularGamesServiceListingModel[]> GetUpcomingGames();
+        Task<bool> IsUpcoming(int gameId);
     }
 }
