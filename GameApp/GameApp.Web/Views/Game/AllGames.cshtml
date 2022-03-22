@@ -17,7 +17,11 @@
       <th scope="col">Price</th>
       <th scope="col">Score</th>
       <th scope="col">More</th>
-    </tr>
+      @if(this.User.IsInRole("Admin"))
+      {
+            <th scope="col">Deleate</th>    
+      }
+        </tr>
   </thead>
   <tbody>
 
@@ -47,7 +51,16 @@
           </td>
           <td class="nopadding">@item.Score.ToString("F2")
           </td>
-          <th scope="col"><a class="btn btn-primary" href="/Game?title=@item.Name">More</a></th>
+          <td scope="col"><a class="btn btn-primary" href="/Game?title=@item.Name">More</a></td>
+          @if(this.User.IsInRole("Admin"))
+          {
+              <td scope="col">
+              <form method="post" asp-controller="Game" asp-action="Deleate">
+                  <input type="hidden" value="@item.Name" name="gameName"></input>
+                   <input type="submit" class="btn btn-primary bg-danger" value="Deleate">
+              </form>
+            </td>    
+          }
         </tr>
     }
   </tbody>

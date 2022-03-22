@@ -3,6 +3,7 @@ using GameApp.Web.Models;
 using GameApp.Web.Models.Game;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace GameApp.Web.Controllers
@@ -111,7 +112,15 @@ namespace GameApp.Web.Controllers
             }
             return this.Redirect("~/Game?title="+rate.GameName);
         }
-
-
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult>Deleate([Required]string gameName)
+        {
+            if (!await gamesService.Deleate(gameName))
+            {
+                return this.BadRequest();
+            }
+            return this.Redirect("/");
+        }
     }
 }

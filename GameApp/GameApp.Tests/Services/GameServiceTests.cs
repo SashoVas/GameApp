@@ -228,6 +228,28 @@ namespace GameApp.Tests.Services
 
             Assert.False(await gameService.IsUpcoming(5));
         }
+        [Fact]
+        public async Task TestDeleateGameShouldDelateGame()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+            Assert.True(await games.All().AnyAsync(g=>g.Name=="Game1"));
+            Assert.True(await gameService.Deleate("Game1"));
+            Assert.False(await games.All().AnyAsync(g => g.Name == "Game1"));
+
+        }
+        [Fact]
+        public async Task TestDeleateWithImproperDataShouldReturnFalse()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+
+            Assert.False(await gameService.Deleate("Not a game"));
+        }
 
     }
 }
