@@ -1,0 +1,41 @@
+﻿@using GameApp.Web.Areas.Profile.Models
+@{
+    ViewData["Title"] = "User Settings";
+}
+@model UserSettingsViewModel
+<div class="row">
+    <div class="col-lg-2">
+        <div class="list-group">
+          <a href="#" class="list-group-item list-group-item-action active">
+            Cras justo odio
+          </a>
+            @if(Model.Email==null)
+            {
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Add Email and Phone</a>
+            }
+            else
+            {
+                <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Change Email and Phone</a>
+            }
+          <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Transactions</a>
+          <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Games</a>
+          <a href="#" class="list-group-item list-group-item-action list-group-item-dark">LogOut</a>
+        </div>
+
+    </div>
+    <div class="col-lg-10">
+        <h1>@Model.Username</h1>
+        <hr>
+        <ul >
+            <li><h4>Email:@(Model.Email??"No Email")</h4></li>
+            <li class="ml-5"><h4>Phone Number:@(Model.PhoneNumber??"No Phone")</h4></li>
+            
+        </ul>
+        <hr>
+        <h1>Cards</h1>
+        <ul>
+
+
+        </ul>
+    </div>
+</div>

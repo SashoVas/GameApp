@@ -12,23 +12,23 @@
         {
              <a href="#" data-bs-toggle="modal" data-bs-target="#changeImage">Change image</a>
             <div class="modal fade text-dark" id="changeImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Change image</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                            <form method="post" asp-area="Profile" asp-controller="MyUser" asp-action="ChangeProfilePic" enctype="multipart/form-data" >
-                              <div class="mb-3">
-                                <input name="file" class="form-control" type="file">
-                                <input type="submit" class="btn btn-primary" valus="Change">
-                              </div>
-                            </form>
-                          </div>
-                        </div>
-                      </div>
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    <div class="modal-body">
+                    <form method="post" asp-area="Profile" asp-controller="MyUser" asp-action="ChangeProfilePic" enctype="multipart/form-data" >
+                        <div class="mb-3">
+                        <input name="file" class="form-control" type="file">
+                        <input type="submit" class="btn btn-primary" valus="Change">
+                        </div>
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>
         }
         <hr>
         <div>

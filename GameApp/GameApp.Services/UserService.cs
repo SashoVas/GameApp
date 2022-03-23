@@ -113,6 +113,23 @@ namespace GameApp.Services
                 }).ToListAsync();
         }
 
+        public async Task<UserSettingsInfoServiceModel> GetUserSettingsInfo(string userId)
+        {
+            var user =await userManager.FindByIdAsync(userId);
+
+            if (user==null)
+            {
+                throw new ArgumentException();
+            }
+            return new UserSettingsInfoServiceModel 
+            {
+                Description=user.Description,
+                Email=user.Email,
+                PhoneNumber=user.PhoneNumber,
+                Username=user.UserName
+            };
+        }
+
         public async Task<bool> SetUsersToCard(Card card, string userId)
         {
             var user=await userManager.FindByIdAsync(userId);

@@ -1,5 +1,6 @@
 ﻿using GameApp.Services.Contracts;
 using GameApp.Web.Areas.Profile.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -35,6 +36,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
             return this.View(model);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> ChangeDescription(string description) 
         {
             await userService.EditDescription( description,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -61,6 +63,23 @@ namespace GameApp.Web.Areas.Profile.Controllers
                 Page=page,
                 Username=username
 
+            };
+            return this.View(model);
+        }
+        [Authorize]
+        public async Task<IActionResult>Settings()
+        {
+            var userInfo = await userService.GetUserSettingsInfo(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (userInfo == null)
+            {
+                return this.NotFound();
+            }
+            var model = new UserSettingsViewModel
+            {
+                Username = userInfo.Username,
+                Description = userInfo.Description,
+                PhoneNumber=userInfo.PhoneNumber,
+                Email=userInfo.Email
             };
             return this.View(model);
         }
