@@ -9,6 +9,7 @@
       <th scope="col">CardType </th>
       <th scope="col">FirstName</th>
       <th scope="col">LastName</th>
+      <th scope="col">CardNumber</th>
       <th scope="col">Change</th>
       <th scope="col">Remove</th>
     </tr>
@@ -24,11 +25,13 @@
           </td>
           <td class="nopadding">@item.LastName
           </td>
+          <td class="nopadding">@(item.CardNumber[0..4])****** 
+          </td>
           <td scope="nopadding"><a class="btn btn-primary" href="/Card/SetCard?cardId=@item.Id">Change</a></td>
           <form method="post" asp-controller="Card" asp-action="Remove" >
             <td scope="nopadding"  >
                 <input type="hidden" name="cardId" value="@item.Id">
-                <input type="submit" class="btn btn-primary" value="Remove">
+                <input type="submit" class="btn btn-danger" value="Remove">
             </td>
           </form>
           

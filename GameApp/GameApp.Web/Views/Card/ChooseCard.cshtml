@@ -9,6 +9,7 @@
       <th scope="col">CardType </th>
       <th scope="col">FirstName</th>
       <th scope="col">LastName</th>
+      <th scope="col">CardNumber</th>
       <th scope="col">Use</th>
     </tr>
   </thead>
@@ -22,6 +23,8 @@
           <td class="nopadding">@item.FirstName
           </td>
           <td class="nopadding">@item.LastName
+          </td>
+          <td class="nopadding">@(item.CardNumber[0..4])****** 
           </td>
           <form method="post" asp-controller="Game" asp-action="Buy" >
             <td scope="nopadding"  >

@@ -11,6 +11,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
     public class MyUserController : Controller
     {
         private readonly IUserService userService;
+
         public MyUserController(IUserService userService)
         {
             this.userService = userService;
@@ -74,12 +75,15 @@ namespace GameApp.Web.Areas.Profile.Controllers
             {
                 return this.NotFound();
             }
+            
             var model = new UserSettingsViewModel
             {
                 Username = userInfo.Username,
                 Description = userInfo.Description,
                 PhoneNumber=userInfo.PhoneNumber,
-                Email=userInfo.Email
+                Email=userInfo.Email,
+                Cards=userInfo.Cards,
+                Games=userInfo.Games
             };
             return this.View(model);
         }

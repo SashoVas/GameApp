@@ -79,7 +79,8 @@ namespace GameApp.Services
                     Id=c.Id,
                     CardType=c.CardType,
                     FirstName=c.FirstName,
-                    LastName=c.LastName
+                    LastName=c.LastName,
+                    CardNumber=c.CardNumber
                 }).ToListAsync();
         }
 

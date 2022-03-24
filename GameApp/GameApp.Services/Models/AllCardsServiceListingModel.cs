@@ -13,5 +13,6 @@ namespace GameApp.Services.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Id { get; set; }
+        public string CardNumber { get; set; }
     }
 }

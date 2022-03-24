@@ -4,38 +4,50 @@
 }
 @model UserSettingsViewModel
 <div class="row">
-    <div class="col-lg-2">
-        <div class="list-group">
-          <a href="#" class="list-group-item list-group-item-action active">
-            Cras justo odio
-          </a>
-            @if(Model.Email==null)
-            {
-                <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Add Email and Phone</a>
-            }
-            else
-            {
-                <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Change Email and Phone</a>
-            }
-          <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Transactions</a>
-          <a href="#" class="list-group-item list-group-item-action list-group-item-dark">Games</a>
-          <a href="#" class="list-group-item list-group-item-action list-group-item-dark">LogOut</a>
-        </div>
-
-    </div>
+    <partial name="_SettingsNavigation">
     <div class="col-lg-10">
-        <h1>@Model.Username</h1>
+        <h1 class="text-center">@Model.Username</h1>
         <hr>
         <ul >
-            <li><h4>Email:@(Model.Email??"No Email")</h4></li>
-            <li class="ml-5"><h4>Phone Number:@(Model.PhoneNumber??"No Phone")</h4></li>
+            <li><h4>Email: @(Model.Email??"No Email")</h4></li>
+            <li class="ml-5"><h4>Phone Number: @(Model.PhoneNumber??"No Phone")</h4></li>
             
         </ul>
         <hr>
-        <h1>Cards</h1>
-        <ul>
+        <div class="row">
+            <div class="col-lg-5">
+                <h1>Cards</h1>
+                <ul>
+                    @foreach(var card in Model.Cards)
+                    {
+                        <li>
+                            <h4>@card.CardType</h4>
+                            <ul>
+                                <li><h5>First Name: @card.FirstName</h5></li>
+                                <li><h5>Last Name: @card.LastName</h5></li>
+                                <li><h5>Card Number: @(card.CardNumber[0..4])******</h5></li>
+                            </ul>
+                        </li>
 
+                    }
+             </ul>
+            </div>
+            <div class="col-lg-5"> 
+                <h1>Games</h1>
+                <ul>
+                    @foreach(var game in Model.Games)
+                    {
+                        <a class="text-decoration-none text-white" href="https://localhost:44385/Game?title=@game.Name">
+                            <li>
+                                
+                                <h5>@game.Name</h5>
+                            </li>   
+                        </a>
+                    }
+                </ul>
+            </div>
+        </div>
 
-        </ul>
+       
     </div>
 </div>

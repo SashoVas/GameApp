@@ -115,7 +115,12 @@ namespace GameApp.Services
 
         public async Task<UserSettingsInfoServiceModel> GetUserSettingsInfo(string userId)
         {
-            var user =await userManager.FindByIdAsync(userId);
+            var user = await users
+                .All()
+                .Include(u=>u.Cards)
+                .Include(u => u.Games)
+                .ThenInclude(g=>g.Game)
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user==null)
             {
@@ -126,7 +131,21 @@ namespace GameApp.Services
                 Description=user.Description,
                 Email=user.Email,
                 PhoneNumber=user.PhoneNumber,
-                Username=user.UserName
+                Username=user.UserName,
+                Games=user.Games.Select(g=>new GameInfoHelperModel
+                {
+                    ImgUrl=g.Game.ImageUrl,
+                    Name=g.Game.Name
+
+                }),
+                Cards=user.Cards.Select(c=>new AllCardsServiceListingModel
+                {
+                    CardNumber=c.CardNumber,
+                    CardType=c.CardType,
+                    FirstName=c.FirstName,
+                    Id=c.Id,
+                    LastName=c.LastName
+                })
             };
         }
 
