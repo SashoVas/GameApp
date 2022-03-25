@@ -1,0 +1,39 @@
+﻿@using GameApp.Web.Areas.Profile.Models
+@model PhoneAndEmailInputModel
+@{
+    ViewData["Title"] = "Change Phone And Email";
+}
+<div class="row">
+    <partial name="_SettingsNavigation">
+    <div class="col-lg-10">
+        <div class="form-body">
+            <div class="form-content">
+                <div class="form-items">
+                    <form method="post">
+                        <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input id="email-input" asp-for="Email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <span asp-validation-for="Email"></span>
+                        </div>
+                        <div class="form-group">
+                        <label asp-for="PhoneNumber"></label>
+                        <input id="phone-input" asp-for="PhoneNumber" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <span asp-validation-for="PhoneNumber"></span>
+                        </div>
+         
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button class="btn btn-primary" onclick="ClearInputs()">Clear</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function ClearInputs(){
+        event.preventDefault();
+        $("#phone-input").val("");
+        $("#email-input").val("");
+    }
+
+</script>

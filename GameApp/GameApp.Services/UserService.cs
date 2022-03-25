@@ -95,6 +95,21 @@ namespace GameApp.Services
             
         }
 
+        public async Task<UserPhoneAndEmailServiceModel> GetUserPhoneAndEmail(string userId)
+        {
+            var user =await userManager.FindByIdAsync(userId);
+
+            if (user==null )
+            {
+                throw new ArgumentException();
+            }
+            return new UserPhoneAndEmailServiceModel 
+            {
+                Email=user.Email,
+                PhoneNumber=user.PhoneNumber
+            };
+        }
+
         public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId,int page)
         {
             return await this.users
@@ -147,6 +162,20 @@ namespace GameApp.Services
                     LastName=c.LastName
                 })
             };
+        }
+
+        public async Task<bool> SetEmailAndPhone(string phone, string email,string userId)
+        {
+            var user =await userManager.FindByIdAsync(userId);
+            if (user==null)
+            {
+                return false;
+            }
+            user.PhoneNumber = phone;
+            user.Email = email;
+            users.Update(user);
+            await users.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> SetUsersToCard(Card card, string userId)

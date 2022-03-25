@@ -87,5 +87,34 @@ namespace GameApp.Web.Areas.Profile.Controllers
             };
             return this.View(model);
         }
+        [Authorize]
+        public async Task<IActionResult>ChangePhoneAndEmail()
+        {
+            var phoneAndEmail =await userService.GetUserPhoneAndEmail(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return this.View(new PhoneAndEmailInputModel 
+            {
+                Email=phoneAndEmail.Email,
+                PhoneNumber=phoneAndEmail.PhoneNumber
+            });
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult>ChangePhoneAndEmail(PhoneAndEmailInputModel input)
+        {
+           
+            var succes =await this.userService.SetEmailAndPhone(input.PhoneNumber,input.Email,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return this.Redirect(nameof(Settings));
+        }
+        [Authorize]
+        public async Task<IActionResult>RefundGame()
+        {
+            return this.View();
+        }
+
+        public async Task<IActionResult>RefundGame(int gameId)
+        {
+
+            return this.Redirect(nameof(Settings));
+        }
     }
 }
