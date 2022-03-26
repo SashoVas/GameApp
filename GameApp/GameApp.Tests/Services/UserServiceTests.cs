@@ -4,6 +4,7 @@ using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Tests.Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -163,6 +164,40 @@ namespace GameApp.Tests.Services
            await Assert.ThrowsAsync<ArgumentException>(()=>userService.GetUserSettingsInfo("1"));
 
 
+        }
+        [Fact]
+        public async Task TestSetEmailAndPhoneShouldChangeThem()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var store = new Mock<IUserStore<User>>();
+            var repo = new Repository<User>(context);
+            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            var actualData = await repo.All().FirstOrDefaultAsync(u => u.Id == "1");
+            userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async () => actualData);
+
+            var userService = new UserService(userManagerMock.Object, null,repo );
+
+            Assert.Null(actualData.Email);
+            Assert.Null(actualData.PhoneNumber);
+            Assert.True(await userService.SetEmailAndPhone("newPhone","newEmail","1"));
+            var changedData =await repo.All().FirstOrDefaultAsync(u=>u.Id=="1");
+            Assert.Equal(changedData.Email,"newEmail");
+            Assert.Equal(changedData.PhoneNumber,"newPhone");
+        }
+        [Fact]
+        public async Task TestSetEmailAndPhoneWithImproperDataShouldReturnFalse()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var store = new Mock<IUserStore<User>>();
+            var repo = new Repository<User>(context);
+            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+            userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async () => null);
+
+            var userService = new UserService(userManagerMock.Object, null, repo);
+
+            Assert.False(await userService.SetEmailAndPhone("newPhone", "newEmail", "1"));
         }
     }
 }

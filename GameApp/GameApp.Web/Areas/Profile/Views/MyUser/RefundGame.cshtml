@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "Refund Game";
+}
+<div class="row">
+    <partial name="_SettingsNavigation">
+    <div class="col-lg-10">
+
+        <table class="table table-striped table-dark">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Refund</th>
+                </tr>
+          </thead>
+          <tbody>
+
+            @foreach(var item in Model.Games)
+            {
+                <tr>
+                  <td class="nopadding">
+                      <div class="table-div-float-left">
+                          <img class="img-fluid" width="50px" height="70px"src="~/Files/@item.ImgUrl">
+                  
+                          <div class="name-column-2">
+                            <h5 class="game-name">@item.Name</h5>
+                          </div>
+                        </div>
+                  </td>
+                  @if(this.User.IsInRole("Admin"))
+                  {
+                      <td scope="col">
+                      <form method="post" asp-area="Profile" asp-controller="MyUser" asp-action="RefundGame">
+                          <input type="hidden" value="@item.Name" name="gameName"></input>
+                           <input type="submit" class="btn btn-primary bg-danger" value="Refund">
+                      </form>
+                    </td>    
+                  }
+                </tr>
+            }
+          </tbody>
+        </table>
+    </div>
+</div>

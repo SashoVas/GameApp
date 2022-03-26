@@ -110,10 +110,14 @@ namespace GameApp.Web.Areas.Profile.Controllers
         {
             return this.View();
         }
-
-        public async Task<IActionResult>RefundGame(int gameId)
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult>RefundGame([Required]string gameName)
         {
-
+            if (!ModelState.IsValid)
+            {
+                return this.View();
+            }
             return this.Redirect(nameof(Settings));
         }
     }
