@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameApp.Services", "GameApp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3B3EDF6A-82E9-4FE9-A134-45834143DFAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameApp.Tests", "GameApp.Tests\GameApp.Tests.csproj", "{005DB020-C8CB-4442-BA70-E33189BDDFFF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameApp.Tests", "GameApp.Tests\GameApp.Tests.csproj", "{005DB020-C8CB-4442-BA70-E33189BDDFFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,6 +9,10 @@ namespace GameApp.Data.Models
     public class UserGame
     {
         //public float Rating { get; set; }
+        public UserGame()
+        {
+            this.Date = DateTime.Now;
+        }
         public float PlayTime { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
@@ -16,5 +20,6 @@ namespace GameApp.Data.Models
         public Game Game { get; set; }
         public string ReceiptId { get; set; }
         public Receipt Receipt { get; set; }
+        public DateTime Date { get; set; }
     }
 }

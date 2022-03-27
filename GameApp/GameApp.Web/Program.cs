@@ -44,6 +44,7 @@ builder.Services.AddTransient<IReviewService, ReviewService>();
 builder.Services.AddTransient<IReceiptService, ReceiptService>();
 builder.Services.AddTransient<IFriendService, FriendService>();
 builder.Services.AddTransient<ICardService, CardService>();
+builder.Services.AddTransient<IUserGameService, UserGameService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped(sp => ShoppingCart.GetShoppingCart(sp));
 //builder.Services.AddScoped<IRepository<>,Repository<>>;

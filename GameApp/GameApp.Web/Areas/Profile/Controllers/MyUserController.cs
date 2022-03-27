@@ -11,10 +11,11 @@ namespace GameApp.Web.Areas.Profile.Controllers
     public class MyUserController : Controller
     {
         private readonly IUserService userService;
-
-        public MyUserController(IUserService userService)
+        private readonly IUserGameService userGameService;
+        public MyUserController(IUserService userService, IUserGameService userGameService)
         {
             this.userService = userService;
+            this.userGameService = userGameService;
         }
         [Route("Profile/MyUser/ProfileInfo/{name}")]
         public async Task<IActionResult> ProfileInfo(string name)
@@ -108,15 +109,24 @@ namespace GameApp.Web.Areas.Profile.Controllers
         [Authorize]
         public async Task<IActionResult>RefundGame()
         {
-            return this.View();
+            var games =await userGameService.GetGameForRefund(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            return this.View(new RefundGameViewModel 
+            { 
+                Games=games
+            });
         }
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult>RefundGame([Required]string gameName)
+        public async Task<IActionResult>RefundGame([Required]int gameId)
         {
             if (!ModelState.IsValid)
             {
                 return this.View();
+            }
+            var success =await this.userGameService.RefundGame(gameId,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (!success)
+            {
+                return this.BadRequest();
             }
             return this.Redirect(nameof(Settings));
         }
