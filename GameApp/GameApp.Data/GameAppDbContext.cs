@@ -22,6 +22,7 @@ namespace GameApp.Data
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Card> Cards { get; set; }
+        public DbSet<ReceiptUserGame> ReceiptUserGames { get; set; }
 
         public GameAppDbContext(DbContextOptions options) : base(options)
         {
@@ -29,10 +30,6 @@ namespace GameApp.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<UserGame>()
-                .HasKey(ug => new { ug.UserId, ug.GameId })
-                .HasName("PrimaryKey_UserGamesId");
 
             builder.Entity<Review>()
                 .HasKey(r => new { r.UserId, r.GameId })

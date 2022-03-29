@@ -20,14 +20,15 @@ namespace GameApp.Web.Controllers
         public async Task<IActionResult> Receipt([Required]string Id)
         {
             var receipt =await receiptService.GetReceipt(Id);
-            var model = new ReceiptViewModel 
-            { 
-                Games=receipt.Games,
-                Date=receipt.Date,
-                CardFirstName=receipt.CardFirstName,
-                CardLastName=receipt.CardLastName,
-                CardNumber=receipt.CardNumber,
-                CardType=receipt.CardType
+            var model = new ReceiptViewModel
+            {
+                Games = receipt.Games,
+                Date = receipt.Date,
+                CardFirstName = receipt.CardFirstName,
+                CardLastName = receipt.CardLastName,
+                CardNumber = receipt.CardNumber,
+                CardType = receipt.CardType,
+                ReceiptType = receipt.ReceiptType
             };
             return this.View(model);
         }

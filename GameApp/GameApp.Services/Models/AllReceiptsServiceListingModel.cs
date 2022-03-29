@@ -16,5 +16,6 @@ namespace GameApp.Services.Models
         public string CardLastName { get; set; }
         public CardType CardType { get; set; }
         public string CardNumber { get; set; }
+        public ReceiptType ReceiptType { get; set; }
     }
 }

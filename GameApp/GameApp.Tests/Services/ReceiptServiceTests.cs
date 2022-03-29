@@ -143,7 +143,7 @@ namespace GameApp.Tests.Services
             var cardServiceMock = new CardService(new Repository<Card>(context),null);
             var userService = new UserService(userManager.Object,null,null);
             var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
-            Assert.True(await receiptService.CreateReceipt(userId,new List<UserGame>(),"Card1"));
+            Assert.True(await receiptService.CreateReceipt(userId,new List<UserGame>(),"Card1",ReceiptType.Purchase));
             await context.SaveChangesAsync();
 
             var result = receipts.All().Last();
@@ -173,7 +173,7 @@ namespace GameApp.Tests.Services
             var cardServiceMock = new CardService(new Repository<Card>(context), null);
             var userService = new UserService(userManager.Object,null,null);
             var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
-            Assert.False(await receiptService.CreateReceipt(userId, new List<UserGame>(), cardId));
+            Assert.False(await receiptService.CreateReceipt(userId, new List<UserGame>(), cardId,ReceiptType.Purchase));
 
         }
     }

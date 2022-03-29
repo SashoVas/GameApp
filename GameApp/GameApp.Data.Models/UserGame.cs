@@ -12,14 +12,16 @@ namespace GameApp.Data.Models
         public UserGame()
         {
             this.Date = DateTime.Now;
+            this.Receipts = new ICollection<ReceiptUserGame>();
         }
+        public int Id { get; set; }
         public float PlayTime { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public int GameId { get; set; }
         public Game Game { get; set; }
-        public string ReceiptId { get; set; }
-        public Receipt Receipt { get; set; }
+        public ICollection<ReceiptUserGame> Receipts { get; set; }
         public DateTime Date { get; set; }
+        public bool IsRefunded { get; set; }
     }
 }

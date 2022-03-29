@@ -53,7 +53,7 @@ namespace GameApp.Services
                     gamesForReceipt.Add(ug); 
 
                 });
-            var success=await receiptService.CreateReceipt(userId, gamesForReceipt, cardId);
+            var success=await receiptService.CreateReceipt(userId, gamesForReceipt, cardId,ReceiptType.Purchase);
             if (!success)
             {
                 return false;

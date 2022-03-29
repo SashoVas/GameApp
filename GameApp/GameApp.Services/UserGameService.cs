@@ -14,10 +14,12 @@ namespace GameApp.Services
     public class UserGameService : IUserGameService
     {
         private readonly IRepository<UserGame> userGames;
+        private readonly IReceiptService receiptService;
 
-        public UserGameService(IRepository<UserGame> userGames)
+        public UserGameService(IRepository<UserGame> userGames, IReceiptService receiptService)
         {
             this.userGames = userGames;
+            this.receiptService = receiptService;
         }
 
         public async Task<IEnumerable<RefundableItemsServiceModel>> GetGameForRefund(string userId)
@@ -25,25 +27,38 @@ namespace GameApp.Services
             var games = userGames
                 .All()
                 .Include(ug=>ug.Game)
-                .Where(ug => ug.UserId == userId && ug.Date > DateTime.Now.AddDays(-3));
+                .Where(ug => ug.UserId == userId 
+                && ug.Date > DateTime.Now.AddDays(-3)
+                && ug.IsRefunded==false);
             return await games.Select(g => new RefundableItemsServiceModel
             {
                 IMG = g.Game.ImageUrl,
                 Name = g.Game.Name,
                 ReleaseDate = g.Game.ReleaseDate,
-                GameId=g.Game.Id
+                GameId=g.Game.Id,
+                
             }).ToListAsync();
         }
 
         public async Task<bool> RefundGame(int gameId, string userId)
         {
-            var userGame =await userGames.All().FirstOrDefaultAsync(ug=>ug.GameId==gameId&&ug.UserId==userId);
-
+            var userGame =await userGames
+                .All()
+                .Include(ug=>ug.Receipt)
+                .Include(ug=>ug.Game)
+                .FirstOrDefaultAsync(ug=>ug.GameId==gameId&&ug.UserId==userId);
+            
             if (userGame == null)
             {
                 return false;
             }
-            userGames.Delete(userGame);
+            userGame.IsRefunded = true;
+            userGames.Update(userGame);
+            var success =await receiptService.CreateReceipt(userId,new List<UserGame> { userGame },userGame.Receipt.CardId,ReceiptType.Refund);
+            if (!success)
+            {
+                return false;
+            }
             await userGames.SaveChangesAsync();
             return true;
 

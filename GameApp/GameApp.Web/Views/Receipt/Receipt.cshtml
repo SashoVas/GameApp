@@ -4,7 +4,9 @@
     ViewData["Title"] = "Receipt";
 }
 <h1 class="text-center">Receipt</h1>
+<h1 class="text-center">@Model.ReceiptType</h1>
 <hr>
+<h1 class="text-center">Games</h1>
 @foreach(var game in Model.Games)
 {
     <div>
@@ -25,7 +27,7 @@
             <a>@Model.CardLastName</a>
         </div>
         <div class="mt-2">
-            <a >Card number:@Model.CardNumber</a>
+            <a >Card number:@(Model.CardNumber[0..4])...</a>
         </div>
 
     </div>

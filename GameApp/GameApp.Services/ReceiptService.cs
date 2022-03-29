@@ -23,12 +23,13 @@ namespace GameApp.Services
             this.receipts = receipts;
             this.cardService = cardService;
         }
-        public async Task<bool> CreateReceipt(string userId, List<UserGame> userGames,string cardId)
+        public async Task<bool> CreateReceipt(string userId, List<UserGame> userGames,string cardId,ReceiptType receiptType)
         {
             var receipt = new Receipt
             {
                 Id=Guid.NewGuid().ToString(),
-                ReceiptDate = DateTime.UtcNow
+                ReceiptDate = DateTime.UtcNow,
+                ReceiptType=receiptType
             };
             var hasUser=await userService.SetUsersToReceipt(receipt,userId);
             if (!hasUser)
@@ -70,6 +71,7 @@ namespace GameApp.Services
                 .All()
                 .Include(r=>r.Card)
                 .Include(r=>r.UserGames)
+                .ThenInclude(ugs=>ugs.UserGame)
                 .ThenInclude(ug=>ug.Game)
                 .SingleOrDefaultAsync(r => r.Id == receiptId);
             if (receipt==null)
@@ -90,6 +92,7 @@ namespace GameApp.Services
                 CardLastName=receipt.Card.LastName,
                 CardNumber=receipt.Card.CardNumber,
                 CardType=receipt.Card.CardType,
+                ReceiptType=receipt.ReceiptType
             };
         }
     }

@@ -105,7 +105,7 @@ namespace GameApp.Services
             }
             if (username!=null)
             {
-                model = model.Where(g => g.Users.Any(gu => gu.User.UserName == username));
+                model = model.Where(g => g.Users.Any(gu => gu.User.UserName == username && gu.IsRefunded==false));
             }
             
             return await model

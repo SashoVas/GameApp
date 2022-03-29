@@ -161,7 +161,7 @@ namespace GameApp.Tests.Services
             userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async () => null);
             var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
 
-           await Assert.ThrowsAsync<ArgumentException>(()=>userService.GetUserSettingsInfo("1"));
+           await Assert.ThrowsAsync<ArgumentException>(()=>userService.GetUserSettingsInfo("-1"));
 
 
         }
