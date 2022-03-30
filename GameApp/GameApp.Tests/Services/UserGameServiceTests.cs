@@ -4,6 +4,7 @@ using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Tests.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,12 +44,20 @@ namespace GameApp.Tests.Services
                         ReleaseDate = DateTime.Now.AddDays(-i),
                         Description="Description"+i
                     },
-                    Receipt=new Receipt 
+                    Receipts=new List<ReceiptUserGame>
                     {
-                        Id=i.ToString(),
-                        CardId=i.ToString(),
-                        UserId= i % 2 == 1 ? user1.Id : user2.Id
+                        new ReceiptUserGame
+                        { 
+                            Id=i.ToString(),
+                            Receipt= new Receipt 
+                            {
+                                Id=i.ToString(),
+                                CardId=i.ToString(),
+                                UserId= i % 2 == 1 ? user1.Id : user2.Id
+                            }
+                        }
                     }
+                   
                 };
 
                 data.Add(userGame);
@@ -68,7 +77,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var repo = new Repository<UserGame>(context);
 
-            var userGameService = new UserGameService(repo);
+            var userGameService = new UserGameService(repo,null);
 
             var result =(await userGameService.GetGameForRefund("1"))
                 .ToList();
@@ -92,7 +101,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<UserGame>(context);
-            var userGameService = new UserGameService(repo);
+            var userGameService = new UserGameService(repo,null);
 
             Assert.Empty(await userGameService.GetGameForRefund("3"));
 
@@ -103,11 +112,16 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<UserGame>(context);
-            var userGameService = new UserGameService(repo);
 
-            Assert.NotNull(await repo.All().FirstOrDefaultAsync(ug => ug.UserId == "1" && ug.GameId == 1));
+            var receiptService = new Mock<ReceiptService>(null,null,null);
+            receiptService.Setup(rs=>rs.CreateReceipt(It.IsAny<string>(), It.IsAny<List<UserGame>>(), It.IsAny<string>(),ReceiptType.Refund)).Returns(async()=>true);
+            var userGameService = new UserGameService(repo, receiptService.Object);
+
+            var result = await repo.All().FirstOrDefaultAsync(ug => ug.UserId == "1" && ug.GameId == 1);
+            Assert.False(result.IsRefunded);
             Assert.True(await userGameService.RefundGame(1,"1"));
-            Assert.Null(await repo.All().FirstOrDefaultAsync(ug => ug.UserId == "1" && ug.GameId == 1));
+            result = await repo.All().FirstOrDefaultAsync(ug => ug.UserId == "1" && ug.GameId == 1);
+            Assert.True(result.IsRefunded);
 
         }
         [Theory]
@@ -118,7 +132,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<UserGame>(context);
-            var userGameService = new UserGameService(repo);
+            var userGameService = new UserGameService(repo,null);
 
             Assert.False(await userGameService.RefundGame(gameId, userId));
         }

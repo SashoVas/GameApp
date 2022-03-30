@@ -23,7 +23,7 @@ namespace GameApp.Services
             this.receipts = receipts;
             this.cardService = cardService;
         }
-        public async Task<bool> CreateReceipt(string userId, List<UserGame> userGames,string cardId,ReceiptType receiptType)
+        public virtual async Task<bool> CreateReceipt(string userId, List<UserGame> userGames,string cardId,ReceiptType receiptType)
         {
             var receipt = new Receipt
             {
@@ -41,7 +41,12 @@ namespace GameApp.Services
             {
                 return false;
             }
-            receipt.UserGames = userGames;
+            receipt.UserGames = userGames.Select(ug=>new ReceiptUserGame
+            {
+                Receipt=receipt,
+                UserGame=ug,
+                Id=Guid.NewGuid().ToString()
+            }).ToList();
             await receipts.AddAsync(receipt);
             return true;
             
@@ -56,8 +61,8 @@ namespace GameApp.Services
                    Games=r.UserGames
                    .Select(ug=> new ReceiptGameSeviceModel 
                    { 
-                       Name=ug.Game.Name,
-                       Price=ug.Game.Price
+                       Name=ug.UserGame.Game.Name,
+                       Price=ug.UserGame.Game.Price
                    }),
                     Date = r.ReceiptDate.ToString("yyyy,MM,dd"),
                    Id=r.Id
@@ -83,8 +88,8 @@ namespace GameApp.Services
                 Games = receipt.UserGames
                    .Select(ug => new ReceiptGameSeviceModel
                    {
-                       Name = ug.Game.Name,
-                       Price = ug.Game.Price
+                       Name = ug.UserGame.Game.Name,
+                       Price = ug.UserGame.Game.Price
                    }),
                 Date = receipt.ReceiptDate.ToString("yyyy,MM,dd"),
                 Id = receipt.Id,

@@ -12,7 +12,7 @@ namespace GameApp.Data.Models
         public UserGame()
         {
             this.Date = DateTime.Now;
-            this.Receipts = new ICollection<ReceiptUserGame>();
+            this.Receipts = new HashSet<ReceiptUserGame>();
         }
         public int Id { get; set; }
         public float PlayTime { get; set; }

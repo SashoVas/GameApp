@@ -44,7 +44,8 @@ namespace GameApp.Services
         {
             var userGame =await userGames
                 .All()
-                .Include(ug=>ug.Receipt)
+                .Include(ug=>ug.Receipts)
+                .ThenInclude(ug=>ug.Receipt)
                 .Include(ug=>ug.Game)
                 .FirstOrDefaultAsync(ug=>ug.GameId==gameId&&ug.UserId==userId);
             
@@ -54,7 +55,7 @@ namespace GameApp.Services
             }
             userGame.IsRefunded = true;
             userGames.Update(userGame);
-            var success =await receiptService.CreateReceipt(userId,new List<UserGame> { userGame },userGame.Receipt.CardId,ReceiptType.Refund);
+            var success =await receiptService.CreateReceipt(userId,new List<UserGame> { userGame },userGame.Receipts.LastOrDefault().Receipt.CardId,ReceiptType.Refund);
             if (!success)
             {
                 return false;

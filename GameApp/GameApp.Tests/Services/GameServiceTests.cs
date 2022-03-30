@@ -36,10 +36,10 @@ namespace GameApp.Tests.Services
                 };
                 if (i%2==0)
                 {
-                    userGames.Add(new UserGame { User = new User { UserName = "UserB" }, ReceiptId = "" });
+                    userGames.Add(new UserGame { User = new User { UserName = "UserB" }, Receipts=new List<ReceiptUserGame>() });
                     gameGenres.Add(new GameGenre { Genre = new Genre { Name = "Comedy" } });
                 }
-                userGames.Add(new UserGame { User = new User {  UserName = "UserA"  },ReceiptId="" } );
+                userGames.Add(new UserGame { User = new User {  UserName = "UserA"  }, Receipts = new List<ReceiptUserGame>() } );
                 gameGenres.Add(new GameGenre { Genre = new Genre { Name= "Action" } });
                 game.Genres = gameGenres;
                 game.Users = userGames;
