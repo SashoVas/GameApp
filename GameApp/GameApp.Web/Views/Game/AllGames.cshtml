@@ -30,20 +30,23 @@
         <tr>
           <td class="nopadding">
               <div class="table-div-float-left">
-                  <img class="img-fluid" width="50px" height="70px"src="~/Files/@item.ImgUrl">
+                  <img class="img-fluid" width="88px" height="115px"src="~/Files/@item.ImgUrl">
                   
                   <div class="name-column-2">
-                    <h5 class="game-name">@item.Name</h5>
-                    <div hidden class="ganres">
-                        <ul>
-                            @foreach(var genre in item.Genres)
-                            {
-                                <li>@genre</li>
-                            }
-                             <li>Test</li>
-                        </ul>
+                    <h5 class="game-name mb-0">@item.Name</h5>
+                   
+                    <div class="ganres">
+                            <ul>
+                                @foreach(var genre in item.Genres)
+                                {
+                                    <li><h6 class="mb-0"><small>@genre</small></h6></li>
+                                }
+                            </ul>
 
-                    </div>
+                        </div>
+                    
+
+
                   </div>
                 </div>
           </td>
@@ -61,7 +64,10 @@
               </form>
             </td>    
           }
+                        
         </tr>
+        
+
     }
   </tbody>
 </table>

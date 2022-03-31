@@ -93,7 +93,9 @@ namespace GameApp.Services
 
         public async Task<bool> Remove(string cardId)
         {
-            var card = await cards.All().FirstOrDefaultAsync(c => c.Id == cardId);
+            var card = await cards
+                .All()
+                .FirstOrDefaultAsync(c => c.Id == cardId);
             if (card==null)
             {
                 return false;

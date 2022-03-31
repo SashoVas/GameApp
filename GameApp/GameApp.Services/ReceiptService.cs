@@ -54,8 +54,11 @@ namespace GameApp.Services
 
         public async Task<IEnumerable<AllReceiptsServiceListingModel>> GetAll(string userId)
         {
-            return await receipts.All()
-                .Where(r => r.UserId == userId)
+            return await receipts
+                .All()
+                .Include(r=>r.UserGames)
+                .ThenInclude(ugs=>ugs.UserGame)
+                .Where(r => r.UserGames.FirstOrDefault().UserGame.UserId == userId)
                 .Select(r => new AllReceiptsServiceListingModel 
                 { 
                    Games=r.UserGames
@@ -93,10 +96,11 @@ namespace GameApp.Services
                    }),
                 Date = receipt.ReceiptDate.ToString("yyyy,MM,dd"),
                 Id = receipt.Id,
-                CardFirstName=receipt.Card.FirstName,
-                CardLastName=receipt.Card.LastName,
-                CardNumber=receipt.Card.CardNumber,
-                CardType=receipt.Card.CardType,
+
+                CardFirstName=receipt.Card!=null? receipt.Card.FirstName:null,
+                CardLastName=receipt.Card!=null?receipt.Card.LastName:null,
+                CardNumber=receipt.Card != null? receipt.Card.CardNumber : null,
+                CardType=receipt.Card != null? receipt.Card.CardType : CardType.PayPal,
                 ReceiptType=receipt.ReceiptType
             };
         }

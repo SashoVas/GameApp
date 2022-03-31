@@ -85,7 +85,7 @@ namespace GameApp.Data
                 .HasMany(c => c.Receipts)
                 .WithOne(r => r.Card)
                 .HasForeignKey(r => r.CardId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
         }
 
     }

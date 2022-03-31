@@ -14,10 +14,9 @@ namespace GameApp.Data.Models
         }
         public string Id { get; set; }
         public ICollection<ReceiptUserGame> UserGames { get; set; }
-        public string UserId { get; set; }
-        public User User { get; set; }
-        public string CardId { get; set; }
-        public Card Card { get; set; }
+
+        public string? CardId { get; set; }
+        public Card? Card { get; set; }
         public DateTime ReceiptDate { get; set; }
         public ReceiptType ReceiptType { get; set; }
 

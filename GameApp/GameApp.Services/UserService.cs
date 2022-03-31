@@ -220,7 +220,6 @@ namespace GameApp.Services
             {
                 return false;
             }
-            receipt.User= user;
             return true;
         }
 
