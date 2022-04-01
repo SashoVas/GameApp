@@ -112,6 +112,10 @@ namespace GameApp.Services
 
         public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId,int page)
         {
+            var a =  this.users
+                .All()
+                .Include(u => u.Friends)
+                .Where(u => u.UserName.ToLower().Contains(username.ToLower())).ToList();
             return await this.users
                 .All()
                 .Include(u=>u.Friends)

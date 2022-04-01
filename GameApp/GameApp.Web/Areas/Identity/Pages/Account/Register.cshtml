@@ -15,19 +15,19 @@
                                 <div class="col-md-12">
                                    <label asp-for="Input.Username"></label>
                                    <input class="form-control" asp-for="Input.Username">
-                                   <span asp-validation-for="Input.Username"></span>
+                                   <span class="text-danger" asp-validation-for="Input.Username"></span>
                                 </div>
 
                                 <div class="col-md-12">
                                     <label asp-for="Input.Password"></label>
                                     <input class="form-control" asp-for="Input.Password">
-                                    <span asp-validation-for="Input.Password"></span>
+                                    <span class="text-danger" asp-validation-for="Input.Password"></span>
                                 </div>
                                 
                                 <div class="col-md-12">
                                     <label asp-for="Input.ConfirmPassword"></label>
                                     <input class="form-control" asp-for="Input.ConfirmPassword">
-                                    <span asp-validation-for="Input.ConfirmPassword"></span>
+                                    <span class="text-danger" asp-validation-for="Input.ConfirmPassword"></span>
                                 </div>
                                 <div class="form-button mt-3">
                                     <button class="btn btn-primary">Register</button>

@@ -53,7 +53,6 @@ namespace GameApp.Tests.Services
                             {
                                 Id=i.ToString(),
                                 CardId=i.ToString(),
-                                UserId= i % 2 == 1 ? user1.Id : user2.Id
                             }
                         }
                     }

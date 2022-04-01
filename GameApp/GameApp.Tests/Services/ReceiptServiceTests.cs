@@ -31,12 +31,28 @@ namespace GameApp.Tests.Services
                 Id = "2",
             };
             var receipts = new List<Receipt>();
-            for (int i = 0; i < 16; i++)
+            for (int i = 1; i < 16; i++)
             {
                 var receipt = new Receipt
                 {
                     Id = i.ToString(),
-                    User = i % 2 == 0 ? user1 : user2,
+                    UserGames=new List< ReceiptUserGame> 
+                    { 
+                        new ReceiptUserGame
+                        { 
+                            Id=i.ToString(),
+                            UserGame=new UserGame
+                            { 
+                                User=i % 2 == 0 ? user1 : user2,
+                                Game=new Game
+                                { 
+                                    Name=i.ToString(),
+                                    Id=i,
+                                    Description=i.ToString()
+                                }
+                            }
+                        }
+                    },
                     Card = new Card
                     {
                         Id = "Card" + i.ToString(),
@@ -75,7 +91,7 @@ namespace GameApp.Tests.Services
             var receiptService = new ReceiptService(null,receipts,null);
             var result = (await receiptService.GetAll(userId)).ToList();
 
-            var actualData = receipts.All().Where(r => r.UserId == userId).ToList();
+            var actualData = receipts.All().Where(r => r.UserGames.FirstOrDefault().UserGame.UserId == userId).ToList();
 
             for (int i = 0; i < result.Count; i++)
             {
@@ -143,17 +159,26 @@ namespace GameApp.Tests.Services
             var cardServiceMock = new CardService(new Repository<Card>(context),null);
             var userService = new UserService(userManager.Object,null,null);
             var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
-            Assert.True(await receiptService.CreateReceipt(userId,new List<UserGame>(),"Card1",ReceiptType.Purchase));
+            Assert.True(await receiptService.CreateReceipt(userId,new List<UserGame> 
+            { 
+                new UserGame 
+                {
+                    Id=100,
+                    UserId=userId,
+                    Game=new Game
+                    {
+                        Name="newGame",
+                        Id=100,
+                        Description="newGame"
+                    }
+                }
+            }
+            ,"Card1",ReceiptType.Purchase));
             await context.SaveChangesAsync();
 
             var result = receipts.All().Last();
 
-            var actual =new Receipt
-            {
-                UserId=userId,
-            };
-
-            Assert.Equal(result.UserId, actual.UserId);
+            Assert.Equal(result.UserGames.FirstOrDefault().UserGame.UserId, userId);
 
         }
         [Theory]

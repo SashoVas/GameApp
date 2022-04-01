@@ -38,7 +38,6 @@ namespace GameApp.Web.Controllers
         [HttpPost("AcceptFirendRequest")]
         public async Task<ActionResult> AcceptFirendRequest([FromBody] FriendRequestInputModel friend)
         {
-            //Security Problem
             var success=await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Friend, FriendStatus.Request);
             if (!success)
             {
@@ -50,7 +49,6 @@ namespace GameApp.Web.Controllers
         [HttpPost("RejectFirendRequest")]
         public async Task<ActionResult> RejectFirendRequest([FromBody] FriendRequestInputModel friend)
         {
-            //Security Problem
             var success=await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Request);
             if (!success)
             {
@@ -62,7 +60,6 @@ namespace GameApp.Web.Controllers
         [HttpPost("Unfriend")]
         public async Task<ActionResult> Unfriend([FromBody] FriendRequestInputModel friend)
         {
-            //Security Problem
             var success=await friendService.ChangeStatus(this.User.FindFirstValue(ClaimTypes.NameIdentifier), friend.Username, FriendStatus.Rejected, FriendStatus.Friend);
             if (!success)
             {
