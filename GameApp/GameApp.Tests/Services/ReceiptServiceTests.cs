@@ -150,7 +150,6 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var userManagerMock = new Mock<UserManager<User>>();
             var store = new Mock<IUserStore<User>>();
             var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             var user = context.Users.SingleOrDefault(u => u.Id == userId);
@@ -189,15 +188,14 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var userManagerMock = new Mock<UserManager<User>>();
             var store = new Mock<IUserStore<User>>();
             var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             var user = context.Users.SingleOrDefault(u => u.Id == userId);
             userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async () => user);
 
-            var cardServiceMock = new CardService(new Repository<Card>(context), null);
+            var cardService = new CardService(new Repository<Card>(context), null);
             var userService = new UserService(userManager.Object,null,null);
-            var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
+            var receiptService = new ReceiptService(userService, receipts, cardService);
             Assert.False(await receiptService.CreateReceipt(userId, new List<UserGame>(), cardId,ReceiptType.Purchase));
 
         }

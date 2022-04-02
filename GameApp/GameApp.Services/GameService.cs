@@ -130,6 +130,7 @@ namespace GameApp.Services
                 .All()
                 .Include(g=>g.Reviews)
                 .Include(g=>g.Users)
+                .ThenInclude(u=>u.Receipts)
                 .Include(g=>g.Genres)
                 .ThenInclude(g=>g.Genre)
                 .SingleOrDefaultAsync(g => g.Name == name);
@@ -169,11 +170,11 @@ namespace GameApp.Services
 
 
             
-            var usergame = game.Users.SingleOrDefault(g=>g.UserId==userId);
+            var usergame = game.Users.LastOrDefault(g=>g.UserId==userId);
             if (usergame!=null)
             {
                 
-                model.HaveGame = true;
+                model.HaveGame = usergame.Receipts.Count()%2==1;
                 var userReview = game.Reviews.SingleOrDefault(r => r.UserId == userId);
                 if (userReview!=null)
                 {

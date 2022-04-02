@@ -4,59 +4,61 @@
     ViewData["Title"] = "Search User";
 }
 <div>
-    @foreach(var user in Model.Users)
+    @if (Model.Users.Count() > 0)
     {
+        @foreach (var user in Model.Users)
+        {
+            <div class="card text-white bg-dark text-center mt-2">
+                <div class="card-header">
+                    <h5>@user.Username</h5> 
+                </div>
+                <div class="card-body d-flex">
+                    <div>
+                        <img class="img-fluid" width="200px" height="200px" src="~/Files/@user.ImgUrl">
+                    </div>
+                    <div  class="mx-auto">
+                        <h4 class="card-title">Description</h4>
+                        <p class="card-text">@user.Description</p>
+                        <a href="/Profile/MyUser/ProfileInfo/@user.Username" class="btn btn-primary">Show</a>
+                        @if (!user.IsFriend && user.Username != this.User.Identity.Name)
+                        {
+                            <form>
+                                <a id="add-user-by-name-@user.Username" href="#" class="btn btn-primary mt-2 bg-success" onclick="SendFriendRequestFromUsers('@user.Username')">Add</a>   
+                            </form>
+                        }
 
-        <div class="card text-white bg-dark text-center mt-2">
-            <div class="card-header">
-               <h5>@user.Username</h5> 
+                    </div>
+
+                </div>
+                <div class="card-footer text-muted">
+                    Games:@user.Games
+                </div>
             </div>
-            <div class="card-body d-flex">
-            <div>
-                <img class="img-fluid" width="200px" height="200px" src="~/Files/@user.ImgUrl">
-            </div>
-            <div  class="mx-auto">
-                <h4 class="card-title">Description</h4>
-                <p class="card-text">@user.Description</p>
-                <a href="/Profile/MyUser/ProfileInfo/@user.Username" class="btn btn-primary">Show</a>
-                @if(!user.IsFriend && user.Username!=this.User.Identity.Name)
+        }
+        <div class="bg-dark text-white">
+            <ul class="pagination bg-dark">
+                <li class="page-item bg-dark @(Model.Page>0?"text-white":"disabled")">
+                    <a class="page-link bg-dark @(Model.Page>0?"text-white":"")" href="/Profile/MyUser/SearchUser?page=@(Model.Page-1)&username=@(Model.Username)" class="page-link">Previous</a>
+                </li>
+                @if (@Model.Page > 0)
                 {
-                    <form>
-                        <a id="add-user-by-name-@user.Username" href="#" class="btn btn-primary mt-2 bg-success" onclick="SendFriendRequestFromUsers('@user.Username')">Add</a>   
-                    </form>
-                     
+                    <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page-1)&username=@(Model.Username)">@(Model.Page-1)</a></li>
                 }
-                
-            </div>
-            
-            </div>
-            <div class="card-footer text-muted">
-            Games:@user.Games
-            </div>
+
+                <li class="page-item active bg-dark">
+                    <span class="page-link">
+                        @Model.Page
+                    </span>
+                </li>
+                <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page+1)&username=@(Model.Username)">@(Model.Page+1)</a></li>
+                <li class="page-item bg-dark">
+                    <a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page+1)&username=@(Model.Username)">Next</a>
+                </li>
+            </ul>
         </div>
-
     }
- <div class="bg-dark text-white">
-  <ul class="pagination bg-dark">
-    <li class="page-item bg-dark @(Model.Page>0?"text-white":"disabled")">
-      <a class="page-link bg-dark @(Model.Page>0?"text-white":"")" href="/Profile/MyUser/SearchUser?page=@(Model.Page-1)&username=@(Model.Username)" class="page-link">Previous</a>
-    </li>
-    @if(@Model.Page>0)
+    else
     {
-        <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page-1)&username=@(Model.Username)">@(Model.Page-1)</a></li>
+        <h1 class="text-center">No Such Users</h1>
     }
-        
-    <li class="page-item active bg-dark">
-      <span class="page-link">
-        @Model.Page
-      </span>
-    </li>
-    <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page+1)&username=@(Model.Username)">@(Model.Page+1)</a></li>
-    <li class="page-item bg-dark">
-      <a class="text-white page-link bg-dark" href="/Profile/MyUser/SearchUser?page=@(Model.Page+1)&username=@(Model.Username)">Next</a>
-    </li>
-    </ul>
- </div>
-
-    
 </div>

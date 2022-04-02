@@ -47,7 +47,8 @@ namespace GameApp.Services
                 .Include(ug=>ug.Receipts)
                 .ThenInclude(ug=>ug.Receipt)
                 .Include(ug=>ug.Game)
-                .FirstOrDefaultAsync(ug=>ug.GameId==gameId&&ug.UserId==userId);
+                .OrderBy(ug=>ug.Date)
+                .LastOrDefaultAsync(ug=>ug.GameId==gameId&&ug.UserId==userId);
             
             if (userGame == null)
             {

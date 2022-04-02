@@ -5,92 +5,100 @@
 @model AllGamesViewModel
 
 
-<form method="get" class="form-inline my-2 my-lg-0">
-    <input name="gameName" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+<form method="get" class="form-inline my-2 my-lg-0 d-flex">
+    <input name="gameName" class="form-control mr-sm-2 w-25 mr-1" type="search" placeholder="Search" aria-label="Search">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 </form>
+@if (Model.Games.Count() > 0)
+{
+    <table class="table table-striped table-dark">
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Score</th>
+                <th scope="col">More</th>
+                @if (this.User.IsInRole("Admin"))
+                {
+                    <th scope="col">Deleate</th>
+                }
+            </tr>
+        </thead>
 
-<table class="table table-striped table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Price</th>
-      <th scope="col">Score</th>
-      <th scope="col">More</th>
-      @if(this.User.IsInRole("Admin"))
-      {
-            <th scope="col">Deleate</th>    
-      }
-        </tr>
-  </thead>
-  <tbody>
+        <tbody>
 
-    @foreach(var item in Model.Games)
-    {
-        <tr>
-          <td class="nopadding">
-              <div class="table-div-float-left">
-                  <img class="img-fluid" width="88px" height="115px"src="~/Files/@item.ImgUrl">
-                  
-                  <div class="name-column-2">
-                    <h5 class="game-name mb-0">@item.Name</h5>
-                   
-                    <div class="ganres">
-                            <ul>
-                                @foreach(var genre in item.Genres)
-                                {
-                                    <li><h6 class="mb-0"><small>@genre</small></h6></li>
-                                }
-                            </ul>
+            @foreach (var item in Model.Games)
+            {
+                <tr>
+                    <td class="nopadding">
+                        <div class="table-div-float-left">
+                            <img class="img-fluid" width="88px" height="115px"src="~/Files/@item.ImgUrl">
 
+                            <div class="name-column-2">
+                                <h5 class="game-name mb-0">@item.Name</h5>
+
+                                <div class="ganres">
+                                    <ul>
+                                        @foreach (var genre in item.Genres)
+                                        {
+                                            <li><h6 class="mb-0"><small>@genre</small></h6></li>
+                                        }
+                                    </ul>
+
+                                </div>
+
+
+
+                            </div>
                         </div>
-                    
+                    </td>
+                    <td class="nopadding">@item.Price
+                    </td>
+                    <td class="nopadding">@item.Score.ToString("F2")
+                    </td>
+                    <td scope="col"><a class="btn btn-primary" href="/Game?title=@item.Name">More</a></td>
+                    @if (this.User.IsInRole("Admin"))
+                    {
+                        <td scope="col">
+                            <form method="post" asp-controller="Game" asp-action="Deleate">
+                                <input type="hidden" value="@item.Name" name="gameName"></input>
+                                <input type="submit" class="btn btn-primary bg-danger" value="Deleate">
+                            </form>
+                        </td>
+                    }
+
+                </tr>
+            }
+        </tbody>
 
 
-                  </div>
-                </div>
-          </td>
-          <td class="nopadding">@item.Price
-          </td>
-          <td class="nopadding">@item.Score.ToString("F2")
-          </td>
-          <td scope="col"><a class="btn btn-primary" href="/Game?title=@item.Name">More</a></td>
-          @if(this.User.IsInRole("Admin"))
-          {
-              <td scope="col">
-              <form method="post" asp-controller="Game" asp-action="Deleate">
-                  <input type="hidden" value="@item.Name" name="gameName"></input>
-                   <input type="submit" class="btn btn-primary bg-danger" value="Deleate">
-              </form>
-            </td>    
-          }
-                        
-        </tr>
+
+    </table>
+    <div class="bg-dark text-white">
+      <ul class="pagination bg-dark">
+        <li class="page-item bg-dark @(Model.SearchInfo.Page>0?"text-white":"disabled")">
+          <a class="page-link bg-dark @(Model.SearchInfo.Page>0?"text-white":"")" href="/Game/AllGames/@(Model.SearchInfo.Page-1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)" class="page-link">Previous</a>
+        </li>
+        @if(@Model.SearchInfo.Page>0)
+        {
+            <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Game/AllGames/@(Model.SearchInfo.Page-1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)">@(Model.SearchInfo.Page-1)</a></li>
+        }
         
+        <li class="page-item active bg-dark">
+          <span class="page-link">
+            @Model.SearchInfo.Page
+          </span>
+        </li>
+        <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Game/AllGames/@(Model.SearchInfo.Page+1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)">@(Model.SearchInfo.Page+1)</a></li>
+        <li class="page-item bg-dark">
+          <a class="text-white page-link bg-dark" href="/Game/AllGames/@(Model.SearchInfo.Page+1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)">Next</a>
+        </li>
+      </ul>
+    </div>
+}
+else
+{
+    <h1 class="text-center">No Such Games</h1>
+}
 
-    }
-  </tbody>
-</table>
-
-<div class="bg-dark text-white">
-  <ul class="pagination bg-dark">
-    <li class="page-item bg-dark @(Model.SearchInfo.Page>0?"text-white":"disabled")">
-      <a class="page-link bg-dark @(Model.SearchInfo.Page>0?"text-white":"")" href="/Game/AllGames/@(Model.SearchInfo.Page-1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)" class="page-link">Previous</a>
-    </li>
-    @if(@Model.SearchInfo.Page>0)
-    {
-        <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Game/AllGames/@(Model.SearchInfo.Page-1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)">@(Model.SearchInfo.Page-1)</a></li>
-    }
-        
-    <li class="page-item active bg-dark">
-      <span class="page-link">
-        @Model.SearchInfo.Page
-      </span>
-    </li>
-    <li class="page-item bg-dark"><a class="text-white page-link bg-dark" href="/Game/AllGames/@(Model.SearchInfo.Page+1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)">@(Model.SearchInfo.Page+1)</a></li>
-    <li class="page-item bg-dark">
-      <a class="text-white page-link bg-dark" href="/Game/AllGames/@(Model.SearchInfo.Page+1)?gameName=@(Model.SearchInfo.GameName)&genre=@(Model.SearchInfo.Genre)&username=@(Model.SearchInfo.Username)">Next</a>
-    </li>
-  </ul>
-</div>
 

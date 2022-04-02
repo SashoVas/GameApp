@@ -117,6 +117,7 @@ namespace GameApp.Tests.Services
 
             var store = new Mock<IUserStore<User>>();
             var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+
             userManager.Setup(um => um.FindByIdAsync("NewUser1")).Returns(async()=>newUser1);
             userManager.Setup(um => um.FindByNameAsync("NewUser2")).Returns(async()=>newUser2);
 

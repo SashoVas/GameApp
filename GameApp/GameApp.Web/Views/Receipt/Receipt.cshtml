@@ -24,10 +24,13 @@
             <div class="mt-2">
                 <a>@Model.CardType</a>
             </div>
-            <div class="d-flex justify-content-around mt-2">
-                <a>@Model.CardFirstName</a>
-                <a>@Model.CardLastName</a>
+            <div class="mt-2">
+                <a>First Name: @Model.CardFirstName</a>
             </div>
+            <div class="mt-2">
+                <a>Last Name: @Model.CardLastName</a>
+            </div>
+
             <div class="mt-2">
                 <a >Card number:@(Model.CardNumber[0..4])...</a>
             </div>

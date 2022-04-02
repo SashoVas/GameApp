@@ -79,7 +79,7 @@ namespace GameApp.Services
                 ScoreCount = arr,
                 MeanScore = user.Reviews.Sum(r => r.Score) / (reviews>0?reviews:1),
                 ReviewsCount=reviews,
-                Games = user.Games
+                Games = user.Games.Where(ug=>ug.IsRefunded==false)
                 .Select(ug => new GameInfoHelperModel
                 {
                     Score = ug.Game.Reviews.Sum(r=>r.Score) / (ug.Game.Reviews.Count()>0? ug.Game.Reviews.Count():1),

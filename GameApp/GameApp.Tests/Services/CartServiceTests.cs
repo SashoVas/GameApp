@@ -141,77 +141,36 @@ namespace GameApp.Tests.Services
             var shoppingCart = new ShoppingCart(repo);
             shoppingCart.Id = "1";
             var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
-            var cardService = new CardService(new Repository<Card>(context),null);
-            var receiptService = new ReceiptService(userService,new Repository<Receipt>(context),cardService);
-            
-            var cartService = new CartService(shoppingCart, new Repository<UserGame>(context), userManagerMock.Object, null,receiptService );
+            var receiptServiceMock = new Mock<ReceiptService>(null, null, null);
+            receiptServiceMock.Setup(rs => rs.CreateReceipt(It.IsAny<string>(), It.IsAny<List<UserGame>>(), It.IsAny<string>(), It.IsAny<ReceiptType>())).Returns(async () => true);
 
-            
-            var card = new Card 
-            {
-                Id="newCard",
-                FirstName="newCard",
-                User=user,
-                Address = "newCard",
-                CardNumber = "newCard",
-                ExpirationDate = DateTime.MinValue,
-                City = "newCard",
-                Country = "newCard",
-                ZipCode = "newCard",
-                LastName = "newCard",
-                PhoneNumber = "newCard",
-                CardType =CardType.MasterCard,
-            };
-            await context.Cards.AddAsync(card);
+
+            var cartService = new CartService(shoppingCart, new Repository<UserGame>(context), userManagerMock.Object, null, receiptServiceMock.Object);
+
             await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
-            Assert.True(await cartService.BuyItems("newUser","newCard"));
+            Assert.NotEmpty(await shoppingCart.GetCartItems().ToListAsync());
+            Assert.True(await cartService.BuyItems("newUser","doNotExist"));
+            Assert.Empty(await shoppingCart.GetCartItems().ToListAsync());
         }
-        [Theory]
-        [InlineData("newUser","DoNotExist")]
-        [InlineData("DoNotExist", "newCard")]
-        public async Task TestBuyItemsWithImproperDataShouldReturnFalse(string userId,string cardId)
+        [Fact]
+        public async Task TestBuyItemsWithImproperDataShouldReturnFalse()
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var store = new Mock<IUserStore<User>>();
             var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = new User
-            {
-                Id = "newUser",
-                UserName = "newUser"
-            };
-            var card = new Card
-            {
-                Id = "newCard",
-                FirstName = "newCard",
-                User = user,
-                Address = "newCard",
-                CardNumber = "newCard",
-                ExpirationDate = DateTime.MinValue,
-                City = "newCard",
-                Country = "newCard",
-                ZipCode = "newCard",
-                LastName = "newCard",
-                PhoneNumber = "newCard",
-                CardType = CardType.MasterCard,
-            };
-            await context.Cards.AddAsync(card);
-            await context.Users.AddAsync(user);
-            await context.SaveChangesAsync();
-            userManagerMock.Setup(u => u.FindByIdAsync(userId)).Returns(async () =>await context.Users.FirstOrDefaultAsync(u=>u.Id==userId));
+           
+            userManagerMock.Setup(u => u.FindByIdAsync(It.IsAny<string>())).Returns(async () =>null);
             var repo = new Repository<ShoppingCartGame>(context);
             var shoppingCart = new ShoppingCart(repo);
             shoppingCart.Id = "1";
-            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
-            var cardService = new CardService(new Repository<Card>(context), null);
-            var receiptService = new ReceiptService(userService, new Repository<Receipt>(context), cardService);
+            var receiptServiceMock = new Mock <ReceiptService>(null,null,null);
+            receiptServiceMock.Setup(rs => rs.CreateReceipt(It.IsAny<string>(), It.IsAny<List<UserGame>>(), It.IsAny<string>(), It.IsAny<ReceiptType>())).Returns(async()=>true);
 
-            var cartService = new CartService(shoppingCart, new Repository<UserGame>(context), userManagerMock.Object, null, receiptService);
+            var cartService = new CartService(shoppingCart, new Repository<UserGame>(context), userManagerMock.Object, null, receiptServiceMock.Object);
 
-
-            
-            Assert.False(await cartService.BuyItems(userId, cardId));
+            Assert.False(await cartService.BuyItems("DoNotExist", "DoNotExist"));
         }
 
     }
