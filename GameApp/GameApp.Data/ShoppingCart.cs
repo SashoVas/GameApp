@@ -53,16 +53,12 @@ namespace GameApp.Data
             }
             return false;
         }
-        public async Task<bool> RemoveFromCart(Game game)
+        public async Task<bool> RemoveFromCart(int gameId)
         {
-            if (game==null)
-            {
-                return false;
-            }
             var item = shoppingCartGames
                 .All()
                 .SingleOrDefault(item => item.ShoppingCartId == this.Id
-                && item.GameId == game.Id);
+                && item.GameId == gameId);
             if (item==null)
             {
                 return false;

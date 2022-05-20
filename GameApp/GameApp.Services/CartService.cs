@@ -65,35 +65,21 @@ namespace GameApp.Services
 
             return true;
         }
-        public async Task<bool> AddToCart(int id)
-        {
-            var success=await gameService.AddShoppingCartItem(shoppingCart, id);
-            return success;
-        }
+        public async Task<bool> AddToCart(int id) 
+            => await gameService.AddShoppingCartItem(shoppingCart, id);
 
-        public async Task<bool> Clear()
-        {
-            await shoppingCart.Clear();
-            return true;
-        }
+        public async Task<bool> Clear() 
+            => await shoppingCart.Clear();
 
-        public async Task<IEnumerable<CartServiceListingModel>> GetAllItems()
-        {
-            var value=await shoppingCart.GetCartItems().Select(x => new CartServiceListingModel
+        public async Task<IEnumerable<CartServiceListingModel>> GetAllItems() 
+            => await shoppingCart.GetCartItems().Select(x => new CartServiceListingModel
             {
-                Id=x.Id,
-                GameName=x.Name,
-                Price=x.Price
+                Id = x.Id,
+                GameName = x.Name,
+                Price = x.Price
             }).ToListAsync();
-            return value;
-        }
 
-        public async Task<bool> RemoveFromCart(int id)
-        {
-
-            var success=await gameService.RemoveShoppingCartItem(shoppingCart, id);
-            return success;
-           
-        }
+        public async Task<bool> RemoveFromCart(int id) 
+            => await gameService.RemoveShoppingCartItem(shoppingCart, id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameApp.Data.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace GameApp.Services.Models
         public double GameRating { get; set; }
         public double UserRating { get; set; }
         public DateTime ReleaseDate { get; set; }
+        public int ReceiptsCount { get; set; }
         public IEnumerable<string> Genres { get; set; }
+        public IEnumerable<Review> Reviews { get; set; }
     }
 }

@@ -36,15 +36,17 @@ namespace GameApp.Services
             return true;
         }
 
-        public async Task<IEnumerable<string>> GetFriends(string userId)
-        {
-            return await friends.All().Where(f => f.MainUserId == userId && f.Status==FriendStatus.Friend || f.FriendUserId == userId && f.Status == FriendStatus.Friend).Select(f => f.MainUserId == userId ? f.FriendUser.UserName : f.MainUser.UserName).ToListAsync();
-        }
+        public async Task<IEnumerable<string>> GetFriends(string userId) 
+            => await friends.All().Where(f => f.MainUserId == userId && f.Status == FriendStatus.Friend 
+            || f.FriendUserId == userId && f.Status == FriendStatus.Friend)
+            .Select(f => f.MainUserId == userId ? f.FriendUser.UserName : f.MainUser.UserName)
+            .ToListAsync();
 
-        public async Task<IEnumerable<string>> GetRequests(string userId)
-        {
-            return await friends.All().Where(f => f.FriendUserId == userId && f.Status == FriendStatus.Request).Select(f => f.MainUser.UserName).ToListAsync();
-        }
+        public async Task<IEnumerable<string>> GetRequests(string userId) 
+            => await friends.All()
+            .Where(f => f.FriendUserId == userId && f.Status == FriendStatus.Request)
+            .Select(f => f.MainUser.UserName)
+            .ToListAsync();
 
         public async Task<bool> SendFriendRequest(string userId,string username)
         {

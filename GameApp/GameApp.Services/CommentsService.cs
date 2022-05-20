@@ -88,32 +88,27 @@ namespace GameApp.Services
             } };
         }
 
-        public async Task<IEnumerable<CommentsServiceListingModel>> LoadComments(int pageId,int gameId)
-        {
-            
-            var commentsList =await comments
+        public async Task<IEnumerable<CommentsServiceListingModel>> LoadComments(int pageId, int gameId) 
+            => await comments
                 .All()
-                .Where(c => c.GameId == gameId && c.CommentedOnId==null)
-                .OrderByDescending(c=>c.PostedOn)
-                .Skip(pageId*10)
+                .Where(c => c.GameId == gameId && c.CommentedOnId == null)
+                .OrderByDescending(c => c.PostedOn)
+                .Skip(pageId * 10)
                 .Take(10)
                 .Select(c => new CommentsServiceListingModel
                 {
-                    Username=c.User.UserName,
-                    Contents=c.Content,
-                    PostedOn=c.PostedOn.ToString("yyyy,MM,dd"),
-                    CommentId=c.Id,
+                    Username = c.User.UserName,
+                    Contents = c.Content,
+                    PostedOn = c.PostedOn.ToString("yyyy,MM,dd"),
+                    CommentId = c.Id,
                     HasComments = c.Comments.Count > 0 ? true : false
                 }).ToListAsync();
-            return commentsList;
-        }
 
-        public async Task<IEnumerable<ReplyServiceListingModel>> LoadReplies(string commentId)
-        {
-            return await comments
+        public async Task<IEnumerable<ReplyServiceListingModel>> LoadReplies(string commentId) 
+            => await comments
                 .All()
                 .Where(c => c.CommentedOnId == commentId)
-                .OrderByDescending(c=>c.PostedOn)
+                .OrderByDescending(c => c.PostedOn)
                 .Select(c => new ReplyServiceListingModel
                 {
                     Username = c.User.UserName,
@@ -121,6 +116,5 @@ namespace GameApp.Services
                     CommentId = c.Id,
                     HasComments = c.Comments.Count > 0 ? true : false
                 }).ToListAsync();
-        }
     }
 }

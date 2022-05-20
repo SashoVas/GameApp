@@ -49,57 +49,52 @@ namespace GameApp.Services
 
         public async Task<CardServiceModel> GetCard(string userId,string cardId)
         {
-            var card = await cards.All().FirstOrDefaultAsync(c => c.UserId == userId&& c.Id== cardId);
+            var card = await cards.All()
+                .Where(c => c.UserId == userId && c.Id == cardId)
+                .Select(c=> new CardServiceModel 
+                {
+                    FirstName = c.FirstName,
+                    CardType = c.CardType,
+                    CardNumber = c.CardNumber,
+                    Address = c.Address,
+                    City = c.City,
+                    Country = c.Country,
+                    ZipCode = c.ZipCode,
+                    ExpirationDate = c.ExpirationDate,
+                    LastName = c.LastName,
+                    PhoneNumber = c.PhoneNumber
+                }).FirstOrDefaultAsync();
             if (card==null)
             {
                 return null;
             }
-            return new CardServiceModel 
-            { 
-                FirstName=card.FirstName,
-                CardType=card.CardType,
-                CardNumber=card.CardNumber,
-                Address=card.Address,
-                City=card.City,
-                Country=card.Country,
-                ZipCode=card.ZipCode,
-                ExpirationDate=card.ExpirationDate,
-                LastName=card.LastName,
-                PhoneNumber=card.PhoneNumber
-            } ;
+            return card;
         }
 
-        public async Task<IEnumerable< AllCardsServiceListingModel>> GetCards(string userId)
-        {
-            return await cards
+        public async Task<IEnumerable<AllCardsServiceListingModel>> GetCards(string userId) 
+            => await cards
                 .All()
                 .Where(c => c.UserId == userId)
-                .Select(c=>new AllCardsServiceListingModel 
-                { 
-                    Id=c.Id,
-                    CardType=c.CardType,
-                    FirstName=c.FirstName,
-                    LastName=c.LastName,
-                    CardNumber=c.CardNumber
+                .Select(c => new AllCardsServiceListingModel
+                {
+                    Id = c.Id,
+                    CardType = c.CardType,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    CardNumber = c.CardNumber
                 }).ToListAsync();
-        }
 
-        public async Task<bool> HaveCard(string userId)
-        {
-            return await cards
+        public async Task<bool> HaveCard(string userId) 
+            => await cards
                 .All()
-                .AnyAsync(c=>c.UserId==userId);
-        }
+                .AnyAsync(c => c.UserId == userId);
 
         public async Task<bool> Remove(string cardId)
         {
-            var card = await cards
-                .All()
-                .FirstOrDefaultAsync(c => c.Id == cardId);
-            if (card==null)
-            {
-                return false;
-            }
+            var card = new Card 
+            { 
+                Id = cardId 
+            };
             cards.Delete(card);
             await cards.SaveChangesAsync();
             return true;

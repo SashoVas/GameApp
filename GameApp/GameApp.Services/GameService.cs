@@ -98,7 +98,6 @@ namespace GameApp.Services
                 .ToLower()
                 .Contains(gameName));
                 
-
             if (genre!=null)
             {
                 model = model.Where(g => g.Genres.Any(ge => ge.Genre.Name == genre));
@@ -126,34 +125,28 @@ namespace GameApp.Services
 
         public async Task< GameServiceListingModel> GetGame(string name,string userId)
         {
-            var game =await games
-                .All()
-                .Include(g=>g.Reviews)
-                .Include(g=>g.Users)
-                .ThenInclude(u=>u.Receipts)
-                .Include(g=>g.Genres)
-                .ThenInclude(g=>g.Genre)
-                .SingleOrDefaultAsync(g => g.Name == name);
-            
+            var model = await games.All()
+                .Where(g => g.Name == name)
+                .Select(g=>new GameServiceListingModel
+                {
+                    Id = g.Id,
+                    Description = g.Description,
+                    Name = g.Name,
+                    Price = g.Price,
+                    ImgUrl = g.ImageUrl,
+                    Genres = g.Genres.Select(gg => gg.Genre.Name),
+                    Users = g.Users.Count(),
+                    GameRating = g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1),
+                    ReleaseDate = g.ReleaseDate,
+                    Video = g.Video,
+                    Reviews=g.Reviews,
+                    ReceiptsCount=g.Users.OrderBy(u=>u.Date).LastOrDefault(u=>u.UserId==userId).Receipts.Count()
+                }).FirstOrDefaultAsync();
 
-            if (game==null)
+            if (model==null)
             {
                 return null;
             }
-            var model= new GameServiceListingModel
-            {
-                Id=game.Id,
-                Description = game.Description,
-                Name = game.Name,
-                Price = game.Price,
-                ImgUrl=game.ImageUrl,
-                Genres=game.Genres.Select(gg=>gg.Genre.Name),
-                Users=game.Users.Count(),
-                GameRating=game.Reviews.Sum(r => r.Score) / (game.Reviews.Count() > 0 ? game.Reviews.Count() : 1),
-                ReleaseDate=game.ReleaseDate,
-                Video=game.Video
-               
-            };
             model.Rank = games
                 .All()
                 .Where(g => g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1) > model.GameRating)
@@ -161,21 +154,17 @@ namespace GameApp.Services
 
             //this game rank in last 30 days
             var dateDeadline = DateTime.UtcNow.AddDays(-30);
-            var myPopularityRating = game.Reviews.Where(r => r.ReviewDate > dateDeadline).Sum(r => r.Score) / (game.Reviews.Where(r => r.ReviewDate > dateDeadline).Count()>0? game.Reviews.Where(r => r.ReviewDate > dateDeadline).Count():1);
+            var myPopularityRating = model.Reviews.Where(r => r.ReviewDate > dateDeadline).Sum(r => r.Score) / (model.Reviews.Where(r => r.ReviewDate > dateDeadline).Count()>0? model.Reviews.Where(r => r.ReviewDate > dateDeadline).Count():1);
             model.Popularity = games
             .All()
             .Select(g=>g.Reviews.Where(r => r.ReviewDate > dateDeadline).Sum(r => r.Score) / (g.Reviews.Where(r => r.ReviewDate > dateDeadline).Count() > 0 ? g.Reviews.Where(r => r.ReviewDate > dateDeadline).Count() : 1))
             .Where(s=>s> myPopularityRating)
             .Count()+1;
 
-
-            
-            var usergame = game.Users.LastOrDefault(g=>g.UserId==userId);
-            if (usergame!=null)
+            if (model.ReceiptsCount!=0)
             {
-                
-                model.HaveGame = usergame.Receipts.Count()%2==1;
-                var userReview = game.Reviews.SingleOrDefault(r => r.UserId == userId);
+                model.HaveGame = model.ReceiptsCount % 2==1;
+                var userReview = model.Reviews.SingleOrDefault(r => r.UserId == userId);
                 if (userReview!=null)
                 {
                     model.UserRating = userReview.Score;
@@ -185,63 +174,47 @@ namespace GameApp.Services
             return model;
         }
 
-        public async Task<PopularGamesServiceListingModel[]> GetPopularGames()
-        {
-            return await games.All()
-                .OrderByDescending(g => g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Sum(r => r.Score) 
+        public async Task<PopularGamesServiceListingModel[]> GetPopularGames() 
+            => await games.All()
+                .OrderByDescending(g => g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Sum(r => r.Score)
                 / (g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Count() > 0 ? g.Reviews.Where(r => r.ReviewDate > DateTime.UtcNow.AddDays(-30)).Count() : 1))
                 .Take(15)
-                .Select(g=>new PopularGamesServiceListingModel 
-                { 
-                    ImgUrl=g.ImageUrl,
-                    Name=g.Name
-                }).ToArrayAsync();
-        }
-
-        public async Task<PopularGamesServiceListingModel[]> GetTopRankedGames()
-        {
-            return await games.All()
-                .OrderByDescending(g=> g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
-                .Take(15)
-                .Select(g=>new PopularGamesServiceListingModel 
-                { 
-                    ImgUrl=g.ImageUrl,
-                    Name=g.Name
-                }).ToArrayAsync();
-        }
-
-        public async Task<PopularGamesServiceListingModel[]> GetUpcomingGames()
-        {
-            return await games
-                .All()
-                .Where(g => g.ReleaseDate > DateTime.UtcNow).Select(g=> new PopularGamesServiceListingModel
+                .Select(g => new PopularGamesServiceListingModel
                 {
-                    ImgUrl=g.ImageUrl,
-                    Name=g.Name
-                }) 
+                    ImgUrl = g.ImageUrl,
+                    Name = g.Name
+                }).ToArrayAsync();
+
+        public async Task<PopularGamesServiceListingModel[]> GetTopRankedGames() 
+            => await games.All()
+                .OrderByDescending(g => g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
+                .Take(15)
+                .Select(g => new PopularGamesServiceListingModel
+                {
+                    ImgUrl = g.ImageUrl,
+                    Name = g.Name
+                }).ToArrayAsync();
+
+        public async Task<PopularGamesServiceListingModel[]> GetUpcomingGames() 
+            => await games
+                .All()
+                .Where(g => g.ReleaseDate > DateTime.UtcNow).Select(g => new PopularGamesServiceListingModel
+                {
+                    ImgUrl = g.ImageUrl,
+                    Name = g.Name
+                })
                 .Take(5)
                 .ToArrayAsync();
-        }
 
-        public async Task<bool> IsUpcoming(int gameId)
-        {
-            var game= await games
+        public async Task<bool> IsUpcoming(int gameId) 
+            => await games
                 .All()
-                .FirstOrDefaultAsync(g => g.Id == gameId);
-            
-            return game.ReleaseDate > DateTime.Now;
-        }
+                .Where(g => g.Id == gameId)
+                .Select(g => g.ReleaseDate > DateTime.Now)
+                .FirstOrDefaultAsync();
 
-        public async Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId)
-        {
-            var game = await games.All().SingleOrDefaultAsync(g => g.Id == gameId);
-            if (game==null)
-            {
-                return false;
-            }
-            var success=await shoppingCart.RemoveFromCart(game);
-            return success;
-        }
+        public async Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId) 
+            => await shoppingCart.RemoveFromCart(gameId);
 
         public async Task<bool> SetGameById(Comment comment,int gameId)
         {
@@ -264,7 +237,5 @@ namespace GameApp.Services
             review.Game = game;
             return true;
         }
-
-
     }
 }
