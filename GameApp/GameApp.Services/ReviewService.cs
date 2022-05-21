@@ -17,13 +17,13 @@ namespace GameApp.Services
         private readonly IUserService userService;
         private readonly IGameService gameService;
 
-        public ReviewService(IRepository<Review> reviws, IGameService gameService, IUserService userService)
+        public ReviewService(IRepository<Review> reviews, IGameService gameService, IUserService userService)
         {
-            this.reviews = reviws;
+            this.reviews = reviews;
             this.gameService = gameService;
             this.userService = userService;
         }
-
+        
         public async Task<bool> Rate(string gameName, int points, string userId)
         {
             var oldReview = await reviews.All().FirstOrDefaultAsync(r => r.UserId == userId && r.Game.Name == gameName);

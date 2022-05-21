@@ -22,23 +22,20 @@ namespace GameApp.Services
             this.receiptService = receiptService;
         }
 
-        public async Task<IEnumerable<RefundableItemsServiceModel>> GetGameForRefund(string userId)
-        {
-            var games = userGames
+        public async Task<IEnumerable<RefundableItemsServiceModel>> GetGameForRefund(string userId) 
+            => await userGames
                 .All()
-                .Include(ug=>ug.Game)
-                .Where(ug => ug.UserId == userId 
+                .Include(ug => ug.Game)
+                .Where(ug => ug.UserId == userId
                 && ug.Date > DateTime.Now.AddDays(-3)
-                && ug.IsRefunded==false);
-            return await games.Select(g => new RefundableItemsServiceModel
-            {
-                IMG = g.Game.ImageUrl,
-                Name = g.Game.Name,
-                ReleaseDate = g.Game.ReleaseDate,
-                GameId=g.Game.Id,
-                
-            }).ToListAsync();
-        }
+                && ug.IsRefunded == false)
+                .Select(g => new RefundableItemsServiceModel
+                {
+                    IMG = g.Game.ImageUrl,
+                    Name = g.Game.Name,
+                    ReleaseDate = g.Game.ReleaseDate,
+                    GameId = g.Game.Id,
+                }).ToListAsync();
 
         public async Task<bool> RefundGame(int gameId, string userId)
         {

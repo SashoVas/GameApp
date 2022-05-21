@@ -24,7 +24,10 @@ namespace GameApp.Web.Controllers
             {
                 return View(input);
             }
-            await genreService.Create(input.Name);
+            if (!await genreService.Create(input.Name))
+            {
+                return this.BadRequest();
+            }
             return this.Redirect("/");
 
         }

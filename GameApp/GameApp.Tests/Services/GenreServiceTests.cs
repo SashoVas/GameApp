@@ -77,9 +77,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var repo = new Repository<Genre>(context);
             var genreService = new GenreService(repo);
-            
-            await Assert.ThrowsAnyAsync<ArgumentNullException>(async () => await genreService.Create(null));
-           
+            Assert.False(await genreService.Create(null));
         }
 
     }

@@ -103,7 +103,7 @@ namespace GameApp.Tests.Services
 
             var game = context.Games.SingleOrDefault(g => g.Id == 2);
 
-            Assert.True(await shoppingCart.RemoveFromCart(game));
+            Assert.True(await shoppingCart.RemoveFromCart(game.Id));
             var result = repo.All().FirstOrDefault(c => c.GameId == 2);
             Assert.Null(result);
 
@@ -120,9 +120,7 @@ namespace GameApp.Tests.Services
             var shoppingCart = new ShoppingCart(repo);
             shoppingCart.Id = shoppingCartId;
 
-            var game = context.Games.SingleOrDefault(g => g.Id == gameId);
-
-            Assert.False(await shoppingCart.RemoveFromCart(game));
+            Assert.False(await shoppingCart.RemoveFromCart(gameId));
         }
 
         [Fact]

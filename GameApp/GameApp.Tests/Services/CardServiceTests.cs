@@ -209,22 +209,13 @@ namespace GameApp.Tests.Services
         public async Task TestRemoveCardShouldRemoveCard()
         {
             var context = GameAppDbContextFactory.InitializeContext();
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             await SeedData(context);
             var repo = new Repository<Card>(context);
             var cardService = new CardService(repo, null);
+            context.ChangeTracker.Clear();
             Assert.True(await cardService.Remove("Card1"));
-
             Assert.Null(await repo.All().FirstOrDefaultAsync(c => c.Id == "Card1"));
         }
-        [Fact]
-        public async Task TestRemoveCardWithImproperDataShouldReturnFalse()
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<Card>(context);
-            var cardService = new CardService(repo, null);
-            Assert.False(await cardService.Remove("Not a card"));
-        }
-
     }
 }

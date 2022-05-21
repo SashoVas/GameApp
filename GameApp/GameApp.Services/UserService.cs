@@ -60,62 +60,51 @@ namespace GameApp.Services
         {
             var arr = new int[11];
             var user = await users.All()
-                .Include(u => u.Reviews)
-                .Include(u=>u.Games)
-                .ThenInclude(ug=>ug.Game)
-                .ThenInclude(g=>g.Reviews)
-                .SingleOrDefaultAsync(u => u.UserName == username);
+                .Where(u => u.UserName == username)
+                .Select(u => new UserInfoServiceModel
+                {
+                    UserName = u.UserName,
+                    ProfilePic = u.ImgURL,
+                    Description = u.Description,
+                    Reviews=u.Reviews,
+                    MeanScore = u.Reviews.Sum(r => r.Score) / (u.Reviews.Count() > 0 ? u.Reviews.Count() : 1),
+                    ReviewsCount = u.Reviews.Count(),
+                    Games = u.Games.Where(ug => ug.IsRefunded == false)
+                    .Select(ug => new GameInfoHelperModel
+                    {
+                        Score = ug.Game.Reviews.Sum(r => r.Score) / (ug.Game.Reviews.Count() > 0 ? ug.Game.Reviews.Count() : 1),
+                        ImgUrl = ug.Game.ImageUrl,
+                        Name = ug.Game.Name
+
+                    }),
+                }).FirstOrDefaultAsync();
             if (user==null)
             {
                 return null;
             }
             user.Reviews.ToList().ForEach(x => arr[(int)x.Score]++);
-            var reviews = user.Reviews.Count();
-            var model=new UserInfoServiceModel
-            {
-                UserName = user.UserName,
-                ProfilePic = user.ImgURL,
-                Description = user.Description,
-                ScoreCount = arr,
-                MeanScore = user.Reviews.Sum(r => r.Score) / (reviews>0?reviews:1),
-                ReviewsCount=reviews,
-                Games = user.Games.Where(ug=>ug.IsRefunded==false)
-                .Select(ug => new GameInfoHelperModel
-                {
-                    Score = ug.Game.Reviews.Sum(r=>r.Score) / (ug.Game.Reviews.Count()>0? ug.Game.Reviews.Count():1),
-                    ImgUrl = ug.Game.ImageUrl,
-                    Name = ug.Game.Name
-
-                })
-            };
-
-            return model;
-        
-        
-            
+            user.ScoreCount = arr;
+            return user;
         }
 
         public async Task<UserPhoneAndEmailServiceModel> GetUserPhoneAndEmail(string userId)
         {
-            var user =await userManager.FindByIdAsync(userId);
-
+            var user = await users.All()
+                .Where(u => u.Id == userId)
+                .Select(u=> new UserPhoneAndEmailServiceModel
+                {
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber
+                }).FirstOrDefaultAsync();
             if (user==null )
             {
                 throw new ArgumentException();
             }
-            return new UserPhoneAndEmailServiceModel 
-            {
-                Email=user.Email,
-                PhoneNumber=user.PhoneNumber
-            };
+            return user;
         }
 
         public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId,int page)
         {
-            var a =  this.users
-                .All()
-                .Include(u => u.Friends)
-                .Where(u => u.UserName.ToLower().Contains(username.ToLower())).ToList();
             return await this.users
                 .All()
                 .Include(u=>u.Friends)
@@ -134,38 +123,36 @@ namespace GameApp.Services
 
         public async Task<UserSettingsInfoServiceModel> GetUserSettingsInfo(string userId)
         {
-            var user = await users
-                .All()
-                .Include(u=>u.Cards)
-                .Include(u => u.Games)
-                .ThenInclude(g=>g.Game)
-                .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await users.All()
+                .Where(u => u.Id == userId)
+                .Select(u=> new UserSettingsInfoServiceModel
+                {
+                    Description = u.Description,
+                    Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
+                    Username = u.UserName,
+                    Games = u.Games.Select(g => new GameInfoHelperModel
+                    {
+                        ImgUrl = g.Game.ImageUrl,
+                        Name = g.Game.Name
+
+                    }),
+                    Cards = u.Cards.Select(c => new AllCardsServiceListingModel
+                    {
+                        CardNumber = c.CardNumber,
+                        CardType = c.CardType,
+                        FirstName = c.FirstName,
+                        Id = c.Id,
+                        LastName = c.LastName
+                    })
+                })
+                .FirstOrDefaultAsync();
 
             if (user==null)
             {
                 throw new ArgumentException();
             }
-            return new UserSettingsInfoServiceModel 
-            {
-                Description=user.Description,
-                Email=user.Email,
-                PhoneNumber=user.PhoneNumber,
-                Username=user.UserName,
-                Games=user.Games.Select(g=>new GameInfoHelperModel
-                {
-                    ImgUrl=g.Game.ImageUrl,
-                    Name=g.Game.Name
-
-                }),
-                Cards=user.Cards.Select(c=>new AllCardsServiceListingModel
-                {
-                    CardNumber=c.CardNumber,
-                    CardType=c.CardType,
-                    FirstName=c.FirstName,
-                    Id=c.Id,
-                    LastName=c.LastName
-                })
-            };
+            return user;
         }
 
         public async Task<bool> SetEmailAndPhone(string phone, string email,string userId)

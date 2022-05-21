@@ -52,57 +52,51 @@ namespace GameApp.Services
             
         }
 
-        public async Task<IEnumerable<AllReceiptsServiceListingModel>> GetAll(string userId)
-        {
-            return await receipts
+        public async Task<IEnumerable<AllReceiptsServiceListingModel>> GetAll(string userId) 
+            => await receipts
                 .All()
-                .Include(r=>r.UserGames)
-                .ThenInclude(ugs=>ugs.UserGame)
+                .Include(r => r.UserGames)
+                .ThenInclude(ugs => ugs.UserGame)
                 .Where(r => r.UserGames.FirstOrDefault().UserGame.UserId == userId)
-                .Select(r => new AllReceiptsServiceListingModel 
-                { 
-                   Games=r.UserGames
-                   .Select(ug=> new ReceiptGameSeviceModel 
-                   { 
-                       Name=ug.UserGame.Game.Name,
-                       Price=ug.UserGame.Game.Price
-                   }),
-                    Date = r.ReceiptDate.ToString("yyyy,MM,dd"),
-                   Id=r.Id
-                }).ToListAsync();
-        }
-
-        public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId)
-        {
-
-            var receipt =await receipts
-                .All()
-                .Include(r=>r.Card)
-                .Include(r=>r.UserGames)
-                .ThenInclude(ugs=>ugs.UserGame)
-                .ThenInclude(ug=>ug.Game)
-                .SingleOrDefaultAsync(r => r.Id == receiptId);
-            if (receipt==null)
-            {
-                return null;
-            }
-            return new AllReceiptsServiceListingModel 
-            {
-                Games = receipt.UserGames
+                .Select(r => new AllReceiptsServiceListingModel
+                {
+                    Games = r.UserGames
                    .Select(ug => new ReceiptGameSeviceModel
                    {
                        Name = ug.UserGame.Game.Name,
                        Price = ug.UserGame.Game.Price
                    }),
-                Date = receipt.ReceiptDate.ToString("yyyy,MM,dd"),
-                Id = receipt.Id,
+                    Date = r.ReceiptDate.ToString("yyyy,MM,dd"),
+                    Id = r.Id
+                }).ToListAsync();
 
-                CardFirstName=receipt.Card!=null? receipt.Card.FirstName:null,
-                CardLastName=receipt.Card!=null?receipt.Card.LastName:null,
-                CardNumber=receipt.Card != null? receipt.Card.CardNumber : null,
-                CardType=receipt.Card != null? receipt.Card.CardType : CardType.PayPal,
-                ReceiptType=receipt.ReceiptType
-            };
+        public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId)
+        {
+            var receipt = await receipts.All()
+                .Where(r => r.Id == receiptId)
+                .Select(r=>new AllReceiptsServiceListingModel
+                {
+                    Games = r.UserGames
+                   .Select(ug => new ReceiptGameSeviceModel
+                   {
+                       Name = ug.UserGame.Game.Name,
+                       Price = ug.UserGame.Game.Price
+                   }),
+                    Date = r.ReceiptDate.ToString("yyyy,MM,dd"),
+                    Id = r.Id,
+
+                    CardFirstName = r.Card != null ? r.Card.FirstName : null,
+                    CardLastName = r.Card != null ? r.Card.LastName : null,
+                    CardNumber = r.Card != null ? r.Card.CardNumber : null,
+                    CardType = r.Card != null ? r.Card.CardType : CardType.PayPal,
+                    ReceiptType = r.ReceiptType
+                }).FirstOrDefaultAsync();
+
+            if (receipt==null)
+            {
+                return null;
+            }
+            return receipt;
         }
     }
 }
