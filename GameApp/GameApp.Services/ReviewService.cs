@@ -36,7 +36,7 @@ namespace GameApp.Services
                 Score = points,
                 ReviewDate = DateTime.UtcNow,
             };
-           var hasUser = await userService.SetUsersToReview(review,userId);
+            var hasUser = await userService.SetUsersToReview(review,userId);
             if (!hasUser)
             {
                 return false;

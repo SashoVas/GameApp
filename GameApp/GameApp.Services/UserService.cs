@@ -103,23 +103,19 @@ namespace GameApp.Services
             return user;
         }
 
-        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username,string userId,int page)
-        {
-            return await this.users
-                .All()
-                .Include(u=>u.Friends)
+        public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username, string userId, int page) 
+            => await users.All()
                 .Where(u => u.UserName.ToLower().Contains(username.ToLower()))
-                .Skip(page*5)
+                .Skip(page * 5)
                 .Take(5)
-                .Select(u=> new UsersListingModel
+                .Select(u => new UsersListingModel
                 {
-                    ImgUrl=u.ImgURL ?? "User.png",
-                    Games=u.Games.Count(),
-                    Username=u.UserName,
-                    Description=u.Description,
-                    IsFriend=u.Friends.Any(f=>f.FriendUserId==userId ||f.MainUserId==userId)
+                    ImgUrl = u.ImgURL ?? "User.png",
+                    Games = u.Games.Count(),
+                    Username = u.UserName,
+                    Description = u.Description,
+                    IsFriend = u.Friends.Any(f => f.FriendUserId == userId || f.MainUserId == userId)
                 }).ToListAsync();
-        }
 
         public async Task<UserSettingsInfoServiceModel> GetUserSettingsInfo(string userId)
         {
