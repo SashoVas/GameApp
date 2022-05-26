@@ -68,8 +68,6 @@ namespace GameApp.Services
                 }
                 game.ImageUrl = imgUrl + ".png";
             }
-            
-
             await games.AddAsync(game);
             await games.SaveChangesAsync();
             return game.Id;
@@ -79,7 +77,12 @@ namespace GameApp.Services
         {
             var game =await games
                 .All()
-                .FirstOrDefaultAsync(g=>g.Name==gameName);
+                .Where(g=>g.Name==gameName)
+                .Select(g=>new Game 
+                {
+                    Id=g.Id 
+                })
+                .FirstOrDefaultAsync();
             if (game==null)
             {
                 return false;
@@ -118,10 +121,7 @@ namespace GameApp.Services
                     ImgUrl = g.ImageUrl,
                     Score= g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1)
                 }).ToListAsync();
-                
         }
-
-        
 
         public async Task< GameServiceListingModel> GetGame(string name,string userId)
         {
@@ -213,28 +213,17 @@ namespace GameApp.Services
                 .Select(g => g.ReleaseDate > DateTime.Now)
                 .FirstOrDefaultAsync();
 
-        public async Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart, int gameId) 
-            => await shoppingCart.RemoveFromCart(gameId);
-
-        public async Task<bool> SetGameById(Comment comment,int gameId)
-        {
-            var game=await games.All().SingleOrDefaultAsync(g => g.Id==gameId);
-            if (game==null)
-            {
-                return false;
-            }
-            comment.Game = game;
-            return true;
-        }
-
         public async Task<bool> SetGameByName(Review review, string gameName)
         {
-            var game=await games.All().SingleOrDefaultAsync(g => g.Name == gameName);
+            var game=await games.All()
+                .Where(g => g.Name == gameName)
+                .Select(g=>g.Id )
+                .FirstOrDefaultAsync();
             if (game==null)
             {
                 return false;
             }
-            review.Game = game;
+            review.GameId = game;
             return true;
         }
     }

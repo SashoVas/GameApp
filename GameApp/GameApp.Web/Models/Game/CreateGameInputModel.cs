@@ -15,9 +15,11 @@ namespace GameApp.Web.Models.Game
         [MinLength(3)]
         public string Description { get; set; }
         [RegularExpression("^(https://www\\.youtube\\.com/watch\\?v=[A-z,0-8,\\-,_]{11})", ErrorMessage ="Youtube video expected")]
+        [MaxLength(100)]
         public string? VideoUrl { get; set; }
         [Required]
         public DateTime Date { get; set; }
+        [MaxLength(100)]
         public IFormFile? Image { get; set; }
         [Required]
         public IEnumerable<string> Genres { get; set; }

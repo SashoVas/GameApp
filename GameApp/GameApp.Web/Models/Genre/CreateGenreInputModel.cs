@@ -6,7 +6,7 @@ namespace GameApp.Web.Models.Genre
     {
         [Required]
         [MinLength(3)]
-        [MaxLength(20)]
+        [MaxLength(30)]
         public string Name { get; set; }
     }
 }

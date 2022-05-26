@@ -26,9 +26,11 @@ namespace GameApp.Web.Controllers
             {
                 return this.BadRequest();
             }
+            var comments = (await commentsService.Create(comment.GameId, comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
+            comments[0].Username = User.Identity.Name;
             var model=new LoadCommentsViewModel 
             { 
-                Comments=await commentsService.Create(comment.GameId,comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier))
+                Comments=comments
             };
             return model;
         }
@@ -50,9 +52,11 @@ namespace GameApp.Web.Controllers
             {
                 return this.BadRequest();
             }
-            var model = new RepliesViewModel 
-            { 
-                Replies=await commentsService.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier),reply.CommentId)
+            var replies = (await commentsService.CreateReply(reply.GameId, reply.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier), reply.CommentId)).ToList();
+            replies[0].Username = User.Identity.Name;
+            var model = new RepliesViewModel
+            {
+                Replies = replies
             };
             return model;
         }

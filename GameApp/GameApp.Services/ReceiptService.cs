@@ -14,42 +14,26 @@ namespace GameApp.Services
 {
     public class ReceiptService : IReceiptService
     {
-        private readonly IUserService userService;
         private readonly IRepository<Receipt> receipts;
-        private readonly ICardService cardService;
-        public ReceiptService(IUserService userService, IRepository<Receipt> receipts, ICardService cardService)
-        {
-            this.userService = userService;
-            this.receipts = receipts;
-            this.cardService = cardService;
-        }
+        public ReceiptService(IRepository<Receipt> receipts) 
+            => this.receipts = receipts;
         public virtual async Task<bool> CreateReceipt(string userId, List<UserGame> userGames,string cardId,ReceiptType receiptType)
         {
             var receipt = new Receipt
             {
                 Id=Guid.NewGuid().ToString(),
                 ReceiptDate = DateTime.UtcNow,
-                ReceiptType=receiptType
+                ReceiptType=receiptType,
+                CardId=cardId,
             };
-            var hasUser=await userService.SetUsersToReceipt(receipt,userId);
-            if (!hasUser)
-            {
-                return false;
-            }
-            var hasCard=await cardService.SetCardToReceipt(receipt,cardId);
-            if (!hasCard)
-            {
-                return false;
-            }
             receipt.UserGames = userGames.Select(ug=>new ReceiptUserGame
             {
                 Receipt=receipt,
                 UserGame=ug,
-                Id=Guid.NewGuid().ToString()
+                Id=Guid.NewGuid().ToString(),
             }).ToList();
             await receipts.AddAsync(receipt);
             return true;
-            
         }
 
         public async Task<IEnumerable<AllReceiptsServiceListingModel>> GetAll(string userId) 
@@ -70,11 +54,10 @@ namespace GameApp.Services
                     Id = r.Id
                 }).ToListAsync();
 
-        public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId)
-        {
-            var receipt = await receipts.All()
+        public async Task<AllReceiptsServiceListingModel> GetReceipt(string receiptId) 
+            => await receipts.All()
                 .Where(r => r.Id == receiptId)
-                .Select(r=>new AllReceiptsServiceListingModel
+                .Select(r => new AllReceiptsServiceListingModel
                 {
                     Games = r.UserGames
                    .Select(ug => new ReceiptGameSeviceModel
@@ -91,12 +74,5 @@ namespace GameApp.Services
                     CardType = r.Card != null ? r.Card.CardType : CardType.PayPal,
                     ReceiptType = r.ReceiptType
                 }).FirstOrDefaultAsync();
-
-            if (receipt==null)
-            {
-                return null;
-            }
-            return receipt;
-        }
     }
 }

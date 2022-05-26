@@ -14,19 +14,18 @@ namespace GameApp.Services
     public class ReviewService : IReviewService
     {
         private readonly IRepository<Review> reviews;
-        private readonly IUserService userService;
         private readonly IGameService gameService;
 
-        public ReviewService(IRepository<Review> reviews, IGameService gameService, IUserService userService)
+        public ReviewService(IRepository<Review> reviews, IGameService gameService)
         {
             this.reviews = reviews;
             this.gameService = gameService;
-            this.userService = userService;
         }
         
         public async Task<bool> Rate(string gameName, int points, string userId)
         {
-            var oldReview = await reviews.All().FirstOrDefaultAsync(r => r.UserId == userId && r.Game.Name == gameName);
+            var oldReview = await reviews.All()
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.Game.Name == gameName);
             if (oldReview != null)
             {
                 return await ChangeRaing(oldReview,points);
@@ -35,12 +34,8 @@ namespace GameApp.Services
             {
                 Score = points,
                 ReviewDate = DateTime.UtcNow,
+                UserId=userId
             };
-            var hasUser = await userService.SetUsersToReview(review,userId);
-            if (!hasUser)
-            {
-                return false;
-            }
             var hasGame=await gameService.SetGameByName(review, gameName);
             if (!hasGame)
             {

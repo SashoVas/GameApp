@@ -18,12 +18,10 @@ namespace GameApp.Services
         private readonly ShoppingCart shoppingCart;
         private readonly IGameService gameService;
         private readonly IRepository<UserGame> userGames;
-        private readonly UserManager<User> userManager;
         private readonly IReceiptService receiptService;
-        public CartService(ShoppingCart shoppingCart, IRepository<UserGame> userGames, UserManager<User> userManager, IGameService gameService, IReceiptService receiptService)
+        public CartService(ShoppingCart shoppingCart, IRepository<UserGame> userGames, IGameService gameService, IReceiptService receiptService)
         {
             this.shoppingCart = shoppingCart;
-            this.userManager = userManager;
             this.userGames = userGames;
             this.gameService = gameService;
             this.receiptService = receiptService;
@@ -33,13 +31,6 @@ namespace GameApp.Services
             var cartItems = await shoppingCart
                 .GetCartItems()
                 .ToListAsync();
-
-            var user = await userManager
-                .FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
             var gamesForReceipt = new List<UserGame>();
             cartItems
                 .ForEach(async item =>
@@ -47,7 +38,7 @@ namespace GameApp.Services
                     var ug = new UserGame
                     {
                         Game = item,
-                        User = user
+                        UserId = userId
                     };
                     await userGames.AddAsync(ug);
                     gamesForReceipt.Add(ug); 
@@ -58,11 +49,8 @@ namespace GameApp.Services
             {
                 return false;
             }
-
             await userGames.SaveChangesAsync();
             await shoppingCart.Clear();
-
-
             return true;
         }
         public async Task<bool> AddToCart(int id) 
@@ -80,6 +68,6 @@ namespace GameApp.Services
             }).ToListAsync();
 
         public async Task<bool> RemoveFromCart(int id) 
-            => await gameService.RemoveShoppingCartItem(shoppingCart, id);
+            => await shoppingCart.RemoveFromCart(id);
     }
 }

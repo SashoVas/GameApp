@@ -88,20 +88,13 @@ namespace GameApp.Services
         }
 
         public async Task<UserPhoneAndEmailServiceModel> GetUserPhoneAndEmail(string userId)
-        {
-            var user = await users.All()
+            => await users.All()
                 .Where(u => u.Id == userId)
                 .Select(u=> new UserPhoneAndEmailServiceModel
                 {
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber
                 }).FirstOrDefaultAsync();
-            if (user==null )
-            {
-                throw new ArgumentException();
-            }
-            return user;
-        }
 
         public async Task<IEnumerable<UsersListingModel>> GetUsersByName(string username, string userId, int page) 
             => await users.All()
@@ -118,8 +111,7 @@ namespace GameApp.Services
                 }).ToListAsync();
 
         public async Task<UserSettingsInfoServiceModel> GetUserSettingsInfo(string userId)
-        {
-            var user = await users.All()
+            => await users.All()
                 .Where(u => u.Id == userId)
                 .Select(u=> new UserSettingsInfoServiceModel
                 {
@@ -143,13 +135,7 @@ namespace GameApp.Services
                     })
                 })
                 .FirstOrDefaultAsync();
-
-            if (user==null)
-            {
-                throw new ArgumentException();
-            }
-            return user;
-        }
+        
 
         public async Task<bool> SetEmailAndPhone(string phone, string email,string userId)
         {
@@ -165,61 +151,19 @@ namespace GameApp.Services
             return true;
         }
 
-        public async Task<bool> SetUsersToCard(Card card, string userId)
-        {
-            var user=await userManager.FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
-            card.User = user;
-            return true;
-        }
-
-        public async Task<bool> SetUsersToComment(Comment comment, string userId)
-        {
-            var user= await userManager.FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
-            comment.User = user;
-            return true;
-        }
-
         public async Task<bool> SetUsersToFriend(Friend friend, string userId, string friendName)
         {
-            var main=await userManager.FindByIdAsync(userId);
-            var newFriend= await userManager.FindByNameAsync(friendName);
-            if (main==null||newFriend==null)
+            var newFriendId= await users.All()
+                .Where(u=>u.UserName==friendName)
+                .Select(u=>u.Id)
+                .FirstOrDefaultAsync();
+            if (newFriendId == null)
             {
                 return false;
             }
-            friend.MainUser = main;
-            friend.FriendUser = newFriend;
+            friend.MainUserId = userId;
+            friend.FriendUserId = newFriendId;
             return true;
-        }
-
-        public async Task<bool> SetUsersToReceipt(Receipt receipt, string userId)
-        {
-            var user=await userManager.FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public async Task<bool> SetUsersToReview(Review review, string userId)
-        {
-            var user= await userManager.FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
-            review.User = user;
-            return true;
-
         }
     }
 }

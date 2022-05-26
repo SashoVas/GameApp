@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,9 @@ namespace GameApp.Data.Models
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Friend> Friends { get; set; }
         public ICollection<Card> Cards { get; set; }
+        [MaxLength(500)]
         public string? Description { get; set; }
+        [MaxLength(100)]
         public string? ImgURL { get; set; }
     }
 }

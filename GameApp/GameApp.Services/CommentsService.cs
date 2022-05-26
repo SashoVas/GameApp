@@ -15,37 +15,21 @@ namespace GameApp.Services
     public class CommentsService : ICommentsService
     {
         private readonly IRepository<Comment> comments;
-        private readonly IGameService gameService;
-        private readonly IUserService userService;
-        public CommentsService(IRepository<Comment> comments, IUserService userService, IGameService gameService)
-        {
-            this.comments = comments;
-            this.userService = userService;
-            this.gameService = gameService;
-        }
+        public CommentsService(IRepository<Comment> comments) 
+            => this.comments = comments;
         public async Task<IEnumerable<CommentsServiceListingModel>> Create(int gameId, string commentConntents, string userId)
         {
             var comment = new Comment {
                 Id=Guid.NewGuid().ToString(),
                 Content=commentConntents,
                 PostedOn=DateTime.UtcNow,
+                GameId=gameId,
+                UserId=userId
             };
-            var hasUser =await userService.SetUsersToComment(comment, userId);
-            if (!hasUser)
-            {
-                throw new ArgumentException();
-            }
-            var hasGame=await gameService.SetGameById(comment, gameId);
-            
-            if (!hasGame)
-            {
-                throw new ArgumentException();
-            }
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
             return new List<CommentsServiceListingModel>{ new CommentsServiceListingModel
             {
-                Username = comment.User.UserName,
                 Contents = comment.Content,
                 PostedOn = comment.PostedOn.ToString("yyyy,MM,dd"),
                 CommentId = comment.Id,
@@ -60,28 +44,14 @@ namespace GameApp.Services
                 Id = Guid.NewGuid().ToString(),
                 Content = commentConntents,
                 PostedOn = DateTime.UtcNow,
+                CommentedOnId=commentId,
+                UserId=userId,
+                GameId=gameId
             };
-            var commentedOn = await comments.All().SingleOrDefaultAsync(c => c.Id == commentId);
-            if (commentedOn == null)
-            {
-                throw new ArgumentException();
-            }
-            comment.CommentedOn = commentedOn;
-            var hasUser = await userService.SetUsersToComment(comment, userId);
-            if (!hasUser)
-            {
-                throw new ArgumentException();
-            }
-            var hasGame=await gameService.SetGameById(comment, gameId);
-            if (!hasGame)
-            {
-                throw new ArgumentException();
-            }
             await comments.AddAsync(comment);
             await comments.SaveChangesAsync();
             return  new List<ReplyServiceListingModel> { new ReplyServiceListingModel 
             {
-                Username = comment.User.UserName,
                 Content = comment.Content,
                 CommentId = comment.Id,
                 HasComments = comment.Comments.Count > 0 ? true : false

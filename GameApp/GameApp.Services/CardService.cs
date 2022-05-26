@@ -14,15 +14,10 @@ namespace GameApp.Services
     public class CardService : ICardService
     {
         private readonly IRepository<Card> cards;
-        private readonly IUserService userService;
-        public CardService(IRepository<Card> cards, IUserService userService)
-        {
-            this.cards = cards;
-            this.userService = userService;
-        }
+        public CardService(IRepository<Card> cards) 
+            => this.cards = cards;
         public async Task<bool> Create(CardType cardType,string cardNumber,string firstName,  string lastName, string address,  string country, DateTime date, string city, string zipCode,string phoneNumber,string userId)
         {
-            
             var card = new Card 
             { 
                 FirstName=firstName,
@@ -36,22 +31,17 @@ namespace GameApp.Services
                 PhoneNumber=phoneNumber,
                 CardType=cardType,
                 Id=Guid.NewGuid().ToString(),
+                UserId=userId
             };
-            var hasUser=await userService.SetUsersToCard(card,userId);
-            if (!hasUser)
-            {
-                return false;
-            }
             await cards.AddAsync(card);
             await cards.SaveChangesAsync();
             return true;
         }
 
-        public async Task<CardServiceModel> GetCard(string userId,string cardId)
-        {
-            var card = await cards.All()
+        public async Task<CardServiceModel> GetCard(string userId, string cardId) 
+            => await cards.All()
                 .Where(c => c.UserId == userId && c.Id == cardId)
-                .Select(c=> new CardServiceModel 
+                .Select(c => new CardServiceModel
                 {
                     FirstName = c.FirstName,
                     CardType = c.CardType,
@@ -64,12 +54,6 @@ namespace GameApp.Services
                     LastName = c.LastName,
                     PhoneNumber = c.PhoneNumber
                 }).FirstOrDefaultAsync();
-            if (card==null)
-            {
-                return null;
-            }
-            return card;
-        }
 
         public async Task<IEnumerable<AllCardsServiceListingModel>> GetCards(string userId) 
             => await cards
@@ -83,11 +67,6 @@ namespace GameApp.Services
                     LastName = c.LastName,
                     CardNumber = c.CardNumber
                 }).ToListAsync();
-
-        public async Task<bool> HaveCard(string userId) 
-            => await cards
-                .All()
-                .AnyAsync(c => c.UserId == userId);
 
         public async Task<bool> Remove(string cardId)
         {
@@ -115,20 +94,6 @@ namespace GameApp.Services
             card.CardType = cardType;
             cards.Update(card);
             await cards.SaveChangesAsync();
-            return true;
-
-        }
-
-        public async Task<bool> SetCardToReceipt(Receipt receipt, string cardId)
-        {
-            var card=await cards
-                .All()
-                .FirstOrDefaultAsync(c=>c.Id==cardId);
-            if (card==null)
-            {
-                return false;
-            }
-            receipt.Card = card;
             return true;
         }
     }

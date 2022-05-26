@@ -18,9 +18,7 @@ namespace GameApp.Services.Contracts
         Task<PopularGamesServiceListingModel[]> GetTopRankedGames();
         Task<int> Create(string name,decimal price,string description, DateTime date, IEnumerable<string> newGenres, IFormFile image, string video);
         Task<bool> SetGameByName(Review review, string gameName);
-        Task<bool> SetGameById(Comment game, int gameId);
         Task<bool> AddShoppingCartItem(ShoppingCart shoppingCart,int gameId);
-        Task<bool> RemoveShoppingCartItem(ShoppingCart shoppingCart,int gameId);
         Task<PopularGamesServiceListingModel[]> GetUpcomingGames();
         Task<bool> IsUpcoming(int gameId);
         Task<bool> Deleate(string gameName);

@@ -36,9 +36,7 @@ namespace GameApp.Services.Contracts
             string cardId
             );
         Task<CardServiceModel> GetCard(string userId, string cardId);
-        Task<bool> HaveCard(string userId);
         Task<bool> Remove(string cardId);
         Task<IEnumerable<AllCardsServiceListingModel>> GetCards(string userId);
-        Task<bool> SetCardToReceipt(Receipt receipt,string cardId);
     }
 }

@@ -18,7 +18,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
             this.userGameService = userGameService;
         }
         [Route("Profile/MyUser/ProfileInfo/{name}")]
-        public async Task<IActionResult> ProfileInfo(string name)
+        public async Task<IActionResult> ProfileInfo([Required]string name)
         {
             var userInfo =await userService.GetUserInfo(name);
             if (userInfo==null)
@@ -39,7 +39,7 @@ namespace GameApp.Web.Areas.Profile.Controllers
         }
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> ChangeDescription(string description) 
+        public async Task<IActionResult> ChangeDescription([Required][MaxLength(500)]string description) 
         {
             await userService.EditDescription( description,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             return this.Redirect("/Profile/MyUser/ProfileInfo/"+this.User.Identity.Name);
@@ -76,7 +76,6 @@ namespace GameApp.Web.Areas.Profile.Controllers
             {
                 return this.NotFound();
             }
-            
             var model = new UserSettingsViewModel
             {
                 Username = userInfo.Username,
@@ -92,6 +91,10 @@ namespace GameApp.Web.Areas.Profile.Controllers
         public async Task<IActionResult>ChangePhoneAndEmail()
         {
             var phoneAndEmail =await userService.GetUserPhoneAndEmail(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (phoneAndEmail==null)
+            {
+                return this.BadRequest();
+            }
             return this.View(new PhoneAndEmailInputModel 
             {
                 Email=phoneAndEmail.Email,
