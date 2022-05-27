@@ -60,15 +60,8 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Review>(context);
-
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = context.Users.SingleOrDefault(u=>u.Id=="1");
-            userManager.Setup(um=>um.FindByIdAsync("1")).Returns(async()=>user);
-
             var gameServiceMock = new Mock<GameService>(new Repository<Game>(context), null, null);
-            var userService = new UserService( userManager.Object,null,null);
-            var reviewService = new ReviewService(repo, gameServiceMock.Object,userService);
+            var reviewService = new ReviewService(repo, gameServiceMock.Object);
 
             Assert.True(await reviewService.Rate("Game1",5,"1"));
 
@@ -82,40 +75,11 @@ namespace GameApp.Tests.Services
                 UserId="1",
                 Score=5,
                 Game=game,
-                User=user
             };
 
             Assert.Equal(result.Score,actual.Score);
             Assert.Equal(result.UserId, actual.UserId);
             Assert.Equal(result.GameId, actual.GameId);
-            Assert.Equal(result.User.UserName, actual.User.UserName);
-            Assert.Equal(result.Game.Name, actual.Game.Name);
-            Assert.Equal(result.Game.Price, actual.Game.Price);
-            Assert.Equal(result.Game.Description, actual.Game.Description);
-
         }
-        [Theory]
-        [InlineData("noName","Nouser")]
-        [InlineData("noName", "1")]
-        [InlineData("Game1", "Nouser")]
-        public async Task TestRateWithImproperDataShouldReturnFalse(string userid,string gameName)
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<Review>(context);
-
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = context.Users.SingleOrDefault(u => u.Id == userid);
-            userManager.Setup(um => um.FindByIdAsync(userid)).Returns(async () => user);
-
-            var gameServiceMock = new Mock<GameService>(new Repository<Game>(context), null, null);
-            var userService = new UserService(userManager.Object,null,null);
-            var reviewService = new ReviewService(repo, gameServiceMock.Object,userService );
-
-            Assert.False(await reviewService.Rate(gameName, 5, userid));
-
-        }
-
     }
 }

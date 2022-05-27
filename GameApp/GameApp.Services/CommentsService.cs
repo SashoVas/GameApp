@@ -17,6 +17,10 @@ namespace GameApp.Services
         private readonly IRepository<Comment> comments;
         public CommentsService(IRepository<Comment> comments) 
             => this.comments = comments;
+
+        public async Task<bool> CommentExist(string id)
+        => await comments.All().AnyAsync(c=>c.Id==id);
+
         public async Task<IEnumerable<CommentsServiceListingModel>> Create(int gameId, string commentConntents, string userId)
         {
             var comment = new Comment {

@@ -22,8 +22,12 @@ namespace GameApp.Web.Controllers
             this.cardService = cardService;
         }
         [Route("Game")]
-        public async Task<IActionResult> Game(string title)
+        public async Task<IActionResult> Game([Required]string title)
         {
+            if (!ModelState.IsValid)
+            {
+                return this.BadRequest();
+            }
             var game=await gamesService
                 .GetGame(title,this.User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (game==null)
@@ -64,13 +68,10 @@ namespace GameApp.Web.Controllers
             };
             return this.View(model);
         }
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet()]
         public IActionResult Create() 
-        {
-            
-            return View();
-        }
+            => View();
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateGameInputModel model)
@@ -85,8 +86,12 @@ namespace GameApp.Web.Controllers
         
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult>Buy(string cardId)
+        public async Task<IActionResult>Buy([Required]string cardId)
         {
+            if (!ModelState.IsValid||!await cardService.CardExist(cardId))
+            {
+                return this.BadRequest();
+            }
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var success=await cartService.BuyItems(userId, cardId);
@@ -101,7 +106,7 @@ namespace GameApp.Web.Controllers
         [HttpPost]
         public async  Task<IActionResult> Rate(GameRateInputModel rate)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid ||!await gamesService.GameExistByName(rate.GameName))
             {
                 return this.Redirect("~/Game?title=" + rate.GameName);
             }
@@ -116,10 +121,11 @@ namespace GameApp.Web.Controllers
         [HttpPost]
         public async Task<IActionResult>Deleate([Required]string gameName)
         {
-            if (!await gamesService.Deleate(gameName))
+            if (!ModelState.IsValid||!await gamesService.GameExistByName(gameName))
             {
                 return this.BadRequest();
             }
+            await gamesService.Deleate(gameName);
             return this.Redirect("/");
         }
     }

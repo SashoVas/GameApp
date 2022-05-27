@@ -38,5 +38,6 @@ namespace GameApp.Services.Contracts
         Task<CardServiceModel> GetCard(string userId, string cardId);
         Task<bool> Remove(string cardId);
         Task<IEnumerable<AllCardsServiceListingModel>> GetCards(string userId);
+        Task<bool> CardExist(string id);
     }
 }

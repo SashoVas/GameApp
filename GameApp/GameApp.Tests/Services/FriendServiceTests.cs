@@ -2,6 +2,7 @@
 using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
+using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -98,7 +99,6 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Friend>(context);
-
             var newUser1 = new User 
             { 
                 Id="NewUser1",
@@ -110,21 +110,18 @@ namespace GameApp.Tests.Services
                 Id = "NewUser2",
                 UserName = "NewUser2"
             };
-
             await context.Users.AddAsync(newUser1);
             await context.Users.AddAsync(newUser2);
             await context.SaveChangesAsync();
-
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-
-            userManager.Setup(um => um.FindByIdAsync("NewUser1")).Returns(async()=>newUser1);
-            userManager.Setup(um => um.FindByNameAsync("NewUser2")).Returns(async()=>newUser2);
-
-            var userService = new UserService(userManager.Object,null,null);
-
-
-            var friendService = new FriendService(repo,userService);
+            var userService = new Mock<IUserService>();
+            userService.Setup(u => u.SetUsersToFriend(It.IsAny<Friend>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(async(Friend friend,string userId,string friendName) => 
+                { 
+                    friend.MainUserId = userId;
+                    friend.FriendUserId = "NewUser2";
+                    return true;
+                });
+            var friendService = new FriendService(repo,userService.Object);
 
             Assert.True( await friendService.SendFriendRequest("NewUser1", "NewUser2"));
 
@@ -150,40 +147,16 @@ namespace GameApp.Tests.Services
         }
         [Theory]
         [InlineData("NewUser1", null)]
-        [InlineData("NewUser1", "NoUser")]
-        [InlineData(null, "NewUser2")]
-        [InlineData("NoUser", "NewUser2")]
+        [InlineData("NewUser1", "NoUser")]   
         public async Task TestSendFriendRequestWithImproperDataShouldReturnFalse(string userId,string username)
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Friend>(context);
-
-            var newUser1 = new User
-            {
-                Id = "NewUser1",
-                UserName = "NewUser1"
-            };
-
-            var newUser2 = new User
-            {
-                Id = "NewUser2",
-                UserName = "NewUser2"
-            };
-
-            await context.Users.AddAsync(newUser1);
-            await context.Users.AddAsync(newUser2);
-            await context.SaveChangesAsync();
-
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            userManager.Setup(um => um.FindByIdAsync("NewUser1")).Returns(async () => newUser1);
-            userManager.Setup(um => um.FindByNameAsync("NewUser2")).Returns(async () => newUser2);
-
-            var userService = new UserService(userManager.Object, null, null);
-
-
-            var friendService = new FriendService(repo, userService);
+            var userService = new Mock<IUserService>();
+            userService.Setup(us => us.SetUsersToFriend(It.IsAny<Friend>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(async() =>false);
+            var friendService = new FriendService(repo, userService.Object);
 
             Assert.False(await friendService.SendFriendRequest(userId, username));
         }

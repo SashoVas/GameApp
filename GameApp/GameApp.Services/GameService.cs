@@ -83,14 +83,16 @@ namespace GameApp.Services
                     Id=g.Id 
                 })
                 .FirstOrDefaultAsync();
-            if (game==null)
-            {
-                return false;
-            }
             games.Delete(game);
             await games.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> GameExist(int id)
+            => await games.All().AnyAsync(g => g.Id == id);
+
+        public async Task<bool> GameExistByName(string name)
+        => await games.All().AnyAsync(g => g.Name == name);
 
         public async Task<IEnumerable<AllGamesServiceListingModel>> GetAll(int page, string gameName, string genre, string username)
         {

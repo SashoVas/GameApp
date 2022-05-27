@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,9 @@ namespace GameApp.Data.Models
 
         public string? CardId { get; set; }
         public Card? Card { get; set; }
+        [Required]
         public DateTime ReceiptDate { get; set; }
+        [Required]
         public ReceiptType ReceiptType { get; set; }
 
     }

@@ -22,5 +22,8 @@ namespace GameApp.Services.Contracts
         Task<PopularGamesServiceListingModel[]> GetUpcomingGames();
         Task<bool> IsUpcoming(int gameId);
         Task<bool> Deleate(string gameName);
+        Task<bool> GameExist(int id);
+        Task<bool> GameExistByName(string name);
+
     }
 }

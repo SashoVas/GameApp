@@ -70,7 +70,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Comment>(context);
-            var commentsService = new CommentsService(repo,null,null);
+            var commentsService = new CommentsService(repo);
 
             var result =(await commentsService.LoadComments(page, gameId)).ToList();
 
@@ -104,7 +104,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Comment>(context);
-            var commentsService = new CommentsService(repo, null, null);
+            var commentsService = new CommentsService(repo);
 
             var result =(await commentsService.LoadReplies(commentId)).ToList();
             var actualData = repo.All().Where(c => c.CommentedOnId == commentId).ToList();
@@ -129,7 +129,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Comment>(context);
-            var commentsService = new CommentsService(repo, null, null);
+            var commentsService = new CommentsService(repo);
 
             var result = (await commentsService.LoadReplies("")).ToList();
             
@@ -146,9 +146,6 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Comment>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-           
             var game = new Game
             {
                 Id = 30,
@@ -161,11 +158,7 @@ namespace GameApp.Tests.Services
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
 
-            var gameService = new GameService(new Repository<Game>(context), null,null);
-            var user = context.Users.SingleOrDefault(u => u.Id == "1");
-            userManager.Setup(um => um.FindByIdAsync("1")).Returns(async()=>user);
-            var userService = new UserService(userManager.Object,null,null);
-            var commentsService = new CommentsService(repo, userService, gameService);
+            var commentsService = new CommentsService(repo);
             
             await commentsService.Create(30,"smt","1");
             var newComment = repo.All().Last();
@@ -187,11 +180,6 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Comment>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = context.Users.SingleOrDefault(u => u.Id == "1");
-            userManager.Setup(um => um.FindByIdAsync("1")).Returns(async () => user);
-
             var game = new Game
             {
                 Id = 30,
@@ -203,10 +191,7 @@ namespace GameApp.Tests.Services
             };
             await context.Games.AddAsync(game);
             await context.SaveChangesAsync();
-
-            var gameService = new GameService(new Repository<Game>(context), null, null);
-            var userService = new UserService(userManager.Object, null, null);
-            var commentsService = new CommentsService(repo,userService , gameService);
+            var commentsService = new CommentsService(repo);
 
             await commentsService.CreateReply(30,"smt","1","3");
             var newComment = repo.All().Last();
@@ -223,76 +208,5 @@ namespace GameApp.Tests.Services
             Assert.Equal(newComment.UserId, actualReply.UserId);
             Assert.Equal(newComment.CommentedOnId, actualReply.CommentedOnId);
         }
-        [Theory]
-        [InlineData(-3,"NotUser")]
-        [InlineData(30,"NotUser")]
-        [InlineData(-3,"1")]
-        public async Task TestCreateCommentWithImproperData(int gameId, string userId)
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<Comment>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-
-            var game = new Game
-            {
-                Id = 30,
-                Name = "GameNew",
-                Description = "Description",
-                Price = 30,
-                ImageUrl = "User.png",
-                ReleaseDate = DateTime.MinValue,
-            };
-            await context.Games.AddAsync(game);
-            await context.SaveChangesAsync();
-
-            var gameService = new GameService(new Repository<Game>(context), null, null);
-            var user = context.Users.SingleOrDefault(u => u.Id == userId);
-            userManager.Setup(um => um.FindByIdAsync(userId)).Returns(async () => user);
-            var userService = new UserService(userManager.Object,null,null);
-            var commentsService = new CommentsService(repo,userService , gameService);
-
-            await Assert.ThrowsAsync<ArgumentException>(()=>commentsService.Create(gameId, "smt", userId));
-
-        }
-        [Theory]
-        [InlineData(-3, "1", "3")]
-        [InlineData(30, "1", "NotUser")]
-        [InlineData(30, "NotUser", "3")]
-        [InlineData(30, "NotUser", "NotUser")]
-        public async Task TestCreateReplyWithImproperData(int gameId,string userId,string commentId)
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<Comment>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = context.Users.SingleOrDefault(u => u.Id == userId);
-            userManager.Setup(um => um.FindByIdAsync(userId)).Returns(async () => user);
-
-            var game = new Game
-            {
-                Id = 30,
-                Name = "GameNew",
-                Description = "Description",
-                Price = 30,
-                ImageUrl = "User.png",
-                ReleaseDate = DateTime.MinValue,
-            };
-            await context.Games.AddAsync(game);
-            await context.SaveChangesAsync();
-
-            var gameService = new GameService(new Repository<Game>(context), null, null);
-            var userService = new UserService(userManager.Object, null, null);
-            var commentsService = new CommentsService(repo, userService, gameService);
-
-            
-            await Assert.ThrowsAsync<ArgumentException>(() =>  commentsService.CreateReply(gameId, "smt", userId, commentId));
-
-
-        }
-
-
     }
 }

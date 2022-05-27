@@ -65,7 +65,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Card>(context);
-            var cardService = new CardService(repo,null);
+            var cardService = new CardService(repo);
 
             var result =(await cardService.GetCards("1")).ToList();
             var actual =await repo.All().Where(c=>c.UserId=="1").ToListAsync();
@@ -84,7 +84,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Card>(context);
-            var cardService = new CardService(repo, null);
+            var cardService = new CardService(repo);
 
             var result = (await cardService.GetCards("not a value")).ToList();
             Assert.Empty(result);
@@ -95,7 +95,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Card>(context);
-            var cardService = new CardService(repo, null);
+            var cardService = new CardService(repo);
 
             var result =await cardService.GetCard("2", "Card1");
             var acctual =await repo.All().FirstOrDefaultAsync(c=>c.UserId=="2"&&c.Id=="Card1");
@@ -117,7 +117,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Card>(context);
-            var cardService = new CardService(repo, null);
+            var cardService = new CardService(repo);
 
             var result = await cardService.GetCard("not a value", "not a value");
 
@@ -134,13 +134,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Card>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = await context.Users.FirstOrDefaultAsync(u=>u.Id=="1");
-            userManagerMock.Setup(um => um.FindByIdAsync("1")).Returns(async()=>user);
-            var userService = new UserService(userManagerMock.Object,null,new Repository<User>(context));
-            var cardService = new CardService(repo, userService);
-            
+            var cardService = new CardService(repo);
             var card = new Card
             {
 
@@ -155,7 +149,7 @@ namespace GameApp.Tests.Services
                 LastName = "NewCardLastName",
                 PhoneNumber = "NewCardPhoneNumber",
                 ZipCode = "NewCardZipCode",
-                User = user
+                UserId = "1"
             };
 
             await cardService.Create(card.CardType,card.CardNumber,card.FirstName,card.LastName,card.Address,card.Country,card.ExpirationDate,card.City,card.ZipCode,card.PhoneNumber,"1");
@@ -170,49 +164,15 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.LastName, card.LastName);
             Assert.Equal(result.PhoneNumber, card.PhoneNumber);
             Assert.Equal(result.ZipCode, card.ZipCode);
-        }
-        [Theory]
-        [InlineData("NotUser")]
-        [InlineData(null)]
-        public async Task TestCreateCardWithImproperDataShouldReturnFalse(string userId)
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<Card>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            userManagerMock.Setup(um => um.FindByIdAsync(userId)).Returns(async () => user);
-            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
-            var cardService = new CardService(repo, userService);
-
-            var card = new Card
-            {
-
-                Id = "NewCard",
-                Address = "NewCardAdders",
-                CardNumber = "NewCardCardNumber",
-                CardType = CardType.MasterCard,
-                City = "NewCardCity",
-                Country = "NewCardCountry",
-                ExpirationDate = DateTime.UtcNow,
-                FirstName = "NewCardFirstName",
-                LastName = "NewCardLastName",
-                PhoneNumber = "NewCardPhoneNumber",
-                ZipCode = "NewCardZipCode",
-                User = user
-            };
-            
-            Assert.False(await cardService.Create(card.CardType, card.CardNumber, card.FirstName, card.LastName, card.Address, card.Country, card.ExpirationDate, card.City, card.ZipCode, card.PhoneNumber, userId));
+            Assert.Equal(result.UserId, card.UserId);
         }
         [Fact]
         public async Task TestRemoveCardShouldRemoveCard()
         {
             var context = GameAppDbContextFactory.InitializeContext();
-            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             await SeedData(context);
             var repo = new Repository<Card>(context);
-            var cardService = new CardService(repo, null);
+            var cardService = new CardService(repo);
             context.ChangeTracker.Clear();
             Assert.True(await cardService.Remove("Card1"));
             Assert.Null(await repo.All().FirstOrDefaultAsync(c => c.Id == "Card1"));

@@ -152,18 +152,12 @@ namespace GameApp.Tests.Services
             Assert.Equal(result.PhoneNumber, actualData.PhoneNumber);
         }
         [Fact]
-        public async Task TestGetUserSettingsInfoShouldThrow()
+        public async Task TestGetUserSettingsInfoRetturenNull()
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async () => null);
-            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
-
-           await Assert.ThrowsAsync<ArgumentException>(()=>userService.GetUserSettingsInfo("-1"));
-
-
+            var userService = new UserService(null, null, new Repository<User>(context));
+            Assert.Null(await userService.GetUserSettingsInfo("-1"));
         }
         [Fact]
         public async Task TestSetEmailAndPhoneShouldChangeThem()

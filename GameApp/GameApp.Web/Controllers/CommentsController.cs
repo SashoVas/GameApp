@@ -13,19 +13,22 @@ namespace GameApp.Web.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly ICommentsService commentsService;
-        public CommentsController(ICommentsService commentsServicel)
+        private readonly IGameService gameService;
+        public CommentsController(ICommentsService commentsServicel, IGameService gameService)
         {
             this.commentsService = commentsServicel;
+            this.gameService = gameService;
         }
 
         [Authorize]
         [HttpPost("AddCommentToGame")]
         public async Task<ActionResult<LoadCommentsViewModel>> AddCommentToGame([FromBody] AddCommentInputModel comment)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid||!await gameService.GameExist(comment.GameId))
             {
                 return this.BadRequest();
             }
+            
             var comments = (await commentsService.Create(comment.GameId, comment.Contents, this.User.FindFirstValue(ClaimTypes.NameIdentifier))).ToList();
             comments[0].Username = User.Identity.Name;
             var model=new LoadCommentsViewModel 
@@ -48,7 +51,9 @@ namespace GameApp.Web.Controllers
         [HttpPost("AddReply")]
         public async Task<ActionResult<RepliesViewModel>>AddReply([FromBody] AddReplyInputModel reply)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid||
+                !await gameService.GameExist(reply.GameId)||
+                !await commentsService.CommentExist(reply.CommentId))
             {
                 return this.BadRequest();
             }

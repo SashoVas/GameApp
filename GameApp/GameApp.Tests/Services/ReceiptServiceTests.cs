@@ -88,7 +88,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
 
-            var receiptService = new ReceiptService(null,receipts,null);
+            var receiptService = new ReceiptService(receipts);
             var result = (await receiptService.GetAll(userId)).ToList();
 
             var actualData = receipts.All().Where(r => r.UserGames.FirstOrDefault().UserGame.UserId == userId).ToList();
@@ -107,7 +107,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
 
-            var receiptService = new ReceiptService(null, receipts, null);
+            var receiptService = new ReceiptService(receipts);
             var result = (await receiptService.GetAll(userId)).ToList();
             Assert.Equal(result.Count(),0);
         }
@@ -120,7 +120,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var receiptService = new ReceiptService(null, receipts,null);
+            var receiptService = new ReceiptService(receipts);
 
             var result = await receiptService.GetReceipt(receiptId);
 
@@ -137,7 +137,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var receiptService = new ReceiptService(null, receipts, null);
+            var receiptService = new ReceiptService(receipts);
 
             var result = await receiptService.GetReceipt(receiptId);
 
@@ -150,14 +150,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var receipts = new Repository<Receipt>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = context.Users.SingleOrDefault(u => u.Id == userId);
-            userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async() => user);
-
-            var cardServiceMock = new CardService(new Repository<Card>(context),null);
-            var userService = new UserService(userManager.Object,null,null);
-            var receiptService = new ReceiptService(userService, receipts, cardServiceMock);
+            var receiptService = new ReceiptService( receipts);
             Assert.True(await receiptService.CreateReceipt(userId,new List<UserGame> 
             { 
                 new UserGame 
@@ -178,25 +171,6 @@ namespace GameApp.Tests.Services
             var result = receipts.All().Last();
 
             Assert.Equal(result.UserGames.FirstOrDefault().UserGame.UserId, userId);
-
-        }
-        [Theory]
-        [InlineData(null,"Card1")]
-        [InlineData("1",null)]
-        public async Task TestCreateReceiptWithImproperDataShouldReturnNull(string userId,string cardId)
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var receipts = new Repository<Receipt>(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var user = context.Users.SingleOrDefault(u => u.Id == userId);
-            userManager.Setup(u => u.FindByIdAsync(userId)).Returns(async () => user);
-
-            var cardService = new CardService(new Repository<Card>(context), null);
-            var userService = new UserService(userManager.Object,null,null);
-            var receiptService = new ReceiptService(userService, receipts, cardService);
-            Assert.False(await receiptService.CreateReceipt(userId, new List<UserGame>(), cardId,ReceiptType.Purchase));
 
         }
     }

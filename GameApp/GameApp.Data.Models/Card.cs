@@ -16,7 +16,7 @@ namespace GameApp.Data.Models
         public string Id { get; set; }
         public CardType CardType { get; set; }
         [Required]
-        [MaxLength(10)]
+        [CreditCard]
         public string CardNumber { get; set; }
         [Required]
         [MaxLength(30)]
@@ -40,7 +40,9 @@ namespace GameApp.Data.Models
         [Required]
         [MaxLength(10)]
         public string PhoneNumber { get; set; }
+        [Required]
         public string UserId { get; set; }
+        [Required]
         public User User { get; set; }
         public ICollection<Receipt> Receipts { get; set; }
 

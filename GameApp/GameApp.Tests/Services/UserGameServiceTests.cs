@@ -112,7 +112,7 @@ namespace GameApp.Tests.Services
             await SeedData(context);
             var repo = new Repository<UserGame>(context);
 
-            var receiptService = new Mock<ReceiptService>(null,null,null);
+            var receiptService = new Mock<ReceiptService>(null);
             receiptService.Setup(rs=>rs.CreateReceipt(It.IsAny<string>(), It.IsAny<List<UserGame>>(), It.IsAny<string>(),ReceiptType.Refund)).Returns(async()=>true);
             var userGameService = new UserGameService(repo, receiptService.Object);
 

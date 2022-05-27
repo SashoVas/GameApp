@@ -16,6 +16,10 @@ namespace GameApp.Services
         private readonly IRepository<Card> cards;
         public CardService(IRepository<Card> cards) 
             => this.cards = cards;
+
+        public async Task<bool> CardExist(string id)
+        => await cards.All().AnyAsync(c => c.Id == id);
+
         public async Task<bool> Create(CardType cardType,string cardNumber,string firstName,  string lastName, string address,  string country, DateTime date, string city, string zipCode,string phoneNumber,string userId)
         {
             var card = new Card 
