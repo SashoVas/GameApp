@@ -4,12 +4,9 @@ using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -99,20 +96,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Friend>(context);
-            var newUser1 = new User 
-            { 
-                Id="NewUser1",
-                UserName="NewUser1"
-            };
-
-            var newUser2 = new User
-            {
-                Id = "NewUser2",
-                UserName = "NewUser2"
-            };
-            await context.Users.AddAsync(newUser1);
-            await context.Users.AddAsync(newUser2);
-            await context.SaveChangesAsync();
+           
             var userService = new Mock<IUserService>();
             userService.Setup(u => u.SetUsersToFriend(It.IsAny<Friend>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(async(Friend friend,string userId,string friendName) => 
@@ -129,21 +113,9 @@ namespace GameApp.Tests.Services
                 .All()
                 .Last();
 
-            var actualData = new Friend
-            {
-                FriendUser=newUser2,
-                MainUser=newUser1,
-                FriendUserId=newUser2.Id,
-                MainUserId=newUser1.Id,
-                Status=FriendStatus.Request
-            };
-
-            Assert.Equal(result.FriendUserId,actualData.FriendUserId);
-            Assert.Equal(result.MainUserId, actualData.MainUserId);
-            Assert.Equal(result.Status, actualData.Status);
-            Assert.Equal(result.FriendUser.UserName, actualData.FriendUser.UserName);
-            Assert.Equal(result.MainUser.UserName, actualData.MainUser.UserName);
-
+            Assert.Equal("NewUser2", result.FriendUserId);
+            Assert.Equal("NewUser1", result.MainUserId);
+            Assert.Equal(FriendStatus.Request, result.Status);
         }
         [Theory]
         [InlineData("NewUser1", null)]
@@ -191,11 +163,11 @@ namespace GameApp.Tests.Services
             var result = repo.All().SingleOrDefault(f => f.Id == 50);
 
 
-            Assert.Equal(result.Status, FriendStatus.Request);
-            Assert.Equal(result.FriendUser.UserName, "MainUserRejected");
-            Assert.Equal(result.FriendUser.Id, "MainUserRejected");
-            Assert.Equal(result.MainUser.Id, "FriendUserRejected");
-            Assert.Equal(result.MainUser.UserName, "FriendUserRejected");
+            Assert.Equal(FriendStatus.Request, result.Status);
+            Assert.Equal("MainUserRejected", result.FriendUser.UserName);
+            Assert.Equal("MainUserRejected", result.FriendUser.Id);
+            Assert.Equal("FriendUserRejected", result.MainUser.Id);
+            Assert.Equal("FriendUserRejected", result.MainUser.UserName);
 
         }
         [Fact]

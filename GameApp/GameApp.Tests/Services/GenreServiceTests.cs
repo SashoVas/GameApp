@@ -3,10 +3,8 @@ using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Tests.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -79,6 +77,29 @@ namespace GameApp.Tests.Services
             var genreService = new GenreService(repo);
             Assert.False(await genreService.Create(null));
         }
+        [Fact]
+        public async Task TestSetGenreToGameByName()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Genre>(context);
+            var genreService = new GenreService(repo);
 
+            var genreNames = new List<string> {
+                "Genre1",
+                "Genre2",
+                "Genre3",
+                "Genre4",
+                "Genre5",
+                "Genre6"
+            };
+            var game = new Game();
+            await genreService.SetGenreToGameByName(game, genreNames);
+            var gameGenres = game.Genres.ToList();
+            for (int i = 0; i < gameGenres.Count(); i++)
+            {
+                Assert.Equal(gameGenres[i].Genre.Name, genreNames[i]);
+            }
+        }
     }
 }

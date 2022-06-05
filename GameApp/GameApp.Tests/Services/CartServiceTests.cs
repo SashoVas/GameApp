@@ -4,13 +4,10 @@ using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -49,32 +46,7 @@ namespace GameApp.Tests.Services
             await context.AddRangeAsync(GetDummyData());
             await context.SaveChangesAsync();
         }
-        [Fact]
-        public async Task TestAddToCartShouldReturnTrue()
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<ShoppingCartGame>(context);
-            var shoppingCart = new ShoppingCart(repo);
-            shoppingCart.Id = "1";
 
-            var gameService = new GameService(new Repository<Game>(context),null,null);
-            var cardService = new CartService(shoppingCart, null, gameService, null);
-            Assert.True(await cardService.AddToCart(1));
-        }
-        [Fact]
-        public async Task TestAddToCartWithImproperDataShouldReturnFalse()
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var repo = new Repository<ShoppingCartGame>(context);
-            var shoppingCart = new ShoppingCart(repo);
-            shoppingCart.Id = "1";
-
-            var gameService = new GameService(new Repository<Game>(context), null, null);
-            var cardService = new CartService(shoppingCart, null, gameService, null);
-            Assert.False(await cardService.AddToCart(2));
-        }
         [Fact]
         public async Task TestGetAllItemsShouldReturnAllItems()
         {
@@ -138,7 +110,7 @@ namespace GameApp.Tests.Services
             var repo = new Repository<ShoppingCartGame>(context);
             var shoppingCart = new ShoppingCart(repo);
             shoppingCart.Id = "1";
-            var receiptServiceMock = new Mock<ReceiptService>(null);
+            var receiptServiceMock = new Mock<IReceiptService>();
             receiptServiceMock.Setup(rs => rs.CreateReceipt(It.IsAny<string>(), It.IsAny<List<UserGame>>(), It.IsAny<string>(), It.IsAny<ReceiptType>())).Returns(async () => true);
 
             var cartService = new CartService(shoppingCart, new Repository<UserGame>(context),  null, receiptServiceMock.Object);

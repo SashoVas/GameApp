@@ -2,14 +2,10 @@
 using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
-using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
-using Microsoft.AspNetCore.Identity;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

@@ -6,12 +6,8 @@ using GameApp.Tests.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Moq;
-
-using Microsoft.AspNetCore.Identity;
 
 namespace GameApp.Tests.Services
 {
@@ -136,10 +132,6 @@ namespace GameApp.Tests.Services
             Assert.True(result.Count == 0);
         }
 
-        private async Task SetGameById()
-        {
-            return;
-        }
         [Fact]
         public async Task TestCreateComment()
         {
@@ -207,6 +199,17 @@ namespace GameApp.Tests.Services
             Assert.Equal(newComment.GameId, actualReply.GameId);
             Assert.Equal(newComment.UserId, actualReply.UserId);
             Assert.Equal(newComment.CommentedOnId, actualReply.CommentedOnId);
+        }
+        [Fact]
+        public async Task TestCommentExist()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Comment>(context);
+            var commentsService = new CommentsService(repo);
+
+            Assert.True(await commentsService.CommentExist("1"));
+            Assert.False(await commentsService.CommentExist("NoComment"));
         }
     }
 }

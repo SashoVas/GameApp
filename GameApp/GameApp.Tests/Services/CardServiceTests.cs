@@ -3,13 +3,10 @@ using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Tests.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -176,6 +173,17 @@ namespace GameApp.Tests.Services
             context.ChangeTracker.Clear();
             Assert.True(await cardService.Remove("Card1"));
             Assert.Null(await repo.All().FirstOrDefaultAsync(c => c.Id == "Card1"));
+        }
+
+        [Fact]
+        public async Task TestCardExist()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            await SeedData(context);
+            var repo = new Repository<Card>(context);
+            var cardService = new CardService(repo);
+            Assert.True(await cardService.CardExist("Card1"));
+            Assert.False(await cardService.CardExist("NoCard"));
         }
     }
 }

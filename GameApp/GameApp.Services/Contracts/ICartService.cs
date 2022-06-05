@@ -1,10 +1,4 @@
-﻿using GameApp.Data.Models;
-using GameApp.Services.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GameApp.Services.Models;
 
 namespace GameApp.Services.Contracts
 {

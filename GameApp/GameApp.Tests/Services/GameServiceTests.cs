@@ -3,13 +3,13 @@ using GameApp.Data.Models;
 using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Services.Contracts;
+using GameApp.Services.Models;
 using GameApp.Tests.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -134,8 +134,7 @@ namespace GameApp.Tests.Services
         {
             var context = GameAppDbContextFactory.InitializeContext();
             var games = new Repository<Game>(context);
-            
-            var genreService = new Mock<GenreService>(new Repository<Genre>(context));
+            var genreService = new Mock<IGenreService>();
             var gameService = new GameService(games, genreService.Object, null);
             var id=await gameService.Create("TestGame",30,"smt",DateTime.MinValue,new List<string>(),null,null);
             var result = games.All().Last();
@@ -241,6 +240,62 @@ namespace GameApp.Tests.Services
             Assert.True(await gameService.Deleate("Game1"));
             Assert.False(await games.All().AnyAsync(g => g.Name == "Game1"));
 
+        }
+        [Fact]
+        public async Task TestGetTopRankedGames()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+
+            var result =await gameService.GetTopRankedGames();
+
+            var actual =await games.All()
+                .OrderByDescending(g => g.Reviews.Sum(r => r.Score) / (g.Reviews.Count() > 0 ? g.Reviews.Count() : 1))
+                .Take(15)
+                .Select(g => new PopularGamesServiceListingModel
+                {
+                    ImgUrl = g.ImageUrl,
+                    Name = g.Name
+                }).ToArrayAsync();
+            for (int i = 0; i < result.Count(); i++)
+            {
+                Assert.Equal(actual[i].Name, result[i].Name);
+                Assert.Equal(actual[i].ImgUrl, result[i].ImgUrl);
+            }
+        }
+        [Fact]
+        public async Task TestGameExist()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+            Assert.True(await gameService.GameExist(1));
+            Assert.False(await gameService.GameExist(100));
+        }
+        [Fact]
+        public async Task TestGameExistByName()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var gameService = new GameService(games, null, null);
+            Assert.True(await gameService.GameExistByName("Game1"));
+            Assert.False(await gameService.GameExistByName("NoGame"));
+        }
+        [Fact]
+        public async Task TestAddShoppingCartItem()
+        {
+            var context = GameAppDbContextFactory.InitializeContext();
+            var games = new Repository<Game>(context);
+            await SeedData(context);
+            var shoppingCart =new ShoppingCart(new Repository<ShoppingCartGame>(context));
+            shoppingCart.Id = "1";
+            var gameService = new GameService(games, null, null);
+            Assert.True(await gameService.AddShoppingCartItem(shoppingCart,1));
+            Assert.False(await gameService.AddShoppingCartItem(shoppingCart,100));
         }
     }
 }
