@@ -1,5 +1,4 @@
-﻿
-namespace GameApp.Services.Contracts
+﻿namespace GameApp.Services.Contracts
 {
     public interface IReviewService
     {

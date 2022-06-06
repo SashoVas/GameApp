@@ -10,10 +10,8 @@ namespace GameApp.Web.Controllers
     public class CardController : Controller
     {
         private readonly ICardService cardService;
-        public CardController(ICardService cardService)
-        {
-            this.cardService = cardService;
-        }
+        public CardController(ICardService cardService) 
+            => this.cardService = cardService;
         [Authorize]
         public async Task<IActionResult>CreateCard(string returnUrl)
         {

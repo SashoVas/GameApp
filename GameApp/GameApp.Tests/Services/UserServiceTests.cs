@@ -43,25 +43,20 @@ namespace GameApp.Tests.Services
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            
-            var userService = new UserService(userManagerMock.Object, null,new Repository<User>(context));
+            var userService = new UserService( null,new Repository<User>(context));
 
             var result =await userService.GetUserInfo(userName);
             var actualData = GetDummyData().SingleOrDefault(u => u.UserName == userName);
             Assert.Equal(result.UserName, actualData.UserName);
             Assert.Equal(result.Description, actualData.Description);
             Assert.Equal(result.ProfilePic, actualData.ImgURL);
-            
-
         }
         [Fact]
         public async Task TestUserInfoWithWrongValueShouldReturnNull()
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var userService = new UserService(null, null, new Repository<User>(context));
+            var userService = new UserService(null, new Repository<User>(context));
 
             Assert.Null(await userService.GetUserInfo("asdf"));
             Assert.Null(await userService.GetUserInfo(""));
@@ -74,31 +69,11 @@ namespace GameApp.Tests.Services
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
-            
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var actualData = GetDummyData();
-            userManagerMock.Setup(u => u.FindByIdAsync(userId))
-                .Returns(async()=> actualData.SingleOrDefault(u=>u.Id== userId));
-            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
+            var repo = new Repository<User>(context);
+            var userService = new UserService( null,repo );
             Assert.True(await userService.EditDescription("smt",userId));
-            var changedDescription = actualData.SingleOrDefault(u => u.Id == userId);
+            var changedDescription = repo.All().SingleOrDefault(u => u.Id == userId);
             Assert.Equal(changedDescription.Description,"smt");
-        }
-        [Theory]
-        [InlineData("NotUser")]
-        public async Task TestEditDescriptionWithImproperDataReturnFalse(string userId)
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
-
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            var actualData = GetDummyData();
-            userManagerMock.Setup(u => u.FindByIdAsync(userId))
-                .Returns(async () => actualData.SingleOrDefault(u => u.Id == userId));
-            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
-            Assert.False(await userService.EditDescription("smt", userId));
         }
 
         [Fact]
@@ -107,7 +82,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<User>(context);
-            var userService = new UserService(null, null,repo );
+            var userService = new UserService( null,repo );
 
             var result = (await userService.GetUsersByName("1",null,0)).ToList();
 
@@ -126,7 +101,7 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<User>(context);
-            var userService = new UserService(null, null, repo);
+            var userService = new UserService( null, repo);
 
             var result = (await userService.GetUsersByName("not a name",null,0)).ToList();
             Assert.Empty(result);
@@ -136,11 +111,8 @@ namespace GameApp.Tests.Services
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             var actualData = GetDummyData().SingleOrDefault(u => u.Id == "1");
-            userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async()=> actualData);
-            var userService = new UserService(userManagerMock.Object, null, new Repository<User>(context));
+            var userService = new UserService( null, new Repository<User>(context));
 
             var result = await userService.GetUserSettingsInfo("1");
             
@@ -154,7 +126,7 @@ namespace GameApp.Tests.Services
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var userService = new UserService(null, null, new Repository<User>(context));
+            var userService = new UserService( null, new Repository<User>(context));
             Assert.Null(await userService.GetUserSettingsInfo("-1"));
         }
         [Fact]
@@ -162,13 +134,9 @@ namespace GameApp.Tests.Services
         {
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
             var repo = new Repository<User>(context);
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
             var actualData = await repo.All().FirstOrDefaultAsync(u => u.Id == "1");
-            userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async () => actualData);
-
-            var userService = new UserService(userManagerMock.Object, null,repo );
+            var userService = new UserService( null,repo );
 
             Assert.Null(actualData.Email);
             Assert.Null(actualData.PhoneNumber);
@@ -176,20 +144,6 @@ namespace GameApp.Tests.Services
             var changedData =await repo.All().FirstOrDefaultAsync(u=>u.Id=="1");
             Assert.Equal(changedData.Email,"newEmail");
             Assert.Equal(changedData.PhoneNumber,"newPhone");
-        }
-        [Fact]
-        public async Task TestSetEmailAndPhoneWithImproperDataShouldReturnFalse()
-        {
-            var context = GameAppDbContextFactory.InitializeContext();
-            await SeedData(context);
-            var store = new Mock<IUserStore<User>>();
-            var repo = new Repository<User>(context);
-            var userManagerMock = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            userManagerMock.Setup(u => u.FindByIdAsync("1")).Returns(async () => null);
-
-            var userService = new UserService(userManagerMock.Object, null, repo);
-
-            Assert.False(await userService.SetEmailAndPhone("newPhone", "newEmail", "1"));
         }
     }
 }

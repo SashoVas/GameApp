@@ -1,10 +1,6 @@
-﻿using GameApp.Data;
-using GameApp.Data.Models;
-using GameApp.Data.Repositories;
-using GameApp.Services.Contracts;
+﻿using GameApp.Services.Contracts;
 using GameApp.Web.Models;
 using GameApp.Web.Models.Home;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -14,10 +10,8 @@ namespace GameApp.Web.Controllers
     {
 
         private readonly IGameService gameService;
-        public HomeController(IGameService gameService)
-        {
-            this.gameService = gameService;
-        }
+        public HomeController(IGameService gameService) 
+            => this.gameService = gameService;
         public async Task<IActionResult> Index(int page)
         {
             var model = new HomeIndexViewModel

@@ -1,5 +1,4 @@
 ﻿using GameApp.Services.Contracts;
-using GameApp.Web.Models;
 using GameApp.Web.Models.Game;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

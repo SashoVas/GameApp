@@ -9,9 +9,7 @@ namespace GameApp.Web.Controllers
     {
         private readonly IGenreService genreService;
         public GenreController(IGenreService genreService)
-        {
-            this.genreService = genreService;
-        }
+            => this.genreService = genreService;
         public IActionResult Create()
         {
             return View();

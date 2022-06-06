@@ -3,7 +3,6 @@ using GameApp.Data.Repositories;
 using GameApp.Services.Contracts;
 using GameApp.Services.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 
@@ -11,21 +10,20 @@ namespace GameApp.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<User> userManager;
         private readonly IRepository<User> users;
         private readonly IHostingEnvironment environment;
 
-        public UserService(UserManager<User> userManager, IHostingEnvironment environment, IRepository<User> users)
+        public UserService( IHostingEnvironment environment, IRepository<User> users)
         {
-            this.userManager = userManager;
             this.environment = environment;
             this.users = users;
         }
 
         public async Task<bool> ChangeImage(IFormFile image,string userId)
         {
-            var user  =await userManager.FindByIdAsync(userId);
-           
+            var user = await users.All()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
             var imgId = Guid.NewGuid().ToString();
             using (var file = File.OpenWrite(environment.WebRootPath + "/Files/" + imgId + ".png"))
             {
@@ -33,20 +31,19 @@ namespace GameApp.Services
                 
             }
             user.ImgURL = imgId + ".png";
-            await userManager.UpdateAsync(user);
-            
+            users.Update(user);
+            await users.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> EditDescription(string description, string userId)
         {
-            var user =await userManager.FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
+            var user = await users.All()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
             user.Description = description;
-            await userManager.UpdateAsync(user);
+            users.Update(user);
+            await users.SaveChangesAsync();
             return true;
         }
 
@@ -133,11 +130,9 @@ namespace GameApp.Services
 
         public async Task<bool> SetEmailAndPhone(string phone, string email,string userId)
         {
-            var user =await userManager.FindByIdAsync(userId);
-            if (user==null)
-            {
-                return false;
-            }
+            var user = await users.All()
+                .Where(u => u.Id == userId)
+                .FirstOrDefaultAsync();
             user.PhoneNumber = phone;
             user.Email = email;
             users.Update(user);

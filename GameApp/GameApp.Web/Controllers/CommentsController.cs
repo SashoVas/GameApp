@@ -1,7 +1,6 @@
 ﻿using GameApp.Services.Contracts;
 using GameApp.Web.Models.Comments;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;

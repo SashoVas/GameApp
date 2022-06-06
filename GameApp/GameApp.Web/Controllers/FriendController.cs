@@ -2,9 +2,7 @@
 using GameApp.Services.Contracts;
 using GameApp.Web.Models.Friend;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace GameApp.Web.Controllers
@@ -15,10 +13,8 @@ namespace GameApp.Web.Controllers
     {
         private readonly IFriendService friendService;
 
-        public FriendController(IFriendService friendService)
-        {
-            this.friendService = friendService;
-        }
+        public FriendController(IFriendService friendService) 
+            => this.friendService = friendService;
         [Authorize]
         [HttpPost("SendFirendRequest")]
         public async Task<ActionResult> SendFirendRequest([FromBody] FriendRequestInputModel friend)

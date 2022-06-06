@@ -11,10 +11,8 @@ namespace GameApp.Web.Controllers
     {
         private readonly IReceiptService receiptService;
 
-        public ReceiptController(IReceiptService receiptService)
-        {
-            this.receiptService = receiptService;
-        }
+        public ReceiptController(IReceiptService receiptService) 
+            => this.receiptService = receiptService;
         [Authorize]
         [Route("Receipt/{id?}")]
         public async Task<IActionResult> Receipt([Required]string Id)

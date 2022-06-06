@@ -4,12 +4,9 @@ using GameApp.Data.Repositories;
 using GameApp.Services;
 using GameApp.Services.Contracts;
 using GameApp.Tests.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -60,7 +57,14 @@ namespace GameApp.Tests.Services
             var context = GameAppDbContextFactory.InitializeContext();
             await SeedData(context);
             var repo = new Repository<Review>(context);
-            var gameServiceMock = new Mock<GameService>(new Repository<Game>(context), null, null);
+            var gameServiceMock = new Mock<IGameService>();
+            gameServiceMock
+                .Setup(g => g.SetGameByName(It.IsAny<Review>(), It.IsAny<string>()))
+                .Returns(async (Review review,string gameName) =>
+                {
+                    review.GameId = 1;
+                    return true;
+                });
             var reviewService = new ReviewService(repo, gameServiceMock.Object);
 
             Assert.True(await reviewService.Rate("Game1",5,"1"));
